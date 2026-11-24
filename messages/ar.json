@@ -74,5 +74,32 @@
     "addToCalendar": "TODO-AR: Add to calendar",
     "calendarHint": "TODO-AR: Downloads a calendar file you can open on your phone or computer.",
     "timeLabel": "TODO-AR: Time"
+  },
+  "email": {
+    "durationValue": "TODO-AR: {minutes} minutes",
+    "footer": "TODO-AR: You received this message because you applied to Court House+. It was sent on behalf of Court House+ from a different address, and replying to it reaches the Court House+ team.",
+    "confirmation": {
+      "subject": "TODO-AR: Your Court House+ interview is booked",
+      "heading": "TODO-AR: You are booked",
+      "greeting": "TODO-AR: Hello {name},",
+      "intro": "TODO-AR: Your interview with Court House+ is confirmed. These are the details.",
+      "calendar": "TODO-AR: A calendar file is attached so you can add the interview to your calendar."
+    },
+    "notification": {
+      "subject": "TODO-AR: New interview booking at {time}",
+      "heading": "TODO-AR: New interview booking",
+      "intro": "TODO-AR: An applicant has booked an interview slot.",
+      "nameLabel": "TODO-AR: Name",
+      "emailLabel": "TODO-AR: Email address",
+      "phoneLabel": "TODO-AR: Phone number",
+      "footer": "TODO-AR: Sent automatically by the Court House+ booking portal."
+    },
+    "cancellation": {
+      "subject": "TODO-AR: Your Court House+ interview has been cancelled",
+      "heading": "TODO-AR: Your interview is cancelled",
+      "greeting": "TODO-AR: Hello {name},",
+      "intro": "TODO-AR: Your interview slot has been released and is no longer booked. The time below is no longer valid.",
+      "rebook": "TODO-AR: If you would like another time, please contact Court House+ or book again if times are still available."
+    }
   }
 }

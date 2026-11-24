@@ -1,12 +1,17 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { after } from "next/server";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { bookingsRepo } from "@/repositories/bookings";
+import { bookingsRepo, type Booking } from "@/repositories/bookings";
 import { errorCodeOf } from "@/core/types/results/failures";
 import { isFailure } from "@/core/types/results/results";
 import { routing } from "@/core/i18n/routing";
+import {
+  sendBookingConfirmation,
+  sendInterviewerNotification,
+} from "@/core/services/email";
 import {
   FALLBACK_ERROR_KEY,
   claimOutcomeToState,
@@ -58,7 +63,25 @@ async function rememberBooking(email: string): Promise<void> {
   }
 }
 
-type Attempt = { state: BookingActionState; email?: string };
+type Attempt = {
+  state: BookingActionState;
+  email?: string;
+  created?: Booking;
+};
+
+function sendBookingEmails(booking: Booking): void {
+  const run = async (): Promise<void> => {
+    await Promise.all([
+      sendBookingConfirmation(booking),
+      sendInterviewerNotification(booking),
+    ]);
+  };
+  try {
+    after(run);
+  } catch {
+    void run();
+  }
+}
 
 export async function createBooking(
   _prevState: BookingActionState,
@@ -67,6 +90,9 @@ export async function createBooking(
   const attempt = await attemptBooking(formData);
   if (attempt.state.status === "success" && attempt.email) {
     await rememberBooking(attempt.email);
+  }
+  if (attempt.created) {
+    sendBookingEmails(attempt.created);
   }
   return attempt.state;
 }
@@ -97,7 +123,7 @@ async function attemptBooking(formData: FormData): Promise<Attempt> {
     }
 
     const { name, email, phone, slotId } = parsed.data;
-    const result = await bookingsRepo.create({
+    const booking: Booking = {
       slotId,
       name,
       email,
@@ -105,7 +131,8 @@ async function attemptBooking(formData: FormData): Promise<Attempt> {
       locale,
       createdAt: new Date(),
       cancelledAt: null,
-    });
+    };
+    const result = await bookingsRepo.create(booking);
 
     if (isFailure(result)) {
       const code = errorCodeOf(result.failure);
@@ -116,6 +143,7 @@ async function attemptBooking(formData: FormData): Promise<Attempt> {
     return {
       state: claimOutcomeToState(result.data, slotId, (key) => t(key)),
       email,
+      created: result.data === "created" ? booking : undefined,
     };
   } catch (error) {
     console.error("createBooking threw", {

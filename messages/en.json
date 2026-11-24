@@ -74,5 +74,32 @@
     "addToCalendar": "Add to calendar",
     "calendarHint": "Downloads a calendar file you can open on your phone or computer.",
     "timeLabel": "Time"
+  },
+  "email": {
+    "durationValue": "{minutes} minutes",
+    "footer": "You received this message because you applied to Court House+. It was sent on behalf of Court House+ from a different address, and replying to it reaches the Court House+ team.",
+    "confirmation": {
+      "subject": "Your Court House+ interview is booked",
+      "heading": "You are booked",
+      "greeting": "Hello {name},",
+      "intro": "Your interview with Court House+ is confirmed. These are the details.",
+      "calendar": "A calendar file is attached so you can add the interview to your calendar."
+    },
+    "notification": {
+      "subject": "New interview booking at {time}",
+      "heading": "New interview booking",
+      "intro": "An applicant has booked an interview slot.",
+      "nameLabel": "Name",
+      "emailLabel": "Email address",
+      "phoneLabel": "Phone number",
+      "footer": "Sent automatically by the Court House+ booking portal."
+    },
+    "cancellation": {
+      "subject": "Your Court House+ interview has been cancelled",
+      "heading": "Your interview is cancelled",
+      "greeting": "Hello {name},",
+      "intro": "Your interview slot has been released and is no longer booked. The time below is no longer valid.",
+      "rebook": "If you would like another time, please contact Court House+ or book again if times are still available."
+    }
   }
 }

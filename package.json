@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test \"src/lib/**/*.test.ts\" \"src/repositories/**/*.test.ts\""
+    "test": "node --test \"src/lib/**/*.test.ts\" \"src/repositories/**/*.test.ts\" \"src/core/**/*.test.ts\""
   },
   "dependencies": {
     "mongodb": "7.9.1",
@@ -16,7 +16,7 @@
     "next-intl": "4.14.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "resend": "^6.39.0",
+    "resend": "6.39.0",
     "rtl-detect": "1.1.2",
     "zod": "4.4.3"
   },
