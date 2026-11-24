@@ -101,5 +101,37 @@
       "intro": "Your interview slot has been released and is no longer booked. The time below is no longer valid.",
       "rebook": "If you would like another time, please contact Court House+ or book again if times are still available."
     }
+  },
+  "interviewer": {
+    "signIn": {
+      "title": "Interviewer sign-in",
+      "intro": "Enter the interviewer password to see the schedule.",
+      "passwordLabel": "Password",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "wrong": "That password is not right. Please try again.",
+      "unavailable": "Sign-in is not available right now. Please tell the site administrator."
+    },
+    "title": "Interview schedule",
+    "booked": "<n>{booked}</n> of <n>{total}</n> booked",
+    "nextUp": "Up next",
+    "noneUpcoming": "No more interviews booked today.",
+    "openSlot": "Open",
+    "export": "Download CSV",
+    "loadFailed": "We could not load the schedule. Please refresh the page.",
+    "columns": {
+      "time": "Time",
+      "applicant": "Applicant",
+      "action": "Action"
+    },
+    "cancel": {
+      "label": "Cancel the booking for {name}",
+      "title": "Cancel this booking?",
+      "body": "<who>{name}</who> at <n>{time}</n> will be cancelled and emailed. This cannot be undone.",
+      "keep": "Keep booking",
+      "confirm": "Cancel booking",
+      "confirming": "Cancelling…",
+      "failed": "The booking could not be cancelled. Please try again."
+    }
   }
 }

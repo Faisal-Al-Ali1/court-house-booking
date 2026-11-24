@@ -101,5 +101,37 @@
       "intro": "TODO-AR: Your interview slot has been released and is no longer booked. The time below is no longer valid.",
       "rebook": "TODO-AR: If you would like another time, please contact Court House+ or book again if times are still available."
     }
+  },
+  "interviewer": {
+    "signIn": {
+      "title": "TODO-AR: Interviewer sign-in",
+      "intro": "TODO-AR: Enter the interviewer password to see the schedule.",
+      "passwordLabel": "TODO-AR: Password",
+      "submit": "TODO-AR: Sign in",
+      "submitting": "TODO-AR: Signing in…",
+      "wrong": "TODO-AR: That password is not right. Please try again.",
+      "unavailable": "TODO-AR: Sign-in is not available right now. Please tell the site administrator."
+    },
+    "title": "TODO-AR: Interview schedule",
+    "booked": "TODO-AR: <n>{booked}</n> of <n>{total}</n> booked",
+    "nextUp": "TODO-AR: Up next",
+    "noneUpcoming": "TODO-AR: No more interviews booked today.",
+    "openSlot": "TODO-AR: Open",
+    "export": "TODO-AR: Download CSV",
+    "loadFailed": "TODO-AR: We could not load the schedule. Please refresh the page.",
+    "columns": {
+      "time": "TODO-AR: Time",
+      "applicant": "TODO-AR: Applicant",
+      "action": "TODO-AR: Action"
+    },
+    "cancel": {
+      "label": "TODO-AR: Cancel the booking for {name}",
+      "title": "TODO-AR: Cancel this booking?",
+      "body": "TODO-AR: <who>{name}</who> at <n>{time}</n> will be cancelled and emailed. This cannot be undone.",
+      "keep": "TODO-AR: Keep booking",
+      "confirm": "TODO-AR: Cancel booking",
+      "confirming": "TODO-AR: Cancelling…",
+      "failed": "TODO-AR: The booking could not be cancelled. Please try again."
+    }
   }
 }
