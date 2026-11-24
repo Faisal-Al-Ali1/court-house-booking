@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test \"src/lib/**/*.test.ts\" \"src/repositories/**/*.test.ts\" \"src/core/**/*.test.ts\""
+    "test": "node --test \"src/lib/**/*.test.ts\" \"src/repositories/**/*.test.ts\" \"src/core/**/*.test.ts\"",
+    "launch-check": "node --test \"launch/*.test.ts\""
   },
   "dependencies": {
     "mongodb": "7.9.1",

@@ -60,7 +60,7 @@
   },
   "venue": {
     "name": "Court House+",
-    "address": "Building 12, Example Street, Amman 11118",
+    "address": "TODO: paste the venue address here",
     "mapUrl": "TODO: paste the venue map URL here",
     "fullLocation": "{name}, {address}"
   },

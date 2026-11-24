@@ -8,7 +8,7 @@ const LOCALES = ["ar", "en"] as const;
 type Tree = { [key: string]: string | Tree };
 
 function load(locale: string): Tree {
-  const path = new URL(`../../messages/${locale}.json`, import.meta.url);
+  const path = new URL(`../messages/${locale}.json`, import.meta.url);
   return JSON.parse(readFileSync(path, "utf8")) as Tree;
 }
 
@@ -44,7 +44,7 @@ for (const locale of LOCALES) {
         "",
         `LAUNCH GATE: ${keys.length} placeholder string(s) remain in messages/${locale}.json.`,
         "This failure is intentional. It clears only when the client's real copy replaces every one.",
-        "See docs/client-copy-needed.md. Keys still to replace:",
+        "This is npm run launch-check, not npm test. See docs/client-copy-needed.md. Keys still to replace:",
         ...keys.map((key) => `  - ${key}`),
       ].join(String.fromCharCode(10)),
     );

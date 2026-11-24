@@ -1,25 +1,41 @@
 # Copy needed from Court House+
 
-Everything below blocks launch. The portal is Arabic-first, and nearly every Arabic string is still an English placeholder that renders on screen prefixed with `TODO-AR:`. `npm test` fails on purpose until none remain.
+Everything below blocks launch. The portal is Arabic-first, and nearly every Arabic string is still an English placeholder that renders on screen prefixed with `TODO-AR:`. `npm run launch-check` fails on purpose until none remain.
 
 ## Questions to settle first
 
 1. **Does Court House+ have an Arabic organisation name?** Or does the brand stay in Latin letters, "Court House+", in both languages? Today it is Latin in both.
 2. **Which language should the interviewer's notification emails use?** The email that tells the interviewer about each new booking currently defaults to Arabic. Changing it is one environment variable (`INTERVIEWER_LOCALE=en`), so either answer is cheap.
 3. **The venue map link.** Please send a `maps.app.goo.gl` short link (Google Maps, Share, Copy link). A short link avoids any trouble with long addresses that contain braces or apostrophes. Until it arrives the map link is hidden, deliberately.
-4. **The venue name and address, in both Arabic and English.** The English address in the portal today is a sample ("Building 12, Example Street, Amman 11118") and must not reach applicants.
-5. **Is there a data-protection notice?** The consent checkbox says applicants agree to the use of their details "as set out in the data-protection notice" (`booking.fields.consent`). If no such notice exists, the sentence must change; if one exists, tell us where it is published.
-6. **The Reply-To address** that applicants' replies to the confirmation email should reach.
+4. **The venue name and address, in both Arabic and English.** The English address in the portal today is a marked placeholder and must not reach applicants.
+5. **The Reply-To address** that applicants' replies to the confirmation email should reach.
+
+## Required: the data-protection notice
+
+The consent checkbox (`booking.fields.consent`) says applicants agree to the use of their details "as set out in the data-protection notice". That notice does not exist yet and must be written and approved, in Arabic and English. The substance is already decided; the client only needs to approve the wording. It must say:
+
+- **Who collects the data:** Court House+, as the organisation running the interviews.
+- **Who holds it:** a developer contracted by Court House+ holds it on Court House+'s behalf, in a hosted database, for the length of the event.
+- **What is collected:** full name, email address and phone number, and the chosen interview time.
+- **What it is used for:** only to arrange and run the interview (confirmation and cancellation emails, the interviewer's schedule), and for nothing else.
+- **When it is deleted:** after the event, once the data has been handed to Court House+. State the date once it is agreed (see the shutdown step in `docs/deploy-checklist.md`).
+- **A contact:** where an applicant can ask about their data (the Reply-To address is the natural choice).
+
+English sketch for approval:
+
+> Court House+ collects your name, email address and phone number to arrange and run your interview. The details are held for Court House+ by a contracted developer, are used only for this purpose, and are deleted after the event on [date]. To ask about your details, contact [address].
+
+Once the wording is approved the notice also needs somewhere to be shown (a link or an expandable text beside the checkbox). The portal has no such place yet, so that is a small addition to the form, to be made by the developer when the text arrives; the consent sentence itself can stay as it is.
 
 ## Venue (needs the client's real values)
 
 | Key | English now | Where it appears |
 |---|---|---|
 | `venue.name` | Court House+ | Confirmation screen, both emails to the applicant, and the calendar file |
-| `venue.address` | Building 12, Example Street, Amman 11118 | Confirmation screen, both emails to the applicant, and the calendar file |
+| `venue.address` | TODO: paste the venue address here | Confirmation screen, both emails to the applicant, and the calendar file |
 | `venue.mapUrl` | TODO: paste the venue map URL here | Confirmation screen, both emails to the applicant, and the calendar file |
 
-Each of these is needed in Arabic (`messages/ar.json`) and in English (`messages/en.json`). The English `venue.address` is the sample value.
+Each of these is needed in Arabic (`messages/ar.json`) and in English (`messages/en.json`).
 
 ## Arabic strings to translate or approve (98)
 

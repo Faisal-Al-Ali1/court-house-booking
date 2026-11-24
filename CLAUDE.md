@@ -8,7 +8,7 @@ Rules that apply to every change: **no code comments, ever** (a name carries the
 
 ## Launch state
 
-`npm test` is **red on purpose** until the client's copy lands. `src/lib/launch-gate.test.ts` fails while any `TODO` marker or the sample English address remains in `messages/ar.json` or `messages/en.json`, and its failure message lists the keys, so the output is the to-do list. It is the launch gate, not a broken test; do not delete it, loosen it or add the keys to an allow-list. The client's list is `docs/client-copy-needed.md` and the manual launch steps are `docs/deploy-checklist.md`.
+`npm test` is correctness only and **stays green**. The launch gate is a separate command, **`npm run launch-check`** (`launch/launch-gate.test.ts`), which is **red on purpose** until the client's copy lands: it fails while any `TODO` marker or the sample English address remains in `messages/ar.json` or `messages/en.json`, and its failure message lists the keys, so the output is the to-do list. It is the launch gate, not a broken test; do not delete it, loosen it or add keys to an allow-list. It is split out because a suite that is red for days teaches everyone to ignore its output, and a real regression would hide among the expected failures. It is **not wired into `prebuild`**, deliberately: that would stop Vercel building previews while placeholders remain, and previews are how the portal is tested in that state. The client's list is `docs/client-copy-needed.md` and the manual launch steps are `docs/deploy-checklist.md`.
 
 ## The testing deviation
 
@@ -18,7 +18,7 @@ Consequences to respect:
 
 - **UI is not unit tested.** It is checked in a browser (the audits below). Keep components thin: logic worth testing belongs in `src/lib` or `src/core/services` as a pure function with injected dependencies (see `cancel-flow.ts`, `confirm-from-request.ts`), so `node --test` can reach it.
 - Server actions are thin wrappers over those functions. A server action that cannot be tested directly gets its logic extracted, not a test harness.
-- A new directory with tests must be added to the glob in `package.json`, or the tests silently never run.
+- A new directory with tests must be added to the glob in `package.json`, or the tests silently never run. `launch/` is the one directory that must **not** be in that glob.
 - When a fix is driven by an observed bug, write the failing test first. When a test cannot discriminate (it passes with the code broken), mutate the code and watch it fail before trusting it.
 
 ## The `.ts`-extension import rule
@@ -84,7 +84,7 @@ Partial, so that a cancelled booking stays in the collection for the export whil
 
 There is a deliberate asymmetry. **Placeholder text renders visibly** (`TODO-AR: ...` on the page): a visible marker is a loud reminder and a placeholder that looks like copy is the dangerous kind. **A placeholder link is suppressed**: `venue.mapUrl` renders nothing unless it is a real `http(s)` URL (`isHttpUrl`), in the screen, the email and the calendar file. A wrong link is silent and actively harmful (an applicant is sent to the wrong place with full confidence), while a missing link is only an omission. So: visible text, hidden links. The consequence is that a map link's absence is silent too, which is why the deploy checklist has an explicit step to confirm it renders once the client's URL is in. Use a `maps.app.goo.gl` short link: it avoids braces and apostrophes that break ICU message parsing.
 
-The launch gate also catches the sample English address, because it carries no `TODO` marker and would otherwise ship to applicants.
+Every pending value carries the `TODO` marker, including `venue.address` in `en.json` (which was once an unmarked, finished-looking sample and would have been read to applicants). The launch check also matches `Example Street` as a backstop.
 
 ## Audits (browser, by hand)
 

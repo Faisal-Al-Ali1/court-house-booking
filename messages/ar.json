@@ -60,7 +60,7 @@
   },
   "venue": {
     "name": "TODO-AR: Court House+",
-    "address": "TODO-AR: Building 12, Example Street, Amman 11118",
+    "address": "TODO-AR: paste the venue address here",
     "mapUrl": "TODO-AR: paste the venue map URL here",
     "fullLocation": "{name}، {address}"
   },
