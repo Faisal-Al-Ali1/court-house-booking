@@ -1,4 +1,4 @@
-import { AppFailure } from "./failures";
+import type { AppFailure } from "./failures.ts";
 
 export type Result<T> = Success<T> | Failure;
 

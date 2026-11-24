@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 import { MongoClient } from "mongodb";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { generateSlots, slotStartUtc } from "../../lib/slots.ts";
-import type { Result } from "../../core/types/results/results.ts";
+import { isFailure, isSuccess, type Result } from "../../core/types/results/results.ts";
 import type { BookingsImpl as BookingsImplType } from "./bookings_impl.ts";
 import type { Booking, SlotClaim } from "./types.ts";
 
@@ -177,4 +177,14 @@ test("a full mixed burst never double-books a slot or an email", async () => {
   const active = dataOf(await repo.listActive());
   assert.equal(new Set(active.map((b) => b.slotId)).size, active.length);
   assert.equal(new Set(active.map((b) => b.email)).size, active.length);
+});
+
+test("isSuccess and isFailure work at runtime on real repository results", async () => {
+  const created = await repo.create(booking(0, "guard@example.com"));
+  const rejected = await repo.create({ ...booking(0, "guard@example.com"), slotId: "nonsense" });
+
+  assert.ok(isSuccess(created));
+  assert.ok(!isFailure(created));
+  assert.ok(isFailure(rejected));
+  assert.ok(!isSuccess(rejected));
 });
