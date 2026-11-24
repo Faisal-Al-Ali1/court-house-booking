@@ -57,5 +57,19 @@
       "alreadyBooked": "TODO-AR: This email address already has a booking.",
       "unexpected": "TODO-AR: Something went wrong. Please try again."
     }
+  },
+  "venue": {
+    "name": "TODO-AR: Court House+",
+    "address": "TODO-AR: Building 12, Example Street, Amman 11118"
+  },
+  "confirmation": {
+    "eventSummary": "TODO-AR: Court House+ interview",
+    "dateLabel": "TODO-AR: Date",
+    "durationLabel": "TODO-AR: Duration",
+    "duration": "TODO-AR: <n>{minutes}</n> minutes",
+    "venueLabel": "TODO-AR: Venue",
+    "openMap": "TODO-AR: Open in maps",
+    "addToCalendar": "TODO-AR: Add to calendar",
+    "calendarHint": "TODO-AR: Downloads a calendar file you can open on your phone or computer."
   }
 }

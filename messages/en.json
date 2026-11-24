@@ -57,5 +57,19 @@
       "alreadyBooked": "This email address already has a booking.",
       "unexpected": "Something went wrong. Please try again."
     }
+  },
+  "venue": {
+    "name": "Court House+",
+    "address": "Building 12, Example Street, Amman 11118"
+  },
+  "confirmation": {
+    "eventSummary": "Court House+ interview",
+    "dateLabel": "Date",
+    "durationLabel": "Duration",
+    "duration": "<n>{minutes}</n> minutes",
+    "venueLabel": "Venue",
+    "openMap": "Open in maps",
+    "addToCalendar": "Add to calendar",
+    "calendarHint": "Downloads a calendar file you can open on your phone or computer."
   }
 }
