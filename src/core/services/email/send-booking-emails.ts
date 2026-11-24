@@ -38,7 +38,7 @@ type InterviewerBooking = Pick<
 export type EmailSenders = {
   sendBookingConfirmation: (booking: ApplicantBooking) => Promise<void>;
   sendInterviewerNotification: (booking: InterviewerBooking) => Promise<void>;
-  sendCancellation: (booking: ApplicantBooking) => Promise<void>;
+  sendCancellation: (booking: ApplicantBooking) => Promise<boolean>;
 };
 
 function describeFailure(error: unknown): Record<string, unknown> {
@@ -51,11 +51,16 @@ function describeFailure(error: unknown): Record<string, unknown> {
   return { name: error instanceof Error ? error.name : typeof error };
 }
 
-async function guarded(kind: string, work: () => Promise<void>): Promise<void> {
+async function guarded(
+  kind: string,
+  work: () => Promise<void>,
+): Promise<boolean> {
   try {
     await work();
+    return true;
   } catch (error) {
     console.error("email not sent", { kind, ...describeFailure(error) });
+    return false;
   }
 }
 
@@ -78,8 +83,8 @@ export function createEmailSenders(deps: EmailDeps): EmailSenders {
   }
 
   return {
-    sendBookingConfirmation: (booking) =>
-      guarded("confirmation", async () => {
+    sendBookingConfirmation: async (booking) => {
+      await guarded("confirmation", async () => {
         const t = deps.translatorFor(booking.locale);
         const facts = buildSlotFacts(t, booking.slotId, booking.locale);
         const ics = buildIcs({
@@ -104,10 +109,11 @@ export function createEmailSenders(deps: EmailDeps): EmailSenders {
             },
           ],
         );
-      }),
+      });
+    },
 
-    sendInterviewerNotification: (booking) =>
-      guarded("notification", async () => {
+    sendInterviewerNotification: async (booking) => {
+      await guarded("notification", async () => {
         const locale = deps.readInterviewerLocale();
         const t = deps.translatorFor(locale);
         const facts = buildSlotFacts(t, booking.slotId, locale);
@@ -124,7 +130,8 @@ export function createEmailSenders(deps: EmailDeps): EmailSenders {
             facts,
           }),
         );
-      }),
+      });
+    },
 
     sendCancellation: (booking) =>
       guarded("cancellation", async () => {

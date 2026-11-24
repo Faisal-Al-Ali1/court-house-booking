@@ -337,3 +337,15 @@ test("a missing translation key is logged by name and code only", async () => {
   assert.ok(lines[0].includes("email translation problem"));
   assert.ok(!lines[0].includes("nothing"));
 });
+
+test("sendCancellation reports whether the email went", async () => {
+  const delivered = harness(async () => undefined);
+  assert.equal(await delivered.senders.sendCancellation(booking()), true);
+  const failing = harness(async () => {
+    throw new MailSendError("invalid_api_key");
+  });
+  const { result } = await captureErrors(() =>
+    failing.senders.sendCancellation(booking()),
+  );
+  assert.equal(result, false);
+});

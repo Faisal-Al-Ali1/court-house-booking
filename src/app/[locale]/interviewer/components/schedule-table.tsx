@@ -3,11 +3,8 @@ import { useTranslations } from "next-intl";
 import { LtrRun } from "@/core/new-components/common/ltr-run";
 import { formatBreakRange, formatSlotTime } from "@/lib/format-time";
 import { slotWindows } from "@/lib/slots";
+import { dialHref } from "../utils/dial-href";
 import type { ScheduleTableProps } from "../types/schedule-table-props";
-
-function dialHref(phone: string): string {
-  return `tel:${phone.replace(/[^\d+]/g, "")}`;
-}
 
 export function ScheduleTable({
   rows,

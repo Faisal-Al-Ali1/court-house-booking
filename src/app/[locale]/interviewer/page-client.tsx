@@ -7,14 +7,12 @@ import { LtrRun } from "@/core/new-components/common/ltr-run";
 import { routing } from "@/core/i18n/routing";
 import { formatSlotTime } from "@/lib/format-time";
 import { CancelConfirm, ScheduleTable } from "./components";
+import { dialHref } from "./utils/dial-href";
+import type { CancelNotice } from "./types/cancel-notice";
 import type { PageClientProps } from "./types/page-client-props";
 import type { ScheduleRow } from "./types/schedule-row";
 
 const REFRESH_INTERVAL_MS = 60_000;
-
-function dialHref(phone: string): string {
-  return `tel:${phone.replace(/[^\d+]/g, "")}`;
-}
 
 export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
   const t = useTranslations("interviewer");
@@ -22,6 +20,7 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
   const booking = useTranslations("booking");
   const router = useRouter();
   const [target, setTarget] = useState<ScheduleRow | null>(null);
+  const [notice, setNotice] = useState<CancelNotice | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => router.refresh(), REFRESH_INTERVAL_MS);
@@ -64,6 +63,33 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
           {t("export")}
         </a>
       </div>
+
+      {notice ? (
+        <div
+          role="status"
+          className="sticky top-2 z-10 mt-4 flex items-start justify-between gap-3 rounded-lg border border-accent bg-ground-raised p-4"
+        >
+          <p className="font-semibold">
+            {t.rich(notice.notified ? "cancel.notified" : "cancel.notNotified", {
+              name: notice.name,
+              phone: notice.phone,
+              who: (chunks) => <bdi>{chunks}</bdi>,
+              call: (chunks) => (
+                <a href={dialHref(notice.phone)} className="underline underline-offset-4">
+                  <LtrRun>{chunks}</LtrRun>
+                </a>
+              ),
+            })}
+          </p>
+          <button
+            type="button"
+            onClick={() => setNotice(null)}
+            className="min-h-12 shrink-0 rounded-md border border-rule-strong bg-ground px-4 text-base font-semibold text-ink"
+          >
+            {t("cancel.dismiss")}
+          </button>
+        </div>
+      ) : null}
 
       <section
         aria-labelledby="next-up"
@@ -112,7 +138,12 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
         row={target}
         locale={locale}
         onClose={() => setTarget(null)}
-        onCancelled={() => {
+        onCancelled={(result) => {
+          setTarget(null);
+          setNotice(result);
+          router.refresh();
+        }}
+        onGone={() => {
           setTarget(null);
           router.refresh();
         }}

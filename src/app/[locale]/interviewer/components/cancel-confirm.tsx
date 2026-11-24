@@ -12,6 +12,7 @@ export function CancelConfirm({
   locale,
   onClose,
   onCancelled,
+  onGone,
   onSignedOut,
 }: CancelConfirmProps) {
   const t = useTranslations("interviewer.cancel");
@@ -37,11 +38,20 @@ export function CancelConfirm({
     if (!row || pending) {
       return;
     }
-    const slotId = row.slotId;
+    const { slotId, applicant } = row;
+    if (!applicant) {
+      return;
+    }
     startTransition(async () => {
       const result = await cancelBooking(slotId);
-      if (result === "cancelled") {
-        onCancelled();
+      if (result === "notified" || result === "not-notified") {
+        onCancelled({
+          notified: result === "notified",
+          name: applicant.name,
+          phone: applicant.phone,
+        });
+      } else if (result === "gone") {
+        onGone();
       } else if (result === "signed-out") {
         onSignedOut();
       } else {

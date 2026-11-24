@@ -131,7 +131,10 @@
       "keep": "Keep booking",
       "confirm": "Cancel booking",
       "confirming": "Cancelling…",
-      "failed": "The booking could not be cancelled. Please try again."
+      "failed": "The booking could not be cancelled. Please try again.",
+      "notified": "Slot freed. <who>{name}</who> has been emailed.",
+      "notNotified": "Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>.",
+      "dismiss": "Dismiss"
     }
   }
 }
