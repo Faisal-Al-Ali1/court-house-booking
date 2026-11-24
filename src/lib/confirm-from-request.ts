@@ -19,7 +19,17 @@ export async function confirmFromRequest({
   if (typeof booked !== "string" || !cookie) {
     return null;
   }
-  const email = verifyRef(cookie, getSecret());
+  let secret: string;
+  try {
+    secret = getSecret();
+  } catch (error) {
+    console.error("booking confirmation disabled: session secret unusable", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : undefined,
+    });
+    return null;
+  }
+  const email = verifyRef(cookie, secret);
   if (email === null) {
     return null;
   }

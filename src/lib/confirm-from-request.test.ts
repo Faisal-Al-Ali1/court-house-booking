@@ -68,19 +68,29 @@ test("a listActive failure confirms nothing", async () => {
   );
 });
 
-test("a missing secret fails loudly once a cookie is present", async () => {
-  const { loadActive } = loader(ok);
-  await assert.rejects(
-    confirmFromRequest({
+test("a missing secret logs loudly and confirms nothing instead of throwing", async () => {
+  const { loadActive, calls } = loader(ok);
+  const logged: unknown[][] = [];
+  const original = console.error;
+  console.error = (...args: unknown[]) => {
+    logged.push(args);
+  };
+  try {
+    const result = await confirmFromRequest({
       booked: SLOT,
-      cookie: "a.b",
+      cookie: signRef("a@example.com", SECRET),
       getSecret: () => {
         throw new Error("SESSION_SECRET is not set");
       },
       loadActive,
-    }),
-    /SESSION_SECRET/,
-  );
+    });
+    assert.equal(result, null);
+  } finally {
+    console.error = original;
+  }
+  assert.equal(calls.count, 0);
+  assert.equal(logged.length, 1);
+  assert.match(JSON.stringify(logged[0]), /SESSION_SECRET/);
 });
 
 test("no cookie means the secret is never needed", async () => {
