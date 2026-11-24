@@ -16,7 +16,9 @@ It is deliberately **not** part of `npm test` (which stays green and tests corre
 
 ## 2. Environment variables
 
-Set all of these in Vercel for **Production** (and Preview, if you want working previews).
+Set all of these in Vercel for **Production**.
+
+**Preview must use a separate database.** If Preview shares the production `MONGODB_URI`/`MONGODB_DB`, every test booking made on a preview deploy consumes one of only thirty real slots, and a preview that is never cleaned up silently shrinks the event. Give Preview its own Atlas database (a second database name on the same cluster is enough; run `ensure-indexes.mjs` against it too) and its own `SESSION_SECRET`. If you do not want working previews, leave Preview unset.
 
 | Variable | Required at runtime | Notes |
 |---|---|---|
@@ -32,7 +34,7 @@ Set all of these in Vercel for **Production** (and Preview, if you want working 
 
 **None of these is needed at build time.** Every read happens lazily, inside a request. A build with all of them unset must succeed; verify with `npm run build` in a clean shell. If a build starts demanding one, a module-load read has crept in (see `CLAUDE.md`).
 
-The one exception is the optional `NEXT_PUBLIC_SITE_URL` (used only for `metadataBase`): it is inlined at **build** time, so if you set it, it must exist when the deployment is built, and changing it needs a redeploy. Leaving it unset is fine.
+**Set `NEXT_PUBLIC_SITE_URL` to the production URL before the production build.** It is the one build-time variable. Next inlines it into `metadataBase`; if it is unset, the fallback `http://localhost:3000` is baked into the production pages' metadata. It is not a runtime secret, but it must exist when the deployment is **built**, and changing it needs a **rebuild** (a redeploy of the same build is not enough).
 
 ### 2.1 `INTERVIEWER_PASSWORD`: generate it, do not choose it
 
@@ -42,9 +44,16 @@ There is deliberately **no rate limit on sign-in.** On serverless an in-memory c
 
 Share it with the interviewer over a channel that is not the public booking link, and do not leave it in a ticket or chat that outlives the event.
 
-### 2.2 `SESSION_SECRET`: set it before the first booking
+### 2.2 `SESSION_SECRET`: required, and it gates more than the cookie
 
-If it is missing, the signed confirmation cookie is never written. **The booking still succeeds**; the applicant just does not see the confirmation screen on a later visit from the same browser (they see the booking form again, and the confirmation email is their record). It is a silent partial failure, so set it before the link is shared. The same secret signs the interviewer session, so changing it signs the interviewer out and invalidates every confirmation cookie.
+Without it:
+
+- **The interviewer cannot sign in at all.** Sign-in and every later session check need the secret, so on Saturday the schedule, the cancel action and the CSV export are all out of reach.
+- **The calendar download fails** (the endpoint answers 404, because it proves the booking by the signed cookie).
+- **The confirmation screen never shows**, on the booking itself or on a later visit: the applicant lands back on the booking form.
+- The booking itself still succeeds and the confirmation email still goes out; only the signed cookie write is swallowed. That is the one part that fails quietly, and it is the least important of the four.
+
+Set a long random value before the link is shared, and test sign-in on the deployed instance. Changing it later signs the interviewer out and invalidates every confirmation cookie.
 
 ### 2.3 `MAIL_REPLY_TO`
 
@@ -110,7 +119,8 @@ Use an actual phone (iOS and Android if you can), on mobile data, in **Arabic an
 - [ ] `npm run launch-check` is green and `npm test` is green.
 - [ ] **Confirm the map link actually renders and points at the right place.** It is deliberately hidden while `venue.mapUrl` is a placeholder, so before the real value arrives its absence is expected and silent. After it lands, open the confirmation screen and the confirmation email and tap the link. It must open the right building. A `maps.app.goo.gl` short link is the safest form.
 - [ ] Read the Arabic pages once on a phone for sentences that read wrongly around numbers and times. The project isolates every Latin or numeric run, but only a human can tell whether the sentence is right.
-- [ ] If any layout changed, re-run the audits: `scripts/check-ltr-runs.js`, `scripts/audit-contrast.js` and `scripts/check-overflow.js` are snippets to evaluate in the browser console of each page (foreground the tab and wait for the page to finish loading first).
+- [ ] **Re-run all three audits unconditionally once the real Arabic has landed.** `scripts/check-ltr-runs.js`, `scripts/audit-contrast.js` and `scripts/check-overflow.js` are snippets to evaluate in the browser console of each page (foreground the tab and wait for the page to finish loading first), at 360, 768 and 1440 in both locales. This is the first moment the unisolated-run walk means anything: it has only ever run against placeholders and Arabic filler, which contain no Latin. Real translation introduces exactly the thing it looks for: "Court House+", "CSV" or a number left bare in plain message text. Any hit means the translator did not wrap it in `<n>...</n>`; fix the message, not the code.
+- [ ] **Look at the Arabic emails by hand.** The audits only walk `html[lang="ar"] main`, so the Arabic HTML emails (confirmation, cancellation, and the interviewer notification if `INTERVIEWER_LOCALE=ar`) are outside every automated check. Open each in a real mail client and check times, the phone number and the brand sit correctly in the right-to-left text.
 
 ## 8. Thursday 26 November
 

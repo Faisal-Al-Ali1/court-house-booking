@@ -177,7 +177,8 @@ test("confirmation carries the facts the screen shows and the calendar file", as
   const { senders, sent } = harness();
   await senders.sendBookingConfirmation(booking());
   const [message] = sent;
-  const addressLead = translatorFor("en")("venue.address").split(/[\s,]/)[0];
+  const addressLead = translatorFor("en")("venue.address").match(/[\p{L}\p{N}]{3,}/u)?.[0] ?? "";
+  assert.ok(addressLead.length >= 3, "venue.address has no plain word to look for");
   for (const fact of ["11:00 AM", "Saturday 28 November 2026", "15 minutes", addressLead]) {
     assert.ok(message.html.includes(fact), `html: ${fact}`);
     assert.ok(message.text.includes(fact), `text: ${fact}`);
@@ -186,8 +187,9 @@ test("confirmation carries the facts the screen shows and the calendar file", as
   const [attachment] = message.attachments ?? [];
   assert.equal(attachment.filename, "interview.ics");
   assert.match(attachment.contentType, /^text\/calendar/);
-  const ics = attachment.content.toString("utf8");
-  assert.ok(ics.startsWith("BEGIN:VCALENDAR\r\n"));
+  const rawIcs = attachment.content.toString("utf8");
+  assert.ok(rawIcs.startsWith("BEGIN:VCALENDAR\r\n"));
+  const ics = rawIcs.replace(/\r\n[ \t]/g, "");
   assert.ok(ics.includes("DTSTART:20261128T080000Z"));
   assert.ok(ics.includes(addressLead));
 });

@@ -29,7 +29,9 @@ Consequences to respect:
 
 **Read `process.env` inside a function, at request time, never at module load.** A module-level read becomes a Vercel *build-time* requirement (the build imports the module to collect page data), which breaks Preview builds that do not have the production secrets, and fails the build for anyone without a `.env`. This nearly shipped twice (the Mongo URI, then the session secret). The pattern is `requireEnv(name)` called from inside `getDb()`, `requireSessionSecret()`, `readMailConfig(env = process.env)`, and the interviewer password read. The mail module even has a test that importing it reads no configuration.
 
-The check: `npm run build` in a shell with **none** of the variables set must succeed. Do it after touching anything that imports a variable. The one deliberate exception is `NEXT_PUBLIC_SITE_URL` in `src/core/constants/site.ts`, which Next inlines at build and which has a fallback; it is optional.
+The check: `npm run build` in a shell with **none** of the variables set must succeed. Do it after touching anything that imports a variable. The one deliberate exception is `NEXT_PUBLIC_SITE_URL` in `src/core/constants/site.ts`: Next inlines it at build, and its fallback is `http://localhost:3000`, which would become the production `metadataBase`. Set it to the production URL before the production build; changing it needs a rebuild.
+
+`SESSION_SECRET` is needed by far more than the booking cookie: interviewer sign-in and session checks, the calendar download and the confirmation gate all call `requireSessionSecret()`. Missing, the interviewer cannot sign in.
 
 Runtime variables: `MONGODB_URI`, `MONGODB_DB`, `SESSION_SECRET`, `INTERVIEWER_PASSWORD`, `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_REPLY_TO`, `INTERVIEWER_EMAIL`, optional `INTERVIEWER_LOCALE`. Their meaning and the trade-offs are in `docs/deploy-checklist.md`.
 
@@ -90,7 +92,7 @@ Every pending value carries the `TODO` marker, including `venue.address` in `en.
 
 Three snippets in `scripts/` are evaluated in the browser console (or injected into a same-origin iframe at each width); each returns a result object and is an IIFE:
 
-- `check-ltr-runs.js`: walks the text nodes of `html[lang="ar"] main` for `[A-Za-z0-9]` with no `dir="ltr"` (or `<bdi>`) ancestor. The list must be empty on every Arabic page. Note that while the Arabic copy is still `TODO-AR:` English, every placeholder string is correctly reported; judge the structure with real or stand-in Arabic.
+- `check-ltr-runs.js`: walks the text nodes of `html[lang="ar"] main` for `[A-Za-z0-9]` with no `dir="ltr"` (or `<bdi>`) ancestor. The list must be empty on every Arabic page. Note that while the Arabic copy is still `TODO-AR:` English, every placeholder string is correctly reported; judging the structure with stand-in Arabic filler is sound for **structure only**. The filler contains no Latin, and Latin inside plain message text ("Court House+", "CSV", a number) is exactly what real translation introduces, and `RichText` isolates only the `<n>`, `<who>` and `<call>` tags. **The real Arabic must be re-walked unconditionally when it lands**, and the Arabic emails are outside every automated check (the walk covers `html[lang="ar"] main` only), so they need a manual bidi look.
 - `audit-contrast.js`: WCAG contrast for every text node, at 360, 768 and 1440 in both locales.
 - `check-overflow.js`: elements that spill at 360. Titles take `hyphens-auto [overflow-wrap:anywhere]`.
 

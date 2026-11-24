@@ -41,6 +41,8 @@ Each of these is needed in Arabic (`messages/ar.json`) and in English (`messages
 
 Translate the English text. Strings are grouped by where the applicant or interviewer sees them. Where it contains `{name}`, `{time}`, `{count}` and similar in curly braces, or tags such as `<n>...</n>`, keep them exactly as written and place them where the Arabic grammar wants them; the portal fills them in.
 
+**Wrap every Latin-letter or digit run you write yourself in `<n>...</n>` as well**, for example the brand name: `<n>Court House+</n>`, or `<n>CSV</n>`, a time, a phone number, a year. Without the tags, Latin text inside Arabic is laid out in the wrong order (punctuation jumps to the wrong side) and it only shows on a real Arabic page. Text with no Latin letters and no digits needs nothing.
+
 
 ### Every page (site metadata or navigation)
 
