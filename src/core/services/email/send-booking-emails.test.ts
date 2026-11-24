@@ -177,7 +177,8 @@ test("confirmation carries the facts the screen shows and the calendar file", as
   const { senders, sent } = harness();
   await senders.sendBookingConfirmation(booking());
   const [message] = sent;
-  for (const fact of ["11:00 AM", "Saturday 28 November 2026", "15 minutes", "Building 12"]) {
+  const addressLead = translatorFor("en")("venue.address").split(/[\s,]/)[0];
+  for (const fact of ["11:00 AM", "Saturday 28 November 2026", "15 minutes", addressLead]) {
     assert.ok(message.html.includes(fact), `html: ${fact}`);
     assert.ok(message.text.includes(fact), `text: ${fact}`);
   }
@@ -188,7 +189,7 @@ test("confirmation carries the facts the screen shows and the calendar file", as
   const ics = attachment.content.toString("utf8");
   assert.ok(ics.startsWith("BEGIN:VCALENDAR\r\n"));
   assert.ok(ics.includes("DTSTART:20261128T080000Z"));
-  assert.ok(ics.includes("Building 12"));
+  assert.ok(ics.includes(addressLead));
 });
 
 test("the applicant's locale picks the language, direction and subject", async () => {

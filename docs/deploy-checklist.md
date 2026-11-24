@@ -1,0 +1,123 @@
+# Deployment checklist
+
+Everything here is something the code cannot do for you. Nothing was deployed or sent from the build machine; every item that needs the live instance, real credentials, a real inbox or a real phone is written down here to be done by hand.
+
+The event is **Saturday 28 November 2026**. Jordan's working week is Sunday to Thursday, so Friday is the weekend: the client can be reached **Wednesday 25 and Thursday 26 November only** before the event. Work backwards from that.
+
+## 0. Gate: the client's copy
+
+`npm test` fails on purpose until every `TODO` marker and the sample English address are gone from `messages/ar.json` and `messages/en.json`. The failure lists the keys. The full list for the client, with the open questions, is `docs/client-copy-needed.md`. Send it first; everything else can proceed in parallel.
+
+Do not launch with the gate red unless the client has agreed in writing to the fallback.
+
+## 1. Environment variables
+
+Set all of these in Vercel for **Production** (and Preview, if you want working previews).
+
+| Variable | Required at runtime | Notes |
+|---|---|---|
+| `MONGODB_URI` | yes | Atlas connection string. Without it every page that lists slots shows the "could not load" message and booking fails. |
+| `MONGODB_DB` | yes | Database name. The same value must be given to `ensure-indexes.mjs`. |
+| `SESSION_SECRET` | yes | Long random string. See 1.2. |
+| `INTERVIEWER_PASSWORD` | yes | See 1.1. If unset, sign-in is refused for everyone (it fails closed). |
+| `RESEND_API_KEY` | yes, for email | Without it no email is sent and the only trace is a log line. Booking still succeeds. |
+| `MAIL_FROM` | yes, for email | An address on the verified Resend domain. |
+| `MAIL_REPLY_TO` | yes, for email | Where applicants' replies go. Comes from the client. |
+| `INTERVIEWER_EMAIL` | yes, for email | Where the new-booking notification goes. |
+| `INTERVIEWER_LOCALE` | optional | `ar` or `en`. Defaults to `ar`. See 1.4. |
+
+**None of these is needed at build time.** Every read happens lazily, inside a request. A build with all of them unset must succeed; verify with `npm run build` in a clean shell. If a build starts demanding one, a module-load read has crept in (see `CLAUDE.md`).
+
+The one exception is the optional `NEXT_PUBLIC_SITE_URL` (used only for `metadataBase`): it is inlined at **build** time, so if you set it, it must exist when the deployment is built, and changing it needs a redeploy. Leaving it unset is fine.
+
+### 1.1 `INTERVIEWER_PASSWORD`: generate it, do not choose it
+
+Generate a long random value: a password manager's generator at 20 or more characters, or `node -e "console.log(require('crypto').randomBytes(24).toString('base64url'))"`. **Do not use a memorable password.**
+
+There is deliberately **no rate limit on sign-in.** On serverless an in-memory counter does not survive across instances, and a durable one would mean a new collection and a database write on every attempt. The trade was accepted because the site lives four days and holds thirty records, **provided the password is high-entropy**. A weak password with no rate limit would be negligent. Password entropy is the only control; do not weaken it. Vercel's firewall rate limiting on the interviewer route is optional defence in depth.
+
+Share it with the interviewer over a channel that is not the public booking link, and do not leave it in a ticket or chat that outlives the event.
+
+### 1.2 `SESSION_SECRET`: set it before the first booking
+
+If it is missing, the signed confirmation cookie is never written. **The booking still succeeds**; the applicant just does not see the confirmation screen on a later visit from the same browser (they see the booking form again, and the confirmation email is their record). It is a silent partial failure, so set it before the link is shared. The same secret signs the interviewer session, so changing it signs the interviewer out and invalidates every confirmation cookie.
+
+### 1.3 `MAIL_REPLY_TO`
+
+Due from the client by **Thursday 26 November**.
+
+### 1.4 Set `INTERVIEWER_LOCALE=en` until the Arabic copy lands
+
+Until the real Arabic copy replaces the placeholders, the interviewer's own notification email in Arabic has the subject "TODO-AR: New interview booking" and a body of English placeholder text. Set `INTERVIEWER_LOCALE=en` for now. Once the Arabic copy is in, ask the client which language the interviewer wants (it is one of the questions in `client-copy-needed.md`) and set the variable accordingly.
+
+## 2. Database (MongoDB Atlas)
+
+1. Create the cluster and a database user with read/write on `MONGODB_DB` only.
+2. Network access: Vercel functions have no fixed IP, so Atlas needs `0.0.0.0/0` in the access list. Tell the client; the control is then the database password.
+3. Choose the Atlas region close to the Vercel function region.
+4. **Run the index script against Atlas:**
+
+   ```
+   MONGODB_URI="<atlas uri>" MONGODB_DB="<db>" node scripts/ensure-indexes.mjs
+   ```
+
+   It prints `bookings indexes ensured`. The runtime guard (`assertBookingsIndexes` in `src/lib/mongo.ts`) turns a missing or conflicting index into a loud failure on the first request, but **it does not create the indexes**. These two partial unique indexes are the entire no-double-booking guarantee, so a deployment without them fails closed instead of risking a double booking.
+5. **Confirm the Atlas server version accepts `partialFilterExpression`** (it does on any current tier; MongoDB 3.2 and later). The script would error if not. In Atlas, confirm both indexes show as `unique` with the partial filter `{ cancelledAt: null }`.
+
+## 3. Email (Resend)
+
+1. **Verify the sending domain in Resend** (add the DNS records Resend gives you and wait for it to show Verified). Until it is verified **every send fails and the only trace is a log line**. That is tolerated by design, so a mail outage can never block a booking, but it is invisible in practice: a launch without a verified domain looks perfect and sends nothing.
+2. Make sure `MAIL_FROM` is an address on that verified domain.
+3. **Check the Resend account's rate limit** for your plan. Sends from the portal are sequential, so a normal day is nowhere near it, but if Court House+ announces the link by broadcast and many applicants book in the same minute, the burst of confirmation plus notification emails could exceed it, and anything over the limit is dropped with only a log line.
+4. Watch the Vercel function logs for `email not sent`. Logs carry error codes only, never an address.
+
+## 4. Re-run on the real cluster what only ran in memory
+
+The claim logic ran only against an in-memory MongoDB (`mongodb-memory-server`). Run these against the real Atlas cluster on the deployed instance, then delete the test bookings and confirm the schedule shows 0 of 30:
+
+1. **The six-step claim sequence**: insert; the same slot by another applicant; the same email on another slot; the same email on the same slot (idempotent, not an error); cancel; re-insert. Each step must give the right outcome and leave exactly one active booking per slot and per email. The in-memory version is the test of that name in `src/repositories/bookings/bookings_impl.test.ts`.
+2. **One concurrency burst.** Fire roughly thirty concurrent claims at the same few early slots. Expected: exactly one success per slot; every loser gets the refreshed grid; no connection-pool errors in the logs; cold-start latency tolerable. Localhost does not exercise this.
+
+## 5. Rehearsal on a real phone, in both languages
+
+Use an actual phone (iOS and Android if you can), on mobile data, in **Arabic and in English**, with throwaway names and your own email.
+
+**As the applicant**
+
+- [ ] Open the public link. Arabic is the default and reads right to left; the language switch works.
+- [ ] Fill in the details, continue, pick a slot, submit.
+- [ ] The confirmation screen shows the right time, date and venue.
+- [ ] **Download the calendar file and open it in a real calendar app.** On **iOS Safari** it must still offer "Add to Calendar" even though the response is `Content-Disposition: attachment`. If Safari only downloads a file, that is a defect: report it. Check the event time is right in Amman time, not shifted.
+- [ ] The confirmation email arrives, in the right language and direction, with the calendar attached, and Reply-To is the client's address. Check spam.
+- [ ] Reload: the confirmation still shows (that is the cookie, which needs `SESSION_SECRET`).
+- [ ] Try the same slot from a second device: it is refused and the grid refreshes.
+
+**As the interviewer**
+
+- [ ] Open the interviewer page and sign in with the generated password. A wrong password shows the error.
+- [ ] See the booking, with the applicant's phone as a tap-to-call link.
+- [ ] Receive the notification email.
+- [ ] Cancel the booking. The applicant receives the cancellation email and the slot is free on the public page.
+- [ ] Cancel again with the mail settings deliberately broken: the interviewer sees "Slot freed, but we could not email ..." with the phone number. Restore the settings.
+- [ ] **Export the CSV and open it in Excel.** Arabic names must be intact and phone numbers must keep their leading `+` or `0` (they are written as `="..."` text formulas on purpose, which looks odd in other tools). The time column may need widening.
+
+## 6. Once the client's copy is in
+
+- [ ] `npm test` is fully green, the launch gate included.
+- [ ] **Confirm the map link actually renders and points at the right place.** It is deliberately hidden while `venue.mapUrl` is a placeholder, so before the real value arrives its absence is expected and silent. After it lands, open the confirmation screen and the confirmation email and tap the link. It must open the right building. A `maps.app.goo.gl` short link is the safest form.
+- [ ] Read the Arabic pages once on a phone for sentences that read wrongly around numbers and times. The project isolates every Latin or numeric run, but only a human can tell whether the sentence is right.
+- [ ] If any layout changed, re-run the audits: `scripts/check-ltr-runs.js`, `scripts/audit-contrast.js` and `scripts/check-overflow.js` are snippets to evaluate in the browser console of each page (foreground the tab and wait for the page to finish loading first).
+
+## 7. Thursday 26 November
+
+- [ ] Venue address, the other client-supplied strings and the Reply-To address are in (all due today; Friday is the weekend).
+- [ ] **Calendly go/no-go**, in the afternoon while someone at Court House+ can still be reached. Tell the client in one plain sentence that Calendly is the fallback if the portal is not ready.
+
+## 8. Shutdown
+
+The portal holds applicants' names, emails and phone numbers for a four-day event and must not outlive it.
+
+- [ ] After Saturday, **export the data twice**: the CSV from the portal and a database export from Atlas. Hand both to Court House+ and confirm they can open them.
+- [ ] **Agree a deletion date in writing with Court House+ before launch** and write it here: **deletion date: ____________** (a suggestion: two weeks after the event, Saturday 12 December 2026, once both exports are confirmed received).
+- [ ] On that date, **delete the Atlas cluster** and **delete the Vercel project**, so no copy of the data remains in either service. Revoke the Resend API key, and remove the sending domain if it was created only for this.
+- [ ] Discard `INTERVIEWER_PASSWORD` and `SESSION_SECRET`.

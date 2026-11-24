@@ -9,6 +9,7 @@ import {
   type FormEvent,
 } from "react";
 import { useTranslations } from "next-intl";
+import { getLangDir } from "rtl-detect";
 import { useSearchParams } from "next/navigation";
 import { Link, useRouter } from "@/core/i18n/navigation";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
@@ -144,6 +145,7 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
           href={query ? `/?${query}` : "/"}
           locale={otherLocale}
           lang={otherLocale}
+          dir={getLangDir(otherLocale)}
           className="inline-flex min-h-12 items-center text-base font-semibold text-accent underline underline-offset-4"
         >
           {common("otherLanguage")}

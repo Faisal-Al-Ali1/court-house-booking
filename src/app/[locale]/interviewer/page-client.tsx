@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { getLangDir } from "rtl-detect";
 import { Link, useRouter } from "@/core/i18n/navigation";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
 import { routing } from "@/core/i18n/routing";
@@ -45,6 +46,7 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
             href="/interviewer"
             locale={otherLocale}
             lang={otherLocale}
+            dir={getLangDir(otherLocale)}
             className="inline-flex min-h-12 items-center text-base font-semibold text-accent underline underline-offset-4"
           >
             {common("otherLanguage")}
