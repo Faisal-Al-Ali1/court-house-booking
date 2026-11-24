@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-cairo);
+
+  --color-ground: #ffffff;
+  --color-ground-raised: oklch(0.985 0 0);
+  --color-ink: #3f3f3d;
+  --color-ink-muted: oklch(0.542 0.003 106.6);
+  --color-accent: #a32731;
+  --color-accent-ink: #ffffff;
+  --color-rule: oklch(0.924 0 0);
+  --color-rule-strong: oklch(0.649 0 0);
+  --color-slot-taken-surface: oklch(0.946 0 0);
+  --color-slot-taken-ink: oklch(0.515 0.003 106.6);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+    background-color: var(--color-ground);
+    font-kerning: normal;
+  }
+
+  body {
+    background-color: var(--color-ground);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+@utility font-latin {
+  font-family: "Livvic", "Cairo", "Segoe UI", Tahoma, system-ui, sans-serif;
+}
