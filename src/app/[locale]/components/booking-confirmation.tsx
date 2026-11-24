@@ -3,7 +3,7 @@ import { EVENT_CONFIG } from "@/core/config/event";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
 import { formatSlotTime } from "@/lib/format-time";
 import { icsHref } from "@/lib/ics-href";
-import { isPlaceholderContent } from "@/lib/placeholder-content";
+import { isHttpUrl } from "@/lib/placeholder-content";
 import type { BookingConfirmationProps } from "../types/booking-confirmation-props";
 
 export function BookingConfirmation({ slot, locale }: BookingConfirmationProps) {
@@ -11,7 +11,7 @@ export function BookingConfirmation({ slot, locale }: BookingConfirmationProps) 
   const c = useTranslations("confirmation");
   const venue = useTranslations("venue");
   const mapUrl = venue("mapUrl");
-  const showMap = !isPlaceholderContent(mapUrl);
+  const showMap = isHttpUrl(mapUrl);
 
   return (
     <section
