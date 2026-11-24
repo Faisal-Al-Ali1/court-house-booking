@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { isValidSlotId } from "../../../lib/slots.ts";
-import { normaliseDigits } from "../../../lib/normalise-digits.ts";
+import {
+  countDigits,
+  normaliseDigits,
+} from "../../../lib/normalise-digits.ts";
+
+const MIN_PHONE_DIGITS = 7;
 
 export const bookingSchema = z.object({
   name: z
@@ -18,7 +23,17 @@ export const bookingSchema = z.object({
   phone: z
     .string()
     .transform(normaliseDigits)
-    .pipe(z.string().trim().min(7, "phoneRequired").max(24, "phoneTooLong")),
+    .pipe(
+      z
+        .string()
+        .trim()
+        .min(7, "phoneRequired")
+        .max(24, "phoneTooLong")
+        .refine(
+          (value) => countDigits(value) >= MIN_PHONE_DIGITS,
+          "phoneRequired",
+        ),
+    ),
   slotId: z.string().refine(isValidSlotId, "slotInvalid"),
   consent: z.literal("on", { error: "consentRequired" }),
 });

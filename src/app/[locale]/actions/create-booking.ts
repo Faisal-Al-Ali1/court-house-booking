@@ -2,23 +2,20 @@
 
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { BOOKING_ERROR_CODES, bookingsRepo } from "@/repositories/bookings";
+import { bookingsRepo } from "@/repositories/bookings";
 import { errorCodeOf } from "@/core/types/results/failures";
-import { isFailure, isSuccess } from "@/core/types/results/results";
+import { isFailure } from "@/core/types/results/results";
 import { routing } from "@/core/i18n/routing";
+import {
+  FALLBACK_ERROR_KEY,
+  claimOutcomeToState,
+  failureCodeToState,
+} from "@/lib/booking-outcome";
 import { bookingSchema } from "../schemas/booking-schema";
 import { parseFormErrors } from "../utils/parse-form-errors";
 import type { BookingActionState } from "../types/booking-action-state";
 
-const ERROR_KEY_BY_CODE: Readonly<Record<string, string>> = Object.freeze({
-  [BOOKING_ERROR_CODES.unknownSlot]: "slotInvalid",
-  [BOOKING_ERROR_CODES.slotPast]: "slotPast",
-  [BOOKING_ERROR_CODES.retry]: "unexpected",
-  [BOOKING_ERROR_CODES.notFound]: "unexpected",
-  [BOOKING_ERROR_CODES.database]: "unexpected",
-});
-
-const FALLBACK_ERROR_KEY = "unexpected";
+const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
 
 function readField(formData: FormData, field: string): string {
   const value = formData.get(field);
@@ -30,6 +27,15 @@ function readLocale(formData: FormData) {
   return hasLocale(routing.locales, submitted)
     ? submitted
     : routing.defaultLocale;
+}
+
+async function failureState(locale: string): Promise<BookingActionState> {
+  try {
+    const t = await getTranslations({ locale, namespace: "booking.errors" });
+    return { status: "error", message: t(FALLBACK_ERROR_KEY) };
+  } catch {
+    return { status: "error", message: FALLBACK_MESSAGE };
+  }
 }
 
 export async function createBooking(
@@ -52,7 +58,9 @@ export async function createBooking(
     if (!parsed.success) {
       return {
         status: "invalid",
-        errors: parseFormErrors(parsed.error, (key) => t(key)),
+        errors: parseFormErrors(parsed.error, (key) =>
+          t.has(key) ? t(key) : t(FALLBACK_ERROR_KEY),
+        ),
       };
     }
 
@@ -69,29 +77,15 @@ export async function createBooking(
 
     if (isFailure(result)) {
       const code = errorCodeOf(result.failure);
-      const key =
-        (code !== undefined ? ERROR_KEY_BY_CODE[code] : undefined) ??
-        FALLBACK_ERROR_KEY;
-      return { status: "error", message: t(key) };
+      console.error("createBooking repository failure", { code });
+      return failureCodeToState(code, (key) => t(key));
     }
 
-    if (!isSuccess(result) || result.data === undefined) {
-      return { status: "error", message: t(FALLBACK_ERROR_KEY) };
-    }
-
-    switch (result.data) {
-      case "created":
-      case "idempotent":
-        return { status: "success", slotId };
-      case "slot-taken":
-        return { status: "error", message: t("slotTaken") };
-      case "already-booked":
-        return { status: "error", message: t("alreadyBooked") };
-      default:
-        return { status: "error", message: t(FALLBACK_ERROR_KEY) };
-    }
-  } catch {
-    const t = await getTranslations({ locale, namespace: "booking.errors" });
-    return { status: "error", message: t(FALLBACK_ERROR_KEY) };
+    return claimOutcomeToState(result.data, slotId, (key) => t(key));
+  } catch (error) {
+    console.error("createBooking threw", {
+      name: error instanceof Error ? error.name : typeof error,
+    });
+    return failureState(locale);
   }
 }

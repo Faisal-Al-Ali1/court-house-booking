@@ -1,9 +1,11 @@
 const ARABIC_INDIC_ZERO = 0x0660;
 const EASTERN_ARABIC_INDIC_ZERO = 0x06f0;
-const NON_ASCII_DIGITS = /[\u0660-\u0669\u06F0-\u06F9]/g;
+const NON_ASCII_DIGITS = /[٠-٩۰-۹]/g;
+const BIDI_CONTROLS = /[‎‏‪-‮⁦-⁩]/g;
+const ASCII_DIGIT = /[0-9]/g;
 
 export function normaliseDigits(input: string): string {
-  return input.replace(NON_ASCII_DIGITS, (digit) => {
+  return input.replace(BIDI_CONTROLS, "").replace(NON_ASCII_DIGITS, (digit) => {
     const code = digit.charCodeAt(0);
     const zero =
       code >= EASTERN_ARABIC_INDIC_ZERO
@@ -11,4 +13,8 @@ export function normaliseDigits(input: string): string {
         : ARABIC_INDIC_ZERO;
     return String(code - zero);
   });
+}
+
+export function countDigits(input: string): number {
+  return input.match(ASCII_DIGIT)?.length ?? 0;
 }

@@ -68,3 +68,53 @@ test("rejects a slot id outside the generated grid", () => {
 test("rejects a missing consent checkbox", () => {
   assert.deepEqual(messagesFor(valid({ consent: "" }), "consent"), ["consentRequired"]);
 });
+
+test("rejects a too-short name", () => {
+  assert.deepEqual(messagesFor(valid({ name: "a" }), "name"), ["nameRequired"]);
+});
+
+test("rejects an over-long name", () => {
+  assert.deepEqual(messagesFor(valid({ name: "a".repeat(121) }), "name"), ["nameTooLong"]);
+});
+
+test("rejects a too-short phone", () => {
+  assert.equal(messagesFor(valid({ phone: "123456" }), "phone")[0], "phoneRequired");
+});
+
+test("rejects an over-long phone", () => {
+  assert.deepEqual(messagesFor(valid({ phone: "1".repeat(25) }), "phone"), ["phoneTooLong"]);
+});
+
+test("rejects a letters-only phone", () => {
+  assert.equal(messagesFor(valid({ phone: "abcdefg" }), "phone")[0], "phoneRequired");
+});
+
+test("rejects a punctuation-only phone", () => {
+  assert.equal(messagesFor(valid({ phone: "-------" }), "phone")[0], "phoneRequired");
+});
+
+test("strips bidi marks from a pasted phone", () => {
+  const result = bookingSchema.parse(valid({ phone: "\u200E+962 79 123 4567\u200F" }));
+  assert.equal(result.phone, "+962 79 123 4567");
+});
+
+test("rejects a phone that is only bidi marks and spaces", () => {
+  assert.equal(messagesFor(valid({ phone: "\u200E\u200F       " }), "phone")[0], "phoneRequired");
+});
+
+function emailOfLength(total: number): string {
+  const tail = total - (64 + 1 + 63 + 1 + 63 + 1);
+  return `${"a".repeat(64)}@${"b".repeat(63)}.${"c".repeat(63)}.${"d".repeat(tail)}`;
+}
+
+test("accepts an email of exactly 254 characters", () => {
+  const email = emailOfLength(254);
+  assert.equal(email.length, 254);
+  assert.equal(bookingSchema.safeParse(valid({ email })).success, true);
+});
+
+test("rejects an email of 255 characters", () => {
+  const email = emailOfLength(255);
+  assert.equal(email.length, 255);
+  assert.deepEqual(messagesFor(valid({ email }), "email"), ["emailInvalid"]);
+});
