@@ -66,3 +66,7 @@
 @utility font-latin {
   font-family: "Livvic", "Cairo", "Segoe UI", Tahoma, system-ui, sans-serif;
 }
+
+html[lang="ar"] *:not([dir="ltr"]):not([dir="ltr"] *) {
+  letter-spacing: 0;
+}
