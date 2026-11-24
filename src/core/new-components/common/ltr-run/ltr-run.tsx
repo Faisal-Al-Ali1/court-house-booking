@@ -1,5 +1,5 @@
 import { splitLtrRuns } from "@/lib/split-ltr-runs";
-import type { LtrRunProps, RichTextProps } from "./types/ltr-run-props";
+import type { LtrRunProps, RichTextProps } from "./ltr-run-props";
 
 export function LtrRun({ children, className }: LtrRunProps) {
   return (

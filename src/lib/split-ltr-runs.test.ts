@@ -27,3 +27,14 @@ test("leaves pure Latin as one run", () => {
     { text: "Court House+", isLtr: true },
   ]);
 });
+
+test("keeps an international number whole, including its leading +", () => {
+  const runs = splitLtrRuns("هاتف +962 6 5515451");
+  assert.equal(runs.filter((r) => r.isLtr).length, 1);
+  assert.equal(runs.find((r) => r.isLtr)?.text, "+962 6 5515451");
+});
+
+test("isolates an alphanumeric code without swallowing the Arabic comma", () => {
+  const runs = splitLtrRuns("شارع الملكة رانيا 1145-A، عمّان");
+  assert.equal(runs.find((r) => r.isLtr)?.text, "1145-A");
+});
