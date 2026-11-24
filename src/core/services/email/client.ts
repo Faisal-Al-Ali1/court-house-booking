@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { routing, type Locale } from "../../i18n/routing.ts";
 import type { MailTransport, OutgoingMail } from "./types.ts";
 
 export const DISPLAY_NAME = "Court House+";
@@ -63,6 +64,11 @@ export function readInterviewerEmail(env: Env = process.env): string {
     throw new MailConfigError(["INTERVIEWER_EMAIL"]);
   }
   return address;
+}
+
+export function readInterviewerLocale(env: Env = process.env): Locale {
+  const raw = env.INTERVIEWER_LOCALE?.trim().toLowerCase();
+  return routing.locales.find((locale) => locale === raw) ?? routing.defaultLocale;
 }
 
 export function formatFrom(address: string): string {

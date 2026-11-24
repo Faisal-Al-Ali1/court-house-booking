@@ -18,8 +18,6 @@ import type {
   Translate,
 } from "./types.ts";
 
-export const INTERVIEWER_LOCALE: Locale = "en";
-
 const ICS_FILENAME = "interview.ics";
 const ICS_CONTENT_TYPE = "text/calendar; charset=utf-8";
 
@@ -27,6 +25,7 @@ export type EmailDeps = {
   transport: MailTransport;
   readConfig: () => MailConfig;
   readInterviewerEmail: () => string;
+  readInterviewerLocale: () => Locale;
   translatorFor: (locale: Locale) => Translate;
 };
 
@@ -109,13 +108,14 @@ export function createEmailSenders(deps: EmailDeps): EmailSenders {
 
     sendInterviewerNotification: (booking) =>
       guarded("notification", async () => {
-        const t = deps.translatorFor(INTERVIEWER_LOCALE);
-        const facts = buildSlotFacts(t, booking.slotId, INTERVIEWER_LOCALE);
+        const locale = deps.readInterviewerLocale();
+        const t = deps.translatorFor(locale);
+        const facts = buildSlotFacts(t, booking.slotId, locale);
         await deliver(
           deps.readInterviewerEmail(),
           renderInterviewerNotification({
             t,
-            locale: INTERVIEWER_LOCALE,
+            locale,
             applicant: {
               name: booking.name,
               email: booking.email,

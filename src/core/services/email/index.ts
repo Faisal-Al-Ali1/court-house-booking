@@ -1,6 +1,7 @@
 import {
   createResendTransport,
   readInterviewerEmail,
+  readInterviewerLocale,
   readMailConfig,
 } from "./client.ts";
 import { createEmailSenders } from "./send-booking-emails.ts";
@@ -10,6 +11,7 @@ const senders = createEmailSenders({
   transport: createResendTransport(),
   readConfig: () => readMailConfig(),
   readInterviewerEmail: () => readInterviewerEmail(),
+  readInterviewerLocale: () => readInterviewerLocale(),
   translatorFor,
 });
 

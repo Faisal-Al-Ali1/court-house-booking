@@ -4,12 +4,10 @@ import {
   MailConfigError,
   MailSendError,
   readInterviewerEmail,
+  readInterviewerLocale,
   readMailConfig,
 } from "./client.ts";
-import {
-  INTERVIEWER_LOCALE,
-  createEmailSenders,
-} from "./send-booking-emails.ts";
+import { createEmailSenders } from "./send-booking-emails.ts";
 import { translatorFor } from "./translator.ts";
 import type { OutgoingMail } from "./types.ts";
 
@@ -46,6 +44,7 @@ function harness(transport?: (message: OutgoingMail) => Promise<void>) {
       }),
     readConfig: () => CONFIG,
     readInterviewerEmail: () => "interviewer@courthouse.example",
+    readInterviewerLocale: () => "en",
     translatorFor,
   });
   return { sent, senders };
@@ -114,6 +113,7 @@ test("missing configuration fails loudly at send time and names variables only",
     },
     readConfig: () => readMailConfig({}),
     readInterviewerEmail: () => readInterviewerEmail({}),
+    readInterviewerLocale: () => readInterviewerLocale({}),
     translatorFor,
   });
   const { lines } = await captureErrors(async () => {
@@ -228,7 +228,6 @@ test("the interviewer is notified in a fixed locale with the applicant's details
     phone: APPLICANT_PHONE,
   });
   const [message] = sent;
-  assert.equal(INTERVIEWER_LOCALE, "en");
   assert.equal(message.to, "interviewer@courthouse.example");
   assert.equal(message.replyTo, "hello@courthouse.example");
   assert.equal(message.attachments, undefined);
@@ -282,4 +281,26 @@ test("every message repeats that it was sent on behalf of Court House+", async (
   for (const message of sent) {
     assert.ok(message.text.includes("on behalf of Court House+"));
   }
+});
+
+test("interviewer locale comes from the environment and defaults to Arabic", () => {
+  assert.equal(readInterviewerLocale({}), "ar");
+  assert.equal(readInterviewerLocale({ INTERVIEWER_LOCALE: "en" }), "en");
+  assert.equal(readInterviewerLocale({ INTERVIEWER_LOCALE: " EN " }), "en");
+  assert.equal(readInterviewerLocale({ INTERVIEWER_LOCALE: "fr" }), "ar");
+});
+
+test("the notification renders in the configured interviewer locale", async () => {
+  const sent: OutgoingMail[] = [];
+  const senders = createEmailSenders({
+    transport: async (message) => {
+      sent.push(message);
+    },
+    readConfig: () => CONFIG,
+    readInterviewerEmail: () => "interviewer@courthouse.example",
+    readInterviewerLocale: () => "ar",
+    translatorFor,
+  });
+  await senders.sendInterviewerNotification({ ...booking(), phone: APPLICANT_PHONE });
+  assert.ok(sent[0].html.includes('<html lang="ar" dir="rtl">'));
 });
