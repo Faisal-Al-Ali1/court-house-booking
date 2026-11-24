@@ -18,6 +18,7 @@
       "email": "Email address",
       "phone": "Phone number",
       "consent": "I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice.",
+      "privacyNotice": "TODO: paste the data-protection notice here",
       "continue": "Choose a time"
     },
     "grid": {

@@ -25,7 +25,7 @@ English sketch for approval:
 
 > Court House+ collects your name, email address and phone number to arrange and run your interview. The details are held for Court House+ by a contracted developer, are used only for this purpose, and are deleted after the event on [date]. To ask about your details, contact [address].
 
-Once the wording is approved the notice also needs somewhere to be shown (a link or an expandable text beside the checkbox). The portal has no such place yet, so that is a small addition to the form, to be made by the developer when the text arrives; the consent sentence itself can stay as it is.
+The notice is shown directly under the consent checkbox from the message key `booking.fields.privacyNotice`, which holds a placeholder today. When the approved wording arrives it is a message-file edit in `ar.json` and `en.json` and nothing more. (The checkbox sentence, `booking.fields.consent`, can stay as it is.)
 
 ## Venue (needs the client's real values)
 
@@ -68,6 +68,7 @@ Translate the English text. Strings are grouped by where the applicant or interv
 | 10 | `booking.fields.email` | Email address |
 | 11 | `booking.fields.phone` | Phone number |
 | 12 | `booking.fields.consent` | I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice. |
+| - | `booking.fields.privacyNotice` | The data-protection notice (see the required section above); shown under the consent checkbox |
 | 13 | `booking.fields.continue` | Choose a time |
 
 ### Step 2, the time-slot picker

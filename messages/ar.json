@@ -18,6 +18,7 @@
       "email": "TODO-AR: Email address",
       "phone": "TODO-AR: Phone number",
       "consent": "TODO-AR: I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice.",
+      "privacyNotice": "TODO-AR: paste the data-protection notice here",
       "continue": "TODO-AR: Choose a time"
     },
     "grid": {

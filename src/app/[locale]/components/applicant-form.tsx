@@ -20,6 +20,7 @@ export function ApplicantForm({
     email: `${baseId}-email`,
     phone: `${baseId}-phone`,
     consent: `${baseId}-consent`,
+    notice: `${baseId}-notice`,
   };
 
   return (
@@ -104,13 +105,18 @@ export function ApplicantForm({
             checked={values.consent}
             onChange={(event) => onChange({ consent: event.target.checked })}
             aria-invalid={errors.consent ? true : undefined}
-            aria-describedby={errors.consent ? `${ids.consent}-error` : undefined}
+            aria-describedby={
+              errors.consent ? `${ids.notice} ${ids.consent}-error` : ids.notice
+            }
             className="mt-1 size-6 shrink-0 accent-accent"
           />
           <label htmlFor={ids.consent} className="text-base">
             <RichText>{t("fields.consent")}</RichText>
           </label>
         </div>
+        <p id={ids.notice} className="mt-2 text-sm text-ink-muted ps-9">
+          <RichText>{t("fields.privacyNotice")}</RichText>
+        </p>
         {errors.consent ? (
           <p id={`${ids.consent}-error`} className={ERROR_CLASS}>
             <RichText>{errors.consent}</RichText>
