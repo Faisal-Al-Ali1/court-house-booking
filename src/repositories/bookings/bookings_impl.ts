@@ -13,7 +13,7 @@ import {
 const COLLECTION = "bookings";
 const DUPLICATE_KEY_CODE = 11000;
 const MAX_INSERT_ATTEMPTS = 2;
-const NO_ID = { projection: { _id: 0 }, readPreference: "primary" } as const;
+const PRIMARY_READ_WITHOUT_ID = { projection: { _id: 0 }, readPreference: "primary" } as const;
 
 type CollectionProvider = () => Promise<Collection<Booking>>;
 
@@ -103,14 +103,14 @@ export class BookingsImpl implements BookingsRepo {
   ): Promise<SlotClaim | null> {
     const byEmail = await bookings.findOne(
       { email: submitted.email, cancelledAt: null },
-      NO_ID,
+      PRIMARY_READ_WITHOUT_ID,
     );
     if (byEmail) {
       return byEmail.slotId === submitted.slotId ? "idempotent" : "already-booked";
     }
     const holder = await bookings.findOne(
       { slotId: submitted.slotId, cancelledAt: null },
-      NO_ID,
+      PRIMARY_READ_WITHOUT_ID,
     );
     return holder ? "slot-taken" : null;
   }
@@ -126,7 +126,7 @@ export class BookingsImpl implements BookingsRepo {
   private async list(filter: Partial<Pick<Booking, "cancelledAt">>): Promise<Result<Booking[]>> {
     try {
       const bookings = await this.collection();
-      const rows = await bookings.find(filter, { projection: { _id: 0 } }).sort({ slotId: 1 }).toArray();
+      const rows = await bookings.find(filter, PRIMARY_READ_WITHOUT_ID).sort({ slotId: 1 }).toArray();
       return ok(rows);
     } catch (error) {
       return databaseFailure(error);
@@ -153,7 +153,7 @@ export class BookingsImpl implements BookingsRepo {
     try {
       const bookings = await this.collection();
       const rows = await bookings
-        .find({ cancelledAt: null }, { projection: { _id: 0, slotId: 1 } })
+        .find({ cancelledAt: null }, { projection: { _id: 0, slotId: 1 }, readPreference: "primary" })
         .toArray();
       return ok(rows.map((row) => row.slotId));
     } catch (error) {

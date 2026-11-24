@@ -27,19 +27,22 @@ function connect(connectionString: string): Promise<MongoClient> {
   return promise;
 }
 
-function hasPartialUniqueIndex(indexes: IndexDescription[], field: string): boolean {
-  return indexes.some((index) => {
+function isExpectedShape(index: IndexDescription): boolean {
+  const filter = index.partialFilterExpression as Record<string, unknown> | undefined;
+  return (
+    index.unique === true &&
+    filter !== undefined &&
+    Object.keys(filter).length === 1 &&
+    filter.cancelledAt === null
+  );
+}
+
+function hasOnlyPartialUniqueIndex(indexes: IndexDescription[], field: string): boolean {
+  const sameKey = indexes.filter((index) => {
     const keys = Object.keys(index.key);
-    const filter = index.partialFilterExpression as Record<string, unknown> | undefined;
-    return (
-      keys.length === 1 &&
-      keys[0] === field &&
-      index.unique === true &&
-      filter !== undefined &&
-      Object.keys(filter).length === 1 &&
-      filter.cancelledAt === null
-    );
+    return keys.length === 1 && keys[0] === field;
   });
+  return sameKey.length > 0 && sameKey.every(isExpectedShape);
 }
 
 async function readIndexes(db: Db): Promise<IndexDescription[]> {
@@ -56,11 +59,11 @@ async function readIndexes(db: Db): Promise<IndexDescription[]> {
 export async function assertBookingsIndexes(db: Db): Promise<void> {
   const indexes = await readIndexes(db);
   const missing = REQUIRED_UNIQUE_FIELDS.filter(
-    (field) => !hasPartialUniqueIndex(indexes, field),
+    (field) => !hasOnlyPartialUniqueIndex(indexes, field),
   );
   if (missing.length > 0) {
     throw new Error(
-      `bookings is missing unique partial indexes on: ${missing.join(", ")}. Run scripts/ensure-indexes.mjs`,
+      `bookings has missing or conflicting unique partial indexes on: ${missing.join(", ")}. Run scripts/ensure-indexes.mjs`,
     );
   }
 }

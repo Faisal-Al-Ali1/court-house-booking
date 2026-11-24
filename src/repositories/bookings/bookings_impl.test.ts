@@ -239,13 +239,39 @@ test("getDb refuses to run without its environment", async () => {
 
 test("a database without the unique partial indexes is refused loudly", async () => {
   const bare = client.db("bare_db");
-  await assert.rejects(assertBookingsIndexes(bare), /missing unique partial indexes on: slotId, email/);
+  await assert.rejects(assertBookingsIndexes(bare), /missing or conflicting unique partial indexes on: slotId, email/);
 
   await bare.collection("bookings").createIndex({ slotId: 1 }, { unique: true });
   await bare.collection("bookings").createIndex({ email: 1 }, { unique: true, partialFilterExpression: { cancelledAt: null } });
-  await assert.rejects(assertBookingsIndexes(bare), /missing unique partial indexes on: slotId\./);
+  await assert.rejects(assertBookingsIndexes(bare), /missing or conflicting unique partial indexes on: slotId\./);
 
   await assertBookingsIndexes(client.db(DB_NAME));
+});
+
+test("a plain unique index beside the partial one is refused as conflicting", async () => {
+  const mixed = client.db("mixed_db");
+  const bookings = mixed.collection("bookings");
+  await bookings.createIndex({ slotId: 1 }, { unique: true, partialFilterExpression: { cancelledAt: null } });
+  await bookings.createIndex({ email: 1 }, { unique: true, partialFilterExpression: { cancelledAt: null } });
+  await assertBookingsIndexes(mixed);
+
+  await bookings.createIndex({ slotId: 1 }, { unique: true, name: "slotId_plain" });
+  await assert.rejects(assertBookingsIndexes(mixed), /conflicting unique partial indexes on: slotId./);
+});
+
+test("getDb itself refuses a database without the indexes", async () => {
+  const globals = globalThis as { bookingsIndexesVerified?: Promise<void> };
+  const savedVerified = globals.bookingsIndexesVerified;
+  const savedDb = process.env.MONGODB_DB;
+  try {
+    globals.bookingsIndexesVerified = undefined;
+    process.env.MONGODB_DB = "getdb_bare_db";
+    await assert.rejects(getDb(), /missing or conflicting unique partial indexes/);
+    await assert.rejects(getDb(), /missing or conflicting unique partial indexes/);
+  } finally {
+    process.env.MONGODB_DB = savedDb;
+    globals.bookingsIndexesVerified = savedVerified;
+  }
 });
 
 type InsertStep = "ok" | "duplicate";
