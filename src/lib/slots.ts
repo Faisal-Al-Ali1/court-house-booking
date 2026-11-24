@@ -37,11 +37,26 @@ function buildSlots(): readonly Slot[] {
   return Object.freeze(slots);
 }
 
+export type SlotWindow = { startMinutes: number; endMinutes: number };
+
+const WINDOWS: readonly SlotWindow[] = Object.freeze(
+  EVENT_CONFIG.windows.map(([windowStart, windowEnd]) =>
+    Object.freeze({
+      startMinutes: parseClock(windowStart),
+      endMinutes: parseClock(windowEnd),
+    }),
+  ),
+);
+
 const SLOTS = buildSlots();
 const SLOT_IDS: ReadonlySet<string> = new Set(SLOTS.map((slot) => slot.id));
 
 export function generateSlots(): readonly Slot[] {
   return SLOTS;
+}
+
+export function slotWindows(): readonly SlotWindow[] {
+  return WINDOWS;
 }
 
 export function isValidSlotId(id: string): boolean {

@@ -6,6 +6,44 @@
     "otherLanguage": "العربية"
   },
   "booking": {
+    "intro": "Choose a 15-minute interview slot on Saturday 28 November 2026.",
+    "eventDate": "Saturday 28 November 2026",
+    "language": "Switch language",
+    "stepOf": "Step <n>{current}</n> of <n>{total}</n>",
+    "stepDetails": "Your details",
+    "stepSlot": "Choose a time",
+    "loadFailed": "We could not load the available times. Please refresh the page.",
+    "fields": {
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "consent": "I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice.",
+      "continue": "Choose a time"
+    },
+    "grid": {
+      "legend": "Interview times",
+      "morning": "Morning",
+      "evening": "Evening",
+      "break": "Break",
+      "available": "<n>{count}</n> of <n>{total}</n> times available",
+      "taken": "Taken",
+      "past": "Passed",
+      "selected": "Selected",
+      "summary": "Your slot: <n>{time}</n>",
+      "noneSelected": "Select a time to continue.",
+      "back": "Edit my details",
+      "confirm": "Confirm booking",
+      "confirming": "Confirming…"
+    },
+    "confirmed": {
+      "title": "You are booked",
+      "body": "Your interview starts at <n>{time}</n>.",
+      "note": "Please arrive a few minutes early."
+    },
+    "fullyBooked": {
+      "title": "All interview slots are taken",
+      "body": "Every time on Saturday 28 November 2026 has been booked or has passed. Please check back later."
+    },
     "errors": {
       "nameRequired": "Please enter your full name.",
       "nameTooLong": "Name is too long (120 characters maximum).",

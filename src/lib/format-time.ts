@@ -16,3 +16,17 @@ export function formatSlotTime(slot: Slot, locale: Locale): string {
   const marker = hours24 < HOURS_PER_HALF_DAY ? MERIDIEM[locale].am : MERIDIEM[locale].pm;
   return `${hours12}:${String(minutes).padStart(2, "0")} ${marker}`;
 }
+
+export function formatBreakRange(
+  startMinutes: number,
+  endMinutes: number,
+  locale: Locale,
+): string {
+  const start = formatSlotTime({ id: "", startMinutes }, locale);
+  const end = formatSlotTime({ id: "", startMinutes: endMinutes }, locale);
+  const [startClock, startMarker] = start.split(" ");
+  const [, endMarker] = end.split(" ");
+  return startMarker === endMarker
+    ? `${startClock} – ${end}`
+    : `${start} – ${end}`;
+}

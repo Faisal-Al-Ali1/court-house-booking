@@ -6,6 +6,44 @@
     "otherLanguage": "English"
   },
   "booking": {
+    "intro": "TODO-AR: Choose a 15-minute interview slot on Saturday 28 November 2026.",
+    "eventDate": "TODO-AR: Saturday 28 November 2026",
+    "language": "TODO-AR: Switch language",
+    "stepOf": "TODO-AR: Step <n>{current}</n> of <n>{total}</n>",
+    "stepDetails": "TODO-AR: Your details",
+    "stepSlot": "TODO-AR: Choose a time",
+    "loadFailed": "TODO-AR: We could not load the available times. Please refresh the page.",
+    "fields": {
+      "name": "TODO-AR: Full name",
+      "email": "TODO-AR: Email address",
+      "phone": "TODO-AR: Phone number",
+      "consent": "TODO-AR: I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice.",
+      "continue": "TODO-AR: Choose a time"
+    },
+    "grid": {
+      "legend": "TODO-AR: Interview times",
+      "morning": "TODO-AR: Morning",
+      "evening": "TODO-AR: Evening",
+      "break": "TODO-AR: Break",
+      "available": "TODO-AR: <n>{count}</n> of <n>{total}</n> times available",
+      "taken": "TODO-AR: Taken",
+      "past": "TODO-AR: Passed",
+      "selected": "TODO-AR: Selected",
+      "summary": "TODO-AR: Your slot: <n>{time}</n>",
+      "noneSelected": "TODO-AR: Select a time to continue.",
+      "back": "TODO-AR: Edit my details",
+      "confirm": "TODO-AR: Confirm booking",
+      "confirming": "TODO-AR: Confirming…"
+    },
+    "confirmed": {
+      "title": "TODO-AR: You are booked",
+      "body": "TODO-AR: Your interview starts at <n>{time}</n>.",
+      "note": "TODO-AR: Please arrive a few minutes early."
+    },
+    "fullyBooked": {
+      "title": "TODO-AR: All interview slots are taken",
+      "body": "TODO-AR: Every time on Saturday 28 November 2026 has been booked or has passed. Please check back later."
+    },
     "errors": {
       "nameRequired": "TODO-AR: Please enter your full name.",
       "nameTooLong": "TODO-AR: Name is too long (120 characters maximum).",
