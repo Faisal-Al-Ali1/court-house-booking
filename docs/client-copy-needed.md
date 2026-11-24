@@ -9,6 +9,7 @@ Everything below blocks launch. The portal is Arabic-first, and nearly every Ara
 3. **The venue map link.** Please send a `maps.app.goo.gl` short link (Google Maps, Share, Copy link). A short link avoids any trouble with long addresses that contain braces or apostrophes. Until it arrives the map link is hidden, deliberately.
 4. **The venue name and address, in both Arabic and English.** The English address in the portal today is a marked placeholder and must not reach applicants.
 5. **The Reply-To address** that applicants' replies to the confirmation email should reach.
+6. **Where should a 31st applicant be pointed?** When every time is booked, the "All interview slots are taken" screen is the only thing that applicant sees, and there is no self-service lookup. It currently says "please contact Court House+" without saying how. Is the Reply-To address (question 5) the right place to send them, or is there a phone number or other address? Whatever you choose will be added to that screen.
 
 ## Required: the data-protection notice
 
@@ -37,12 +38,13 @@ The notice is shown directly under the consent checkbox from the message key `bo
 
 Each of these is needed in Arabic (`messages/ar.json`) and in English (`messages/en.json`).
 
-## Arabic strings to translate or approve (98)
+## Arabic strings to translate or approve (97)
 
-Translate the English text. Strings are grouped by where the applicant or interviewer sees them. Where it contains `{name}`, `{time}`, `{count}` and similar in curly braces, or tags such as `<n>...</n>`, keep them exactly as written and place them where the Arabic grammar wants them; the portal fills them in.
+Translate the English text. Strings are grouped by where the applicant or interviewer sees them. Where a string contains `{name}`, `{time}`, `{count}` and similar in curly braces, keep them exactly as written and place them where the Arabic grammar wants them; the portal fills them in.
 
-**Wrap every Latin-letter or digit run you write yourself in `<n>...</n>` as well**, for example the brand name: `<n>Court House+</n>`, or `<n>CSV</n>`, a time, a phone number, a year. Without the tags, Latin text inside Arabic is laid out in the wrong order (punctuation jumps to the wrong side) and it only shows on a real Arabic page. Text with no Latin letters and no digits needs nothing.
+**Tags: keep the ones that are there, and add none.** A few English strings contain tags such as `<n>...</n>`, `<who>...</who>` or `<call>...</call>`. Keep every tag that appears in the English text exactly as it is, and move it to wherever the Arabic grammar wants it. **Do not add tags to any string that has none in English.** The portal isolates Latin letters and digits by itself in those strings, and a tag you add there would show on the page as literal `<n>` text, including in the emails and the calendar file.
 
+Exactly ten strings carry tags. They are marked **[TAGS]** in the tables below: `booking.stepOf`, `booking.grid.available`, `booking.grid.summary`, `booking.confirmed.body`, `confirmation.duration`, `interviewer.booked`, `interviewer.cancel.body`, `interviewer.cancel.notified`, `interviewer.cancel.notNotified` and `interviewer.cancel.gone`. **Only in those ten**, if you write Latin letters or digits of your own (a brand name, a number, a time), wrap them in `<n>...</n>` as well, for example `<n>Court House+</n>`. Do not drop a tag that the English has.
 
 ### Every page (site metadata or navigation)
 
@@ -56,167 +58,166 @@ Translate the English text. Strings are grouped by where the applicant or interv
 |---|---|---|
 | 2 | `booking.intro` | Choose a 15-minute interview slot on Saturday 28 November 2026. |
 | 3 | `booking.eventDate` | Saturday 28 November 2026 |
-| 4 | `booking.language` | Switch language |
-| 5 | `booking.stepOf` | Step <n>{current}</n> of <n>{total}</n> |
-| 6 | `booking.stepDetails` | Your details |
-| 7 | `booking.stepSlot` | Choose a time |
-| 8 | `booking.loadFailed` | We could not load the available times. Please refresh the page. |
+| 4 | `booking.stepOf` **[TAGS]** | Step <n>{current}</n> of <n>{total}</n> |
+| 5 | `booking.stepDetails` | Your details |
+| 6 | `booking.stepSlot` | Choose a time |
+| 7 | `booking.loadFailed` | We could not load the available times. Please refresh the page. |
 
 ### Step 1, the applicant details form
 
 | # | Key | English text |
 |---|---|---|
-| 9 | `booking.fields.name` | Full name |
-| 10 | `booking.fields.email` | Email address |
-| 11 | `booking.fields.phone` | Phone number |
-| 12 | `booking.fields.consent` | I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice. |
+| 8 | `booking.fields.name` | Full name |
+| 9 | `booking.fields.email` | Email address |
+| 10 | `booking.fields.phone` | Phone number |
+| 11 | `booking.fields.consent` | I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice. |
 | - | `booking.fields.privacyNotice` | The data-protection notice (see the required section above); shown under the consent checkbox |
-| 13 | `booking.fields.continue` | Choose a time |
+| 12 | `booking.fields.continue` | Choose a time |
 
 ### Step 2, the time-slot picker
 
 | # | Key | English text |
 |---|---|---|
-| 14 | `booking.grid.legend` | Interview times |
-| 15 | `booking.grid.morning` | Morning |
-| 16 | `booking.grid.evening` | Evening |
-| 17 | `booking.grid.break` | Break |
-| 18 | `booking.grid.available` | <n>{count}</n> of <n>{total}</n> times available |
-| 19 | `booking.grid.taken` | Taken |
-| 20 | `booking.grid.past` | Passed |
-| 21 | `booking.grid.selected` | Selected |
-| 22 | `booking.grid.summary` | Your slot: <n>{time}</n> |
-| 23 | `booking.grid.noneSelected` | Select a time to continue. |
-| 24 | `booking.grid.back` | Edit my details |
-| 25 | `booking.grid.confirm` | Confirm booking |
-| 26 | `booking.grid.confirming` | Confirming… |
+| 13 | `booking.grid.legend` | Interview times |
+| 14 | `booking.grid.morning` | Morning |
+| 15 | `booking.grid.evening` | Evening |
+| 16 | `booking.grid.break` | Break |
+| 17 | `booking.grid.available` **[TAGS]** | <n>{count}</n> of <n>{total}</n> times available |
+| 18 | `booking.grid.taken` | Taken |
+| 19 | `booking.grid.past` | Passed |
+| 20 | `booking.grid.selected` | Selected |
+| 21 | `booking.grid.summary` **[TAGS]** | Your slot: <n>{time}</n> |
+| 22 | `booking.grid.noneSelected` | Select a time to continue. |
+| 23 | `booking.grid.back` | Edit my details |
+| 24 | `booking.grid.confirm` | Confirm booking |
+| 25 | `booking.grid.confirming` | Confirming… |
 
 ### Confirmation screen after booking
 
 | # | Key | English text |
 |---|---|---|
-| 27 | `booking.confirmed.title` | You are booked |
-| 28 | `booking.confirmed.body` | Your interview starts at <n>{time}</n>. |
-| 29 | `booking.confirmed.note` | Please arrive a few minutes early. |
+| 26 | `booking.confirmed.title` | You are booked |
+| 27 | `booking.confirmed.body` **[TAGS]** | Your interview starts at <n>{time}</n>. |
+| 28 | `booking.confirmed.note` | Please arrive a few minutes early. |
 
 ### Page shown when every slot is taken
 
 | # | Key | English text |
 |---|---|---|
-| 30 | `booking.fullyBooked.title` | All interview slots are taken |
-| 31 | `booking.fullyBooked.body` | Every time on Saturday 28 November 2026 has been booked or has passed. Please check back later. |
+| 29 | `booking.fullyBooked.title` | All interview slots are taken |
+| 30 | `booking.fullyBooked.body` | Every time on Saturday 28 November 2026 has been booked or has passed. If you still need an interview, please contact Court House+. |
 
 ### Inline error message on the booking form
 
 | # | Key | English text |
 |---|---|---|
-| 32 | `booking.errors.nameRequired` | Please enter your full name. |
-| 33 | `booking.errors.nameTooLong` | Name is too long (120 characters maximum). |
-| 34 | `booking.errors.emailInvalid` | Please enter a valid email address. |
-| 35 | `booking.errors.phoneRequired` | Please enter a valid phone number. |
-| 36 | `booking.errors.phoneTooLong` | Phone number is too long (24 characters maximum). |
-| 37 | `booking.errors.slotInvalid` | Please choose a valid interview slot. |
-| 38 | `booking.errors.slotPast` | That slot is no longer available. Please choose another. |
-| 39 | `booking.errors.consentRequired` | Please agree to the use of your details to continue. |
-| 40 | `booking.errors.slotTaken` | Sorry, that slot has just been taken. Please choose another. |
-| 41 | `booking.errors.alreadyBooked` | This email address already has a booking. |
-| 42 | `booking.errors.unexpected` | Something went wrong. Please try again. |
+| 31 | `booking.errors.nameRequired` | Please enter your full name. |
+| 32 | `booking.errors.nameTooLong` | Name is too long (120 characters maximum). |
+| 33 | `booking.errors.emailInvalid` | Please enter a valid email address. |
+| 34 | `booking.errors.phoneRequired` | Please enter a valid phone number. |
+| 35 | `booking.errors.phoneTooLong` | Phone number is too long (24 characters maximum). |
+| 36 | `booking.errors.slotInvalid` | Please choose a valid interview slot. |
+| 37 | `booking.errors.slotPast` | That slot is no longer available. Please choose another. |
+| 38 | `booking.errors.consentRequired` | Please agree to the use of your details to continue. |
+| 39 | `booking.errors.slotTaken` | Sorry, that slot has just been taken. Please choose another. |
+| 40 | `booking.errors.alreadyBooked` | This email address already has a booking. |
+| 41 | `booking.errors.unexpected` | Something went wrong. Please try again. |
 
 ### Confirmation screen and the calendar file
 
 | # | Key | English text |
 |---|---|---|
-| 43 | `confirmation.eventSummary` | Court House+ interview |
-| 44 | `confirmation.dateLabel` | Date |
-| 45 | `confirmation.durationLabel` | Duration |
-| 46 | `confirmation.duration` | <n>{minutes}</n> minutes |
-| 47 | `confirmation.venueLabel` | Venue |
-| 48 | `confirmation.openMap` | Open in maps |
-| 49 | `confirmation.addToCalendar` | Add to calendar |
-| 50 | `confirmation.calendarHint` | Downloads a calendar file you can open on your phone or computer. |
-| 51 | `confirmation.timeLabel` | Time |
+| 42 | `confirmation.eventSummary` | Court House+ interview |
+| 43 | `confirmation.dateLabel` | Date |
+| 44 | `confirmation.durationLabel` | Duration |
+| 45 | `confirmation.duration` **[TAGS]** | <n>{minutes}</n> minutes |
+| 46 | `confirmation.venueLabel` | Venue |
+| 47 | `confirmation.openMap` | Open in maps |
+| 48 | `confirmation.addToCalendar` | Add to calendar |
+| 49 | `confirmation.calendarHint` | Downloads a calendar file you can open on your phone or computer. |
+| 50 | `confirmation.timeLabel` | Time |
 
 ### Footer or detail row of the emails sent to applicants
 
 | # | Key | English text |
 |---|---|---|
-| 52 | `email.durationValue` | {minutes} minutes |
-| 53 | `email.footer` | You received this message because you applied to Court House+. It was sent on behalf of Court House+ from a different address, and replying to it reaches the Court House+ team. |
+| 51 | `email.durationValue` | {minutes} minutes |
+| 52 | `email.footer` | You received this message because you applied to Court House+. It was sent on behalf of Court House+ from a different address, and replying to it reaches the Court House+ team. |
 
 ### Email sent to the applicant when they book
 
 | # | Key | English text |
 |---|---|---|
-| 54 | `email.confirmation.subject` | Your Court House+ interview is booked |
-| 55 | `email.confirmation.heading` | You are booked |
-| 56 | `email.confirmation.greeting` | Hello {name}, |
-| 57 | `email.confirmation.intro` | Your interview with Court House+ is confirmed. These are the details. |
-| 58 | `email.confirmation.calendar` | A calendar file is attached so you can add the interview to your calendar. |
+| 53 | `email.confirmation.subject` | Your Court House+ interview is booked |
+| 54 | `email.confirmation.heading` | You are booked |
+| 55 | `email.confirmation.greeting` | Hello {name}, |
+| 56 | `email.confirmation.intro` | Your interview with Court House+ is confirmed. These are the details. |
+| 57 | `email.confirmation.calendar` | A calendar file is attached so you can add the interview to your calendar. |
 
 ### Email sent to the interviewer for each new booking
 
 | # | Key | English text |
 |---|---|---|
-| 59 | `email.notification.subject` | New interview booking at {time} |
-| 60 | `email.notification.heading` | New interview booking |
-| 61 | `email.notification.intro` | An applicant has booked an interview slot. |
-| 62 | `email.notification.nameLabel` | Name |
-| 63 | `email.notification.emailLabel` | Email address |
-| 64 | `email.notification.phoneLabel` | Phone number |
-| 65 | `email.notification.footer` | Sent automatically by the Court House+ booking portal. |
+| 58 | `email.notification.subject` | New interview booking at {time} |
+| 59 | `email.notification.heading` | New interview booking |
+| 60 | `email.notification.intro` | An applicant has booked an interview slot. |
+| 61 | `email.notification.nameLabel` | Name |
+| 62 | `email.notification.emailLabel` | Email address |
+| 63 | `email.notification.phoneLabel` | Phone number |
+| 64 | `email.notification.footer` | Sent automatically by the Court House+ booking portal. |
 
 ### Email sent to the applicant when the interviewer cancels
 
 | # | Key | English text |
 |---|---|---|
-| 66 | `email.cancellation.subject` | Your Court House+ interview has been cancelled |
-| 67 | `email.cancellation.heading` | Your interview is cancelled |
-| 68 | `email.cancellation.greeting` | Hello {name}, |
-| 69 | `email.cancellation.intro` | Your interview slot has been released and is no longer booked. The time below is no longer valid. |
-| 70 | `email.cancellation.rebook` | If you would like another time, please contact Court House+ or book again if times are still available. |
+| 65 | `email.cancellation.subject` | Your Court House+ interview has been cancelled |
+| 66 | `email.cancellation.heading` | Your interview is cancelled |
+| 67 | `email.cancellation.greeting` | Hello {name}, |
+| 68 | `email.cancellation.intro` | Your interview slot has been released and is no longer booked. The time below is no longer valid. |
+| 69 | `email.cancellation.rebook` | If you would like another time, please contact Court House+ or book again if times are still available. |
 
 ### Interviewer sign-in page
 
 | # | Key | English text |
 |---|---|---|
-| 71 | `interviewer.signIn.title` | Interviewer sign-in |
-| 72 | `interviewer.signIn.intro` | Enter the interviewer password to see the schedule. |
-| 73 | `interviewer.signIn.passwordLabel` | Password |
-| 74 | `interviewer.signIn.submit` | Sign in |
-| 75 | `interviewer.signIn.submitting` | Signing in… |
-| 76 | `interviewer.signIn.wrong` | That password is not right. Please try again. |
-| 77 | `interviewer.signIn.unavailable` | Sign-in is not available right now. Please tell the site administrator. |
+| 70 | `interviewer.signIn.title` | Interviewer sign-in |
+| 71 | `interviewer.signIn.intro` | Enter the interviewer password to see the schedule. |
+| 72 | `interviewer.signIn.passwordLabel` | Password |
+| 73 | `interviewer.signIn.submit` | Sign in |
+| 74 | `interviewer.signIn.submitting` | Signing in… |
+| 75 | `interviewer.signIn.wrong` | That password is not right. Please try again. |
+| 76 | `interviewer.signIn.unavailable` | Sign-in is not available right now. Please tell the site administrator. |
 
 ### Interviewer schedule page
 
 | # | Key | English text |
 |---|---|---|
-| 78 | `interviewer.title` | Interview schedule |
-| 79 | `interviewer.booked` | <n>{booked}</n> of <n>{total}</n> booked |
-| 80 | `interviewer.nextUp` | Up next |
-| 81 | `interviewer.noneUpcoming` | No more interviews booked today. |
-| 82 | `interviewer.openSlot` | Open |
-| 83 | `interviewer.export` | Download CSV |
-| 84 | `interviewer.loadFailed` | We could not load the schedule. Please refresh the page. |
-| 85 | `interviewer.columns.time` | Time |
-| 86 | `interviewer.columns.applicant` | Applicant |
-| 87 | `interviewer.columns.action` | Action |
+| 77 | `interviewer.title` | Interview schedule |
+| 78 | `interviewer.booked` **[TAGS]** | <n>{booked}</n> of <n>{total}</n> booked |
+| 79 | `interviewer.nextUp` | Up next |
+| 80 | `interviewer.noneUpcoming` | No more interviews booked today. |
+| 81 | `interviewer.openSlot` | Open |
+| 82 | `interviewer.export` | Download CSV |
+| 83 | `interviewer.loadFailed` | We could not load the schedule. Please refresh the page. |
+| 84 | `interviewer.columns.time` | Time |
+| 85 | `interviewer.columns.applicant` | Applicant |
+| 86 | `interviewer.columns.action` | Action |
 
 ### Interviewer schedule, cancel dialog and result banners
 
 | # | Key | English text |
 |---|---|---|
-| 88 | `interviewer.cancel.label` | Cancel the booking for {name} |
-| 89 | `interviewer.cancel.title` | Cancel this booking? |
-| 90 | `interviewer.cancel.body` | <who>{name}</who> at <n>{time}</n> will be cancelled and emailed. This cannot be undone. |
-| 91 | `interviewer.cancel.keep` | Keep booking |
-| 92 | `interviewer.cancel.confirm` | Cancel booking |
-| 93 | `interviewer.cancel.confirming` | Cancelling… |
-| 94 | `interviewer.cancel.failed` | The booking could not be cancelled. Please try again. |
-| 95 | `interviewer.cancel.notified` | Slot freed. <who>{name}</who> has been emailed. |
-| 96 | `interviewer.cancel.notNotified` | Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>. |
-| 97 | `interviewer.cancel.dismiss` | Dismiss |
-| 98 | `interviewer.cancel.gone` | The booking for <who>{name}</who> was already cancelled. |
+| 87 | `interviewer.cancel.label` | Cancel the booking for {name} |
+| 88 | `interviewer.cancel.title` | Cancel this booking? |
+| 89 | `interviewer.cancel.body` **[TAGS]** | <who>{name}</who> at <n>{time}</n> will be cancelled and emailed. This cannot be undone. |
+| 90 | `interviewer.cancel.keep` | Keep booking |
+| 91 | `interviewer.cancel.confirm` | Cancel booking |
+| 92 | `interviewer.cancel.confirming` | Cancelling… |
+| 93 | `interviewer.cancel.failed` | The booking could not be cancelled. Please try again. |
+| 94 | `interviewer.cancel.notified` **[TAGS]** | Slot freed. <who>{name}</who> has been emailed. |
+| 95 | `interviewer.cancel.notNotified` **[TAGS]** | Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>. |
+| 96 | `interviewer.cancel.dismiss` | Dismiss |
+| 97 | `interviewer.cancel.gone` **[TAGS]** | The booking for <who>{name}</who> was already cancelled. |
 
 ## Arabic that is not in the messages file
 

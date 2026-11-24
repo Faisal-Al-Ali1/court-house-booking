@@ -82,3 +82,33 @@ test("LAUNCH GATE: ar.json and en.json define exactly the same keys", () => {
     report("the message files disagree on their keys.", mismatched),
   );
 });
+
+const TAG = /<\/?(?:n|who|call)>/g;
+
+function tagsOf(value: string): string {
+  return (value.match(TAG) ?? []).sort().join(" ");
+}
+
+test("LAUNCH GATE: ar.json and en.json carry the same <n>, <who> and <call> tags in every string", () => {
+  const ar = entries("ar");
+  const mismatched: string[] = [];
+  for (const [key, english] of entries("en")) {
+    const arabic = ar.get(key);
+    if (arabic === undefined) {
+      continue;
+    }
+    const expected = tagsOf(english);
+    const actual = tagsOf(arabic);
+    if (expected !== actual) {
+      mismatched.push(`${key} (en: [${expected}] ar: [${actual}])`);
+    }
+  }
+  assert.equal(
+    mismatched.length,
+    0,
+    report(
+      "an Arabic string adds, drops or changes a tag. Keep exactly the tags the English has.",
+      mismatched,
+    ),
+  );
+});

@@ -8,7 +8,6 @@
   "booking": {
     "intro": "Choose a 15-minute interview slot on Saturday 28 November 2026.",
     "eventDate": "Saturday 28 November 2026",
-    "language": "Switch language",
     "stepOf": "Step <n>{current}</n> of <n>{total}</n>",
     "stepDetails": "Your details",
     "stepSlot": "Choose a time",
@@ -43,7 +42,7 @@
     },
     "fullyBooked": {
       "title": "All interview slots are taken",
-      "body": "Every time on Saturday 28 November 2026 has been booked or has passed. Please check back later."
+      "body": "Every time on Saturday 28 November 2026 has been booked or has passed. If you still need an interview, please contact Court House+."
     },
     "errors": {
       "nameRequired": "Please enter your full name.",

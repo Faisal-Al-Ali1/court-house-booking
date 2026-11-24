@@ -64,10 +64,17 @@ test("the password is read when asked for, not at import", () => {
   }
 });
 
-test("a session runs twelve hours from sign-in, whatever the date", () => {
+test("a session opened before the first interview outlasts the last one", () => {
+  const earlySignIn = new Date("2026-11-28T06:30:00Z");
+  const lastInterviewEnds = new Date("2026-11-28T19:00:00Z");
+  const session = issueSession(sessionExpiry(earlySignIn), SECRET);
+  assert.equal(sessionIsValid(session, lastInterviewEnds, SECRET), true);
+});
+
+test("a session runs twenty-four hours from sign-in, whatever the date", () => {
   const afterTheEvent = new Date("2027-01-15T09:00:00Z");
   const expiry = sessionExpiry(afterTheEvent);
-  assert.equal(expiry.getTime() - afterTheEvent.getTime(), 12 * 60 * 60 * 1000);
+  assert.equal(expiry.getTime() - afterTheEvent.getTime(), 24 * 60 * 60 * 1000);
   const session = issueSession(expiry, SECRET);
   assert.equal(sessionIsValid(session, afterTheEvent, SECRET), true);
   assert.equal(

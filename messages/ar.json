@@ -8,7 +8,6 @@
   "booking": {
     "intro": "TODO-AR: Choose a 15-minute interview slot on Saturday 28 November 2026.",
     "eventDate": "TODO-AR: Saturday 28 November 2026",
-    "language": "TODO-AR: Switch language",
     "stepOf": "TODO-AR: Step <n>{current}</n> of <n>{total}</n>",
     "stepDetails": "TODO-AR: Your details",
     "stepSlot": "TODO-AR: Choose a time",
@@ -43,7 +42,7 @@
     },
     "fullyBooked": {
       "title": "TODO-AR: All interview slots are taken",
-      "body": "TODO-AR: Every time on Saturday 28 November 2026 has been booked or has passed. Please check back later."
+      "body": "TODO-AR: Every time on Saturday 28 November 2026 has been booked or has passed. If you still need an interview, please contact Court House+."
     },
     "errors": {
       "nameRequired": "TODO-AR: Please enter your full name.",

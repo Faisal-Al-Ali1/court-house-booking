@@ -70,7 +70,7 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
   const query = searchParams.toString();
   const message =
     active.status === "error" || active.status === "invalid"
-      ? (active.message ?? errors.slotId)
+      ? (active.message ?? (step === "slot" ? errors.slotId : undefined))
       : undefined;
 
   useEffect(() => {
@@ -111,11 +111,6 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
     if (pending) {
       return;
     }
-    if (step === "details") {
-      setAcknowledged(state);
-      router.push("/?step=slot");
-      return;
-    }
     const formData = new FormData();
     formData.set("locale", locale);
     formData.set("name", draft.name);
@@ -125,6 +120,17 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
       formData.set("consent", "on");
     }
     formData.set("slotId", selected?.id ?? "");
+    if (step === "details") {
+      if (draftIsBlank) {
+        startTransition(() => {
+          formAction(formData);
+        });
+        return;
+      }
+      setAcknowledged(state);
+      router.push("/?step=slot");
+      return;
+    }
     startTransition(() => {
       formAction(formData);
     });

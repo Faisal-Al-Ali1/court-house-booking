@@ -23,10 +23,7 @@ test("email keys match across locales", () => {
   assert.deepEqual(ar, en);
 });
 
-test("Arabic email copy is marked as a placeholder, and English is not", () => {
-  for (const [key, value] of flatten(load("ar"))) {
-    assert.ok(value.startsWith("TODO-AR: "), key);
-  }
+test("English email copy carries no placeholder marker", () => {
   for (const [key, value] of flatten(load("en"))) {
     assert.ok(!value.startsWith("TODO"), key);
   }
