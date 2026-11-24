@@ -6,9 +6,8 @@ import { bookingsRepo } from "@/repositories/bookings";
 import { BOOKED_COOKIE } from "@/lib/booked-cookie";
 import { confirmFromRequest } from "@/lib/confirm-from-request";
 import { buildIcs } from "@/lib/ics";
+import { ICS_SLOT_PARAM } from "@/lib/ics-href";
 import { requireSessionSecret } from "@/lib/signed-ref";
-
-const SLOT_PARAM = "slot";
 
 function notFound(): Response {
   return new Response("Not found", {
@@ -27,7 +26,8 @@ export async function GET(
   }
   const jar = await cookies();
   const slotId = await confirmFromRequest({
-    booked: new URL(request.url).searchParams.get(SLOT_PARAM) ?? undefined,
+    booked:
+      new URL(request.url).searchParams.get(ICS_SLOT_PARAM) ?? undefined,
     cookie: jar.get(BOOKED_COOKIE)?.value,
     getSecret: requireSessionSecret,
     loadActive: () => bookingsRepo.listActive(),
@@ -40,12 +40,23 @@ export async function GET(
     locale,
     namespace: "confirmation",
   });
-  const body = buildIcs({
-    slotId,
-    summary: confirmation("eventSummary"),
-    location: `${venue("name")}, ${venue("address")}`,
-    locale,
-  });
+  let body: string;
+  try {
+    body = buildIcs({
+      slotId,
+      summary: confirmation("eventSummary"),
+      location: venue("fullLocation", {
+        name: venue("name"),
+        address: venue("address"),
+      }),
+      locale,
+    });
+  } catch (error) {
+    console.error("ics build failed", {
+      name: error instanceof Error ? error.name : typeof error,
+    });
+    return notFound();
+  }
   return new Response(body, {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",

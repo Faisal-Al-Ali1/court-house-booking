@@ -60,7 +60,9 @@
   },
   "venue": {
     "name": "Court House+",
-    "address": "Building 12, Example Street, Amman 11118"
+    "address": "Building 12, Example Street, Amman 11118",
+    "mapUrl": "TODO: paste the venue map URL here",
+    "fullLocation": "{name}, {address}"
   },
   "confirmation": {
     "eventSummary": "Court House+ interview",
@@ -70,6 +72,7 @@
     "venueLabel": "Venue",
     "openMap": "Open in maps",
     "addToCalendar": "Add to calendar",
-    "calendarHint": "Downloads a calendar file you can open on your phone or computer."
+    "calendarHint": "Downloads a calendar file you can open on your phone or computer.",
+    "timeLabel": "Time"
   }
 }

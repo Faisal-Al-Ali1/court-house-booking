@@ -1,15 +1,17 @@
 import { useTranslations } from "next-intl";
 import { EVENT_CONFIG } from "@/core/config/event";
-import { VENUE_MAP_URL } from "@/core/config/venue";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
 import { formatSlotTime } from "@/lib/format-time";
+import { icsHref } from "@/lib/ics-href";
+import { isPlaceholderContent } from "@/lib/placeholder-content";
 import type { BookingConfirmationProps } from "../types/booking-confirmation-props";
 
 export function BookingConfirmation({ slot, locale }: BookingConfirmationProps) {
   const t = useTranslations("booking");
   const c = useTranslations("confirmation");
   const venue = useTranslations("venue");
-  const icsHref = `/${locale}/api/ics?slot=${encodeURIComponent(slot.id)}`;
+  const mapUrl = venue("mapUrl");
+  const showMap = !isPlaceholderContent(mapUrl);
 
   return (
     <section
@@ -26,6 +28,12 @@ export function BookingConfirmation({ slot, locale }: BookingConfirmationProps) 
 
       <dl className="mt-5 grid gap-4 border-t border-rule pt-5">
         <div>
+          <dt className="text-sm text-ink-muted">{c("timeLabel")}</dt>
+          <dd className="mt-1 text-2xl font-bold">
+            <LtrRun>{formatSlotTime(slot, locale)}</LtrRun>
+          </dd>
+        </div>
+        <div>
           <dt className="text-sm text-ink-muted">{c("dateLabel")}</dt>
           <dd className="mt-1 font-semibold">
             <RichText>{t("eventDate")}</RichText>
@@ -35,7 +43,7 @@ export function BookingConfirmation({ slot, locale }: BookingConfirmationProps) 
           <dt className="text-sm text-ink-muted">{c("durationLabel")}</dt>
           <dd className="mt-1 font-semibold">
             {c.rich("duration", {
-              minutes: EVENT_CONFIG.interviewMinutes,
+              minutes: String(EVENT_CONFIG.interviewMinutes),
               n: (chunks) => <LtrRun>{chunks}</LtrRun>,
             })}
           </dd>
@@ -52,20 +60,22 @@ export function BookingConfirmation({ slot, locale }: BookingConfirmationProps) 
 
       <div className="mt-6 flex flex-wrap gap-3">
         <a
-          href={icsHref}
+          href={icsHref(locale, slot.id)}
           download="interview.ics"
           className="inline-flex min-h-12 items-center rounded-md bg-accent px-6 py-3 text-base font-semibold text-accent-ink"
         >
           {c("addToCalendar")}
         </a>
-        <a
-          href={VENUE_MAP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-12 items-center rounded-md border border-rule-strong bg-ground px-6 py-3 text-base font-semibold text-accent underline underline-offset-4"
-        >
-          {c("openMap")}
-        </a>
+        {showMap ? (
+          <a
+            href={mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-12 items-center rounded-md border border-rule-strong bg-ground px-6 py-3 text-base font-semibold text-accent underline underline-offset-4"
+          >
+            {c("openMap")}
+          </a>
+        ) : null}
       </div>
       <p className="mt-3 text-sm text-ink-muted">{c("calendarHint")}</p>
       <p className="mt-3 text-ink-muted">{t("confirmed.note")}</p>
