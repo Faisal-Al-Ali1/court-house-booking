@@ -1,7 +1,7 @@
 const ARABIC_INDIC_ZERO = 0x0660;
 const EASTERN_ARABIC_INDIC_ZERO = 0x06f0;
 const NON_ASCII_DIGITS = /[٠-٩۰-۹]/g;
-const BIDI_CONTROLS = /[‎‏‪-‮⁦-⁩]/g;
+const BIDI_CONTROLS = /[\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/g;
 const ASCII_DIGIT = /[0-9]/g;
 
 export function normaliseDigits(input: string): string {

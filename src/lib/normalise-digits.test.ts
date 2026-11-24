@@ -29,3 +29,7 @@ test("counts only ASCII digits", () => {
   assert.equal(countDigits("+962 (79) 123-4567"), 12);
   assert.equal(countDigits("-------"), 0);
 });
+
+test("strips the Arabic letter mark", () => {
+  assert.equal(normaliseDigits("079\u061C1234567"), "0791234567");
+});
