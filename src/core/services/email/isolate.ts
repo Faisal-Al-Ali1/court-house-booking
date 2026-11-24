@@ -1,8 +1,8 @@
 import { splitLtrRuns } from "../../../lib/split-ltr-runs.ts";
 import type { Locale } from "../../i18n/routing.ts";
 
-const LEFT_TO_RIGHT_MARK = "‎";
-const MARK_PATTERN = /‎/g;
+const LEFT_TO_RIGHT_MARK = "\u200E";
+const MARK_PATTERN = /\u200E/g;
 
 const HTML_ESCAPES: Readonly<Record<string, string>> = Object.freeze({
   "&": "&amp;",

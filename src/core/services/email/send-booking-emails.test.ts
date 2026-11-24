@@ -208,7 +208,7 @@ test("Arabic bodies isolate times, dates and numbers", async () => {
   const [message] = sent;
   assert.ok(message.html.includes('<span dir="ltr">11:00</span>'));
   assert.ok(/<span dir="ltr">[^<]*28 November 2026<\/span>/.test(message.html));
-  assert.ok(message.text.includes("‎"));
+  assert.ok(message.text.includes("\u200E"));
 });
 
 test("English bodies carry no isolation markup or marks", async () => {
@@ -216,7 +216,7 @@ test("English bodies carry no isolation markup or marks", async () => {
   await senders.sendBookingConfirmation(booking());
   const [message] = sent;
   assert.ok(!message.html.includes('dir="ltr">1'));
-  assert.ok(!message.text.includes("‎"));
+  assert.ok(!message.text.includes("\u200E"));
 });
 
 test("applicant text is escaped in HTML", async () => {
