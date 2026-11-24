@@ -4,5 +4,20 @@
     "siteDescription": "Book your interview slot with Court House+.",
     "skipToContent": "Skip to content",
     "otherLanguage": "العربية"
+  },
+  "booking": {
+    "errors": {
+      "nameRequired": "Please enter your full name.",
+      "nameTooLong": "Name is too long (120 characters maximum).",
+      "emailInvalid": "Please enter a valid email address.",
+      "phoneRequired": "Please enter a valid phone number.",
+      "phoneTooLong": "Phone number is too long (24 characters maximum).",
+      "slotInvalid": "Please choose a valid interview slot.",
+      "slotPast": "That slot is no longer available. Please choose another.",
+      "consentRequired": "Please agree to the use of your details to continue.",
+      "slotTaken": "Sorry, that slot has just been taken. Please choose another.",
+      "alreadyBooked": "This email address already has a booking.",
+      "unexpected": "Something went wrong. Please try again."
+    }
   }
 }

@@ -4,5 +4,20 @@
     "siteDescription": "TODO-AR: Book your interview slot with Court House+.",
     "skipToContent": "انتقل إلى المحتوى",
     "otherLanguage": "English"
+  },
+  "booking": {
+    "errors": {
+      "nameRequired": "TODO-AR: Please enter your full name.",
+      "nameTooLong": "TODO-AR: Name is too long (120 characters maximum).",
+      "emailInvalid": "TODO-AR: Please enter a valid email address.",
+      "phoneRequired": "TODO-AR: Please enter a valid phone number.",
+      "phoneTooLong": "TODO-AR: Phone number is too long (24 characters maximum).",
+      "slotInvalid": "TODO-AR: Please choose a valid interview slot.",
+      "slotPast": "TODO-AR: That slot is no longer available. Please choose another.",
+      "consentRequired": "TODO-AR: Please agree to the use of your details to continue.",
+      "slotTaken": "TODO-AR: Sorry, that slot has just been taken. Please choose another.",
+      "alreadyBooked": "TODO-AR: This email address already has a booking.",
+      "unexpected": "TODO-AR: Something went wrong. Please try again."
+    }
   }
 }
