@@ -2,7 +2,7 @@
 
 Every judgement call made during the build, in the order made, with what it costs if wrong. Read it and reverse anything you disagree with — several of these overrode the approved spec or plan, and a few overrode each other.
 
-The execution ledger these come from lives at `.superpowers/sdd/2026-11-24-court-house-booking-portal/progress.md` (git-ignored) and carries the full reasoning for each.
+The execution ledger these come from lives at `.superpowers/sdd/2026-11-24-court-house-booking-portal/progress.md` (git-ignored) and carries the full reasoning for each. The findings that ledger parked as minor are in `docs/deferred-findings.md`.
 
 ---
 
