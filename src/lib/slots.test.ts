@@ -56,3 +56,9 @@ test("a slot is past only when Amman wall-clock has gone by", () => {
   assert.ok(isSlotPast(first, new Date("2026-11-28T08:00:00.000Z")));
   assert.ok(!isSlotPast(first, new Date("2026-11-28T06:00:00.000Z")));
 });
+
+test("a slot starting exactly now counts as past", () => {
+  const [first] = generateSlots();
+  assert.ok(isSlotPast(first, slotStartUtc(first)));
+  assert.ok(!isSlotPast(first, new Date(slotStartUtc(first).getTime() - 1)));
+});
