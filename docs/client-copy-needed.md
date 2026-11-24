@@ -58,7 +58,7 @@ Exactly ten strings carry tags. They are marked **[TAGS]** in the tables below: 
 |---|---|---|
 | 2 | `booking.intro` | Choose a 15-minute interview slot on Saturday 28 November 2026. |
 | 3 | `booking.eventDate` | Saturday 28 November 2026 |
-| 4 | `booking.stepOf` **[TAGS]** | Step <n>{current}</n> of <n>{total}</n> |
+| 4 | `booking.stepOf` **[TAGS]** | `Step <n>{current}</n> of <n>{total}</n>` |
 | 5 | `booking.stepDetails` | Your details |
 | 6 | `booking.stepSlot` | Choose a time |
 | 7 | `booking.loadFailed` | We could not load the available times. Please refresh the page. |
@@ -82,11 +82,11 @@ Exactly ten strings carry tags. They are marked **[TAGS]** in the tables below: 
 | 14 | `booking.grid.morning` | Morning |
 | 15 | `booking.grid.evening` | Evening |
 | 16 | `booking.grid.break` | Break |
-| 17 | `booking.grid.available` **[TAGS]** | <n>{count}</n> of <n>{total}</n> times available |
+| 17 | `booking.grid.available` **[TAGS]** | `<n>{count}</n> of <n>{total}</n> times available` |
 | 18 | `booking.grid.taken` | Taken |
 | 19 | `booking.grid.past` | Passed |
 | 20 | `booking.grid.selected` | Selected |
-| 21 | `booking.grid.summary` **[TAGS]** | Your slot: <n>{time}</n> |
+| 21 | `booking.grid.summary` **[TAGS]** | `Your slot: <n>{time}</n>` |
 | 22 | `booking.grid.noneSelected` | Select a time to continue. |
 | 23 | `booking.grid.back` | Edit my details |
 | 24 | `booking.grid.confirm` | Confirm booking |
@@ -97,7 +97,7 @@ Exactly ten strings carry tags. They are marked **[TAGS]** in the tables below: 
 | # | Key | English text |
 |---|---|---|
 | 26 | `booking.confirmed.title` | You are booked |
-| 27 | `booking.confirmed.body` **[TAGS]** | Your interview starts at <n>{time}</n>. |
+| 27 | `booking.confirmed.body` **[TAGS]** | `Your interview starts at <n>{time}</n>.` |
 | 28 | `booking.confirmed.note` | Please arrive a few minutes early. |
 
 ### Page shown when every slot is taken
@@ -130,7 +130,7 @@ Exactly ten strings carry tags. They are marked **[TAGS]** in the tables below: 
 | 42 | `confirmation.eventSummary` | Court House+ interview |
 | 43 | `confirmation.dateLabel` | Date |
 | 44 | `confirmation.durationLabel` | Duration |
-| 45 | `confirmation.duration` **[TAGS]** | <n>{minutes}</n> minutes |
+| 45 | `confirmation.duration` **[TAGS]** | `<n>{minutes}</n> minutes` |
 | 46 | `confirmation.venueLabel` | Venue |
 | 47 | `confirmation.openMap` | Open in maps |
 | 48 | `confirmation.addToCalendar` | Add to calendar |
@@ -193,7 +193,7 @@ Exactly ten strings carry tags. They are marked **[TAGS]** in the tables below: 
 | # | Key | English text |
 |---|---|---|
 | 77 | `interviewer.title` | Interview schedule |
-| 78 | `interviewer.booked` **[TAGS]** | <n>{booked}</n> of <n>{total}</n> booked |
+| 78 | `interviewer.booked` **[TAGS]** | `<n>{booked}</n> of <n>{total}</n> booked` |
 | 79 | `interviewer.nextUp` | Up next |
 | 80 | `interviewer.noneUpcoming` | No more interviews booked today. |
 | 81 | `interviewer.openSlot` | Open |
@@ -209,15 +209,15 @@ Exactly ten strings carry tags. They are marked **[TAGS]** in the tables below: 
 |---|---|---|
 | 87 | `interviewer.cancel.label` | Cancel the booking for {name} |
 | 88 | `interviewer.cancel.title` | Cancel this booking? |
-| 89 | `interviewer.cancel.body` **[TAGS]** | <who>{name}</who> at <n>{time}</n> will be cancelled and emailed. This cannot be undone. |
+| 89 | `interviewer.cancel.body` **[TAGS]** | `<who>{name}</who> at <n>{time}</n> will be cancelled and emailed. This cannot be undone.` |
 | 90 | `interviewer.cancel.keep` | Keep booking |
 | 91 | `interviewer.cancel.confirm` | Cancel booking |
 | 92 | `interviewer.cancel.confirming` | Cancelling… |
 | 93 | `interviewer.cancel.failed` | The booking could not be cancelled. Please try again. |
-| 94 | `interviewer.cancel.notified` **[TAGS]** | Slot freed. <who>{name}</who> has been emailed. |
-| 95 | `interviewer.cancel.notNotified` **[TAGS]** | Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>. |
+| 94 | `interviewer.cancel.notified` **[TAGS]** | `Slot freed. <who>{name}</who> has been emailed.` |
+| 95 | `interviewer.cancel.notNotified` **[TAGS]** | `Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>.` |
 | 96 | `interviewer.cancel.dismiss` | Dismiss |
-| 97 | `interviewer.cancel.gone` **[TAGS]** | The booking for <who>{name}</who> was already cancelled. |
+| 97 | `interviewer.cancel.gone` **[TAGS]** | `The booking for <who>{name}</who> was already cancelled.` |
 
 ## Arabic that is not in the messages file
 
