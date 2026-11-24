@@ -134,7 +134,8 @@
       "failed": "TODO-AR: The booking could not be cancelled. Please try again.",
       "notified": "TODO-AR: Slot freed. <who>{name}</who> has been emailed.",
       "notNotified": "TODO-AR: Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>.",
-      "dismiss": "TODO-AR: Dismiss"
+      "dismiss": "TODO-AR: Dismiss",
+      "gone": "TODO-AR: The booking for <who>{name}</who> was already cancelled."
     }
   }
 }

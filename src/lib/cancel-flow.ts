@@ -20,6 +20,20 @@ export type CancelDeps = {
   notify: (booking: Booking) => Promise<boolean>;
 };
 
+async function notified(
+  booking: Booking,
+  deps: CancelDeps,
+): Promise<CancelOutcome> {
+  try {
+    return (await deps.notify(booking)) ? "notified" : "not-notified";
+  } catch (error) {
+    console.error("cancelBooking notify threw", {
+      name: error instanceof Error ? error.name : typeof error,
+    });
+    return "not-notified";
+  }
+}
+
 export async function runCancel(
   slotId: string,
   deps: CancelDeps,
@@ -51,7 +65,7 @@ export async function runCancel(
       return code === BOOKING_ERROR_CODES.notFound ? "gone" : "failed";
     }
 
-    return (await deps.notify(booking)) ? "notified" : "not-notified";
+    return await notified(booking, deps);
   } catch (error) {
     console.error("cancelBooking threw", {
       name: error instanceof Error ? error.name : typeof error,

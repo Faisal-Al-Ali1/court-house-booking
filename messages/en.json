@@ -134,7 +134,8 @@
       "failed": "The booking could not be cancelled. Please try again.",
       "notified": "Slot freed. <who>{name}</who> has been emailed.",
       "notNotified": "Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>.",
-      "dismiss": "Dismiss"
+      "dismiss": "Dismiss",
+      "gone": "The booking for <who>{name}</who> was already cancelled."
     }
   }
 }

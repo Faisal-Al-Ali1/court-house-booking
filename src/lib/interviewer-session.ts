@@ -34,3 +34,10 @@ export function sessionIsValid(
   const expiresAt = Number(value.slice(SESSION_PREFIX.length));
   return Number.isFinite(expiresAt) && expiresAt > now.getTime();
 }
+
+const SESSION_HOURS = 12;
+const MS_PER_HOUR = 3_600_000;
+
+export function sessionExpiry(now: Date): Date {
+  return new Date(now.getTime() + SESSION_HOURS * MS_PER_HOUR);
+}

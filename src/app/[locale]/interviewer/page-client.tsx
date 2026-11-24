@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/core/i18n/navigation";
-import { LtrRun } from "@/core/new-components/common/ltr-run";
+import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
 import { routing } from "@/core/i18n/routing";
 import { formatSlotTime } from "@/lib/format-time";
 import { CancelConfirm, ScheduleTable } from "./components";
@@ -13,6 +13,11 @@ import type { PageClientProps } from "./types/page-client-props";
 import type { ScheduleRow } from "./types/schedule-row";
 
 const REFRESH_INTERVAL_MS = 60_000;
+const NOTICE_KEYS = {
+  notified: "cancel.notified",
+  "not-notified": "cancel.notNotified",
+  gone: "cancel.gone",
+} as const;
 
 export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
   const t = useTranslations("interviewer");
@@ -46,7 +51,9 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
           </Link>
         ) : null}
       </div>
-      <p className="mt-1 text-ink-muted">{booking("eventDate")}</p>
+      <p className="mt-1 text-ink-muted">
+        <RichText>{booking("eventDate")}</RichText>
+      </p>
 
       <div className="mt-4 flex items-center justify-between gap-4">
         <p className="text-lg font-semibold">
@@ -70,7 +77,7 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
           className="sticky top-2 z-10 mt-4 flex items-start justify-between gap-3 rounded-lg border border-accent bg-ground-raised p-4"
         >
           <p className="font-semibold">
-            {t.rich(notice.notified ? "cancel.notified" : "cancel.notNotified", {
+            {t.rich(NOTICE_KEYS[notice.kind], {
               name: notice.name,
               phone: notice.phone,
               who: (chunks) => <bdi>{chunks}</bdi>,
@@ -143,8 +150,9 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
           setNotice(result);
           router.refresh();
         }}
-        onGone={() => {
+        onGone={(result) => {
           setTarget(null);
+          setNotice(result);
           router.refresh();
         }}
         onSignedOut={() => {

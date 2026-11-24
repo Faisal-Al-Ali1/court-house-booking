@@ -7,6 +7,6 @@ export type CancelConfirmProps = {
   locale: Locale;
   onClose: () => void;
   onCancelled: (notice: CancelNotice) => void;
-  onGone: () => void;
+  onGone: (notice: CancelNotice) => void;
   onSignedOut: () => void;
 };

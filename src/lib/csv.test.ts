@@ -14,7 +14,9 @@ const base: Booking = {
 };
 
 test("prefixes a UTF-8 BOM so Excel reads Arabic", () => {
-  assert.ok(toCsv([]).startsWith("﻿"));
+  const csv = toCsv([]);
+  assert.equal(csv.charCodeAt(0), 0xfeff);
+  assert.ok(csv.startsWith("\uFEFF"));
 });
 
 test("quotes fields containing commas", () => {
@@ -29,7 +31,7 @@ test("marks cancelled bookings rather than omitting them", () => {
 });
 
 test("writes the seven columns in order", () => {
-  const [header, row] = toCsv([base]).replace("﻿", "").trim().split("\r\n");
+  const [header, row] = toCsv([base]).replace("\uFEFF", "").trim().split("\r\n");
   assert.equal(header, "slot time,name,email,phone,locale,booked at,status");
   assert.equal(
     row,

@@ -1,6 +1,6 @@
 import type { Booking } from "../repositories/bookings/types.ts";
 
-const BOM = "﻿";
+const BOM = "\uFEFF";
 const LINE_BREAK = "\r\n";
 const HEADER = [
   "slot time",

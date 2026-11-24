@@ -4,12 +4,13 @@ import { hasLocale } from "next-intl";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { routing } from "@/core/i18n/routing";
-import { bookedCookieExpiry } from "@/lib/booked-cookie";
 import {
   INTERVIEWER_COOKIE,
   issueSession,
   passwordMatches,
   readInterviewerPassword,
+  sessionExpiry,
+  sessionIsValid,
 } from "@/lib/interviewer-session";
 import { requireSessionSecret } from "@/lib/signed-ref";
 import type { SignInState } from "../types/sign-in-state";
@@ -39,8 +40,14 @@ export async function signIn(
       return { status: "wrong" };
     }
     const jar = await cookies();
-    const expires = bookedCookieExpiry();
-    jar.set(INTERVIEWER_COOKIE, issueSession(expires, secret), {
+    const now = new Date();
+    const expires = sessionExpiry(now);
+    const session = issueSession(expires, secret);
+    if (!sessionIsValid(session, now, secret)) {
+      console.error("interviewer sign-in unavailable", { code: "session-not-issuable" });
+      return { status: "unavailable" };
+    }
+    jar.set(INTERVIEWER_COOKIE, session, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",

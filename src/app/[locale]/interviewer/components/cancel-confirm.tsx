@@ -46,12 +46,12 @@ export function CancelConfirm({
       const result = await cancelBooking(slotId);
       if (result === "notified" || result === "not-notified") {
         onCancelled({
-          notified: result === "notified",
+          kind: result,
           name: applicant.name,
           phone: applicant.phone,
         });
       } else if (result === "gone") {
-        onGone();
+        onGone({ kind: "gone", name: applicant.name, phone: applicant.phone });
       } else if (result === "signed-out") {
         onSignedOut();
       } else {

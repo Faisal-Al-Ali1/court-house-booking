@@ -37,11 +37,15 @@ function harness(overrides: Partial<CancelDeps> = {}) {
   return { deps, calls };
 }
 
-async function silently<T>(run: () => Promise<T>): Promise<T> {
+async function captureErrors<T>(run: () => Promise<T>) {
+  const lines: string[] = [];
   const original = console.error;
-  console.error = () => undefined;
+  console.error = (...args: unknown[]) => {
+    lines.push(JSON.stringify(args));
+  };
   try {
-    return await run();
+    const result = await run();
+    return { result, lines };
   } finally {
     console.error = original;
   }
@@ -100,16 +104,36 @@ test("losing the race to another cancel sends no email", async () => {
   assert.equal(calls.notify, 0);
 });
 
-test("a database failure is reported as failed and sends no email", async () => {
+test("a database failure is reported as failed, sends no email and logs no PII", async () => {
   const { deps, calls } = harness();
   deps.repo.cancel = async () => ({
     type: "failure",
     failure: {
       type: "server",
       code: BOOKING_ERROR_CODES.database,
-      message: "secret layla@example.com",
+      message: "secret layla@example.com +962791234567",
     },
   });
-  assert.equal(await silently(() => runCancel(SLOT, deps)), "failed");
+  const { result, lines } = await captureErrors(() => runCancel(SLOT, deps));
+  assert.equal(result, "failed");
   assert.equal(calls.notify, 0);
+  assert.equal(lines.length, 1);
+  assert.ok(lines[0].includes(BOOKING_ERROR_CODES.database));
+  assert.ok(!lines[0].includes("layla@example.com"));
+  assert.ok(!lines[0].includes("+962791234567"));
+  assert.ok(!lines[0].includes("secret"));
+});
+
+test("a notifier that throws still reports the slot freed, never failed", async () => {
+  const { deps, calls } = harness({
+    notify: async () => {
+      throw new Error("smtp down for layla@example.com");
+    },
+  });
+  const { result, lines } = await captureErrors(() => runCancel(SLOT, deps));
+  assert.equal(result, "not-notified");
+  assert.equal(calls.cancel, 1);
+  assert.equal(lines.length, 1);
+  assert.ok(!lines[0].includes("layla@example.com"));
+  assert.ok(lines[0].includes("Error"));
 });

@@ -2,9 +2,29 @@ import { Fragment } from "react";
 import { useTranslations } from "next-intl";
 import { LtrRun } from "@/core/new-components/common/ltr-run";
 import { formatBreakRange, formatSlotTime } from "@/lib/format-time";
-import { slotWindows } from "@/lib/slots";
+import { slotWindows, type SlotWindow } from "@/lib/slots";
 import { dialHref } from "../utils/dial-href";
 import type { ScheduleTableProps } from "../types/schedule-table-props";
+
+function isFirstSlotAfterBreak(
+  windows: readonly SlotWindow[],
+  startMinutes: number,
+): boolean {
+  return windows.some(
+    (range, index) => index > 0 && range.startMinutes === startMinutes,
+  );
+}
+
+function breakBefore(
+  windows: readonly SlotWindow[],
+  startMinutes: number,
+): SlotWindow | null {
+  if (!isFirstSlotAfterBreak(windows, startMinutes)) {
+    return null;
+  }
+  const index = windows.findIndex((range) => range.startMinutes === startMinutes);
+  return windows[index - 1];
+}
 
 export function ScheduleTable({
   rows,
@@ -27,10 +47,7 @@ export function ScheduleTable({
       </thead>
       <tbody>
         {rows.map((row) => {
-          const windowIndex = windows.findIndex(
-            (range) => range.startMinutes === row.startMinutes,
-          );
-          const previous = windows[windowIndex - 1];
+          const previous = breakBefore(windows, row.startMinutes);
           const isNext = row.slotId === nextSlotId;
           const surface = row.applicant
             ? `border-rule bg-ground-raised ${row.past ? "text-ink-muted" : "text-ink"}`

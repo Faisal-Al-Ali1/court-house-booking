@@ -4,6 +4,7 @@ import {
   issueSession,
   passwordMatches,
   readInterviewerPassword,
+  sessionExpiry,
   sessionIsValid,
 } from "./interviewer-session.ts";
 
@@ -61,4 +62,16 @@ test("the password is read when asked for, not at import", () => {
       process.env.INTERVIEWER_PASSWORD = saved;
     }
   }
+});
+
+test("a session runs twelve hours from sign-in, whatever the date", () => {
+  const afterTheEvent = new Date("2027-01-15T09:00:00Z");
+  const expiry = sessionExpiry(afterTheEvent);
+  assert.equal(expiry.getTime() - afterTheEvent.getTime(), 12 * 60 * 60 * 1000);
+  const session = issueSession(expiry, SECRET);
+  assert.equal(sessionIsValid(session, afterTheEvent, SECRET), true);
+  assert.equal(
+    sessionIsValid(session, new Date(expiry.getTime() + 1), SECRET),
+    false,
+  );
 });

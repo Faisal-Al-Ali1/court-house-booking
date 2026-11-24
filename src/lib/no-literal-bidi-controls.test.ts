@@ -4,7 +4,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 
-const BIDI_CONTROL = /[\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/u;
+const BIDI_CONTROL = /[\uFEFF\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/u;
 const SOURCE_FILE = /\.tsx?$/;
 
 function sourceFiles(directory: string): string[] {
@@ -37,5 +37,6 @@ test("no source file contains a literal bidi control character", () => {
 test("the guard itself detects a literal mark", () => {
   assert.ok(BIDI_CONTROL.test(String.fromCharCode(0x200e)));
   assert.ok(BIDI_CONTROL.test(String.fromCharCode(0x061c)));
+  assert.ok(BIDI_CONTROL.test(String.fromCharCode(0xfeff)));
   assert.ok(!BIDI_CONTROL.test("plain text 10:00"));
 });

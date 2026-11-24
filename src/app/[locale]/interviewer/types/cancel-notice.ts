@@ -1,5 +1,5 @@
 export type CancelNotice = {
-  notified: boolean;
+  kind: "notified" | "not-notified" | "gone";
   name: string;
   phone: string;
 };
