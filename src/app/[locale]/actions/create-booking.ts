@@ -12,6 +12,7 @@ import {
   claimOutcomeToState,
   failureCodeToState,
 } from "@/lib/booking-outcome";
+import { requireSessionSecret, signRef } from "@/lib/signed-ref";
 import { BOOKED_COOKIE, bookedCookieExpiry } from "@/lib/booked-cookie";
 import { bookingSchema } from "../schemas/booking-schema";
 import { parseFormErrors } from "../utils/parse-form-errors";
@@ -43,7 +44,7 @@ async function failureState(locale: string): Promise<BookingActionState> {
 async function rememberBooking(email: string): Promise<void> {
   try {
     const jar = await cookies();
-    jar.set(BOOKED_COOKIE, email, {
+    jar.set(BOOKED_COOKIE, signRef(email, requireSessionSecret()), {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",

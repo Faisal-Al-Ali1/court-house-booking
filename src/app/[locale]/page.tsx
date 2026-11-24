@@ -8,7 +8,8 @@ import { RichText } from "@/core/new-components/common/ltr-run";
 import { bookingsRepo } from "@/repositories/bookings";
 import { isFailure } from "@/core/types/results/results";
 import { BOOKED_COOKIE } from "@/lib/booked-cookie";
-import { resolveConfirmedSlot } from "@/lib/resolve-confirmed-slot";
+import { confirmFromRequest } from "@/lib/confirm-from-request";
+import { requireSessionSecret } from "@/lib/signed-ref";
 import { generateSlots, isSlotPast } from "@/lib/slots";
 import { PageClient } from "./page-client";
 
@@ -54,16 +55,12 @@ export default async function HomePage({
   }));
 
   const jar = await cookies();
-  const cookieEmail = jar.get(BOOKED_COOKIE)?.value;
-  let confirmedSlotId: string | null = null;
-  if (typeof booked === "string" && cookieEmail) {
-    const active = await bookingsRepo.listActive();
-    confirmedSlotId = resolveConfirmedSlot({
-      booked,
-      cookieEmail,
-      activeBookings: isFailure(active) ? [] : (active.data ?? []),
-    });
-  }
+  const confirmedSlotId = await confirmFromRequest({
+    booked,
+    cookie: jar.get(BOOKED_COOKIE)?.value,
+    getSecret: requireSessionSecret,
+    loadActive: () => bookingsRepo.listActive(),
+  });
 
   return (
     <PageClient locale={locale} slots={slots} confirmedSlotId={confirmedSlotId} />
