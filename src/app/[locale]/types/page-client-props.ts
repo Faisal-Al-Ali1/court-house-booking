@@ -4,4 +4,5 @@ import type { SlotView } from "./slot-view";
 export type PageClientProps = {
   locale: Locale;
   slots: readonly SlotView[];
+  confirmedSlotId: string | null;
 };

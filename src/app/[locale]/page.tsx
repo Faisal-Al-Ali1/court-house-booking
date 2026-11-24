@@ -1,20 +1,25 @@
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { routing } from "@/core/i18n/routing";
 import { RichText } from "@/core/new-components/common/ltr-run";
 import { bookingsRepo } from "@/repositories/bookings";
 import { isFailure } from "@/core/types/results/results";
+import { BOOKED_COOKIE } from "@/lib/booked-cookie";
 import { generateSlots, isSlotPast } from "@/lib/slots";
 import { PageClient } from "./page-client";
 
 export default async function HomePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ booked?: string | string[] }>;
 }) {
   const { locale } = await params;
+  const { booked } = await searchParams;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
@@ -47,5 +52,12 @@ export default async function HomePage({
     past: isSlotPast(slot, now),
   }));
 
-  return <PageClient locale={locale} slots={slots} />;
+  const jar = await cookies();
+  const cookieSlot = jar.get(BOOKED_COOKIE)?.value;
+  const confirmedSlotId =
+    typeof booked === "string" && cookieSlot === booked ? booked : null;
+
+  return (
+    <PageClient locale={locale} slots={slots} confirmedSlotId={confirmedSlotId} />
+  );
 }

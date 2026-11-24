@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { bookingsRepo } from "@/repositories/bookings";
@@ -11,10 +12,12 @@ import {
   claimOutcomeToState,
   failureCodeToState,
 } from "@/lib/booking-outcome";
+import { BOOKED_COOKIE } from "@/lib/booked-cookie";
 import { bookingSchema } from "../schemas/booking-schema";
 import { parseFormErrors } from "../utils/parse-form-errors";
 import type { BookingActionState } from "../types/booking-action-state";
 
+const BOOKED_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 14;
 const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
 
 function readField(formData: FormData, field: string): string {
@@ -81,7 +84,18 @@ export async function createBooking(
       return failureCodeToState(code, (key) => t(key));
     }
 
-    return claimOutcomeToState(result.data, slotId, (key) => t(key));
+    const outcome = claimOutcomeToState(result.data, slotId, (key) => t(key));
+    if (outcome.status === "success") {
+      const jar = await cookies();
+      jar.set(BOOKED_COOKIE, slotId, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: BOOKED_COOKIE_MAX_AGE_SECONDS,
+      });
+    }
+    return outcome;
   } catch (error) {
     console.error("createBooking threw", {
       name: error instanceof Error ? error.name : typeof error,

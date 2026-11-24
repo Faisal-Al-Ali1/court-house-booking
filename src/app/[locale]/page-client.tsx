@@ -28,7 +28,7 @@ const IDLE_STATE: BookingActionState = { status: "idle" };
 const DETAIL_FIELDS = ["name", "email", "phone", "consent"] as const;
 const TOTAL_STEPS = 2;
 
-export function PageClient({ locale, slots }: PageClientProps) {
+export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) {
   const t = useTranslations("booking");
   const common = useTranslations("common");
   const router = useRouter();
@@ -58,7 +58,7 @@ export function PageClient({ locale, slots }: PageClientProps) {
   const bookedId =
     active.status === "success" && active.slotId
       ? active.slotId
-      : searchParams.get("booked");
+      : confirmedSlotId;
   const bookedSlot = slots.find((slot) => slot.id === bookedId);
 
   const everyUnavailable = slots.every((slot) => slot.taken || slot.past);
@@ -79,6 +79,12 @@ export function PageClient({ locale, slots }: PageClientProps) {
     handledRef.current = state;
     if (state.status === "error") {
       router.refresh();
+    }
+    if (
+      state.status === "invalid" &&
+      DETAIL_FIELDS.some((field) => state.errors?.[field])
+    ) {
+      router.replace("/");
     }
     if (state.status === "success" && state.slotId) {
       clearDraft();
