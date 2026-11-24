@@ -71,10 +71,8 @@ type Attempt = {
 
 function sendBookingEmails(booking: Booking): void {
   const run = async (): Promise<void> => {
-    await Promise.all([
-      sendBookingConfirmation(booking),
-      sendInterviewerNotification(booking),
-    ]);
+    await sendBookingConfirmation(booking);
+    await sendInterviewerNotification(booking);
   };
   try {
     after(run);

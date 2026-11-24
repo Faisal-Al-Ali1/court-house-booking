@@ -141,7 +141,15 @@ test("an unknown slot is swallowed rather than thrown", async () => {
   assert.ok(!lines[0].includes("03:00"));
 });
 
-test("configuration reads happen on call, not on import", () => {
+test("importing the email module reads no configuration", async () => {
+  for (const name of ["RESEND_API_KEY", "MAIL_FROM", "MAIL_REPLY_TO", "INTERVIEWER_EMAIL", "INTERVIEWER_LOCALE"]) {
+    assert.equal(process.env[name], undefined, name);
+  }
+  const emailModule = await import("./index.ts");
+  assert.equal(typeof emailModule.sendBookingConfirmation, "function");
+});
+
+test("configuration is validated when read", () => {
   assert.throws(() => readMailConfig({}), MailConfigError);
   assert.deepEqual(readMailConfig({
     RESEND_API_KEY: "k",
@@ -221,7 +229,7 @@ test("applicant text is escaped in HTML", async () => {
   assert.ok(message.html.includes("&lt;img"));
 });
 
-test("the interviewer is notified in a fixed locale with the applicant's details and no attachment", async () => {
+test("the interviewer is notified with the applicant's details and no attachment", async () => {
   const { senders, sent } = harness();
   await senders.sendInterviewerNotification({
     ...booking({ locale: "ar" }),
@@ -303,4 +311,29 @@ test("the notification renders in the configured interviewer locale", async () =
   });
   await senders.sendInterviewerNotification({ ...booking(), phone: APPLICANT_PHONE });
   assert.ok(sent[0].html.includes('<html lang="ar" dir="rtl">'));
+});
+
+test("label and value cells are separated on the correct side in both directions", async () => {
+  const { senders, sent } = harness();
+  await senders.sendBookingConfirmation(booking({ locale: "en" }));
+  await senders.sendBookingConfirmation(booking({ locale: "ar" }));
+  const [en, ar] = sent;
+  assert.ok(en.html.includes("padding:6px 16px 6px 0"));
+  assert.ok(ar.html.includes("padding:6px 0 6px 16px"));
+});
+
+test("the document declares its charset", async () => {
+  const { senders, sent } = harness();
+  await senders.sendBookingConfirmation(booking());
+  assert.ok(sent[0].html.includes('<meta charset="utf-8">'));
+});
+
+test("a missing translation key is logged by name and code only", async () => {
+  const t = translatorFor("en");
+  const { lines } = await captureErrors(async () => {
+    t("email.nothing.here");
+  });
+  assert.equal(lines.length, 1);
+  assert.ok(lines[0].includes("email translation problem"));
+  assert.ok(!lines[0].includes("nothing"));
 });

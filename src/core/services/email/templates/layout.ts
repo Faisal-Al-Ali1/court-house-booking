@@ -19,13 +19,14 @@ export function renderHtml(content: EmailContent): string {
   const { locale } = content;
   const direction = locale === "ar" ? "rtl" : "ltr";
   const align = locale === "ar" ? "right" : "left";
+  const gap = locale === "ar" ? "padding:6px 0 6px 16px" : "padding:6px 16px 6px 0";
   const paragraphs = content.paragraphs
     .map((text) => `<p style="margin:0 0 16px">${isolateHtml(text, locale)}</p>`)
     .join("");
   const rows = content.rows
     .map(
       (row) =>
-        `<tr><td style="padding:6px 0 6px 16px;color:#555;vertical-align:top;text-align:${align}">${isolateHtml(row.label, locale)}</td><td style="padding:6px 0;font-weight:bold;text-align:${align}">${isolateHtml(row.value, locale)}</td></tr>`,
+        `<tr><td style="${gap};color:#555;vertical-align:top;text-align:${align}">${isolateHtml(row.label, locale)}</td><td style="padding:6px 0;font-weight:bold;text-align:${align}">${isolateHtml(row.value, locale)}</td></tr>`,
     )
     .join("");
   const table = rows
@@ -40,6 +41,7 @@ export function renderHtml(content: EmailContent): string {
   return [
     "<!doctype html>",
     `<html lang="${locale}" dir="${direction}">`,
+    '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>',
     `<body style="margin:0;padding:24px;font-family:${FONT_STACK};font-size:16px;line-height:1.6;color:#111;text-align:${align}">`,
     `<div dir="${direction}" style="max-width:560px;margin:0 auto;text-align:${align}">`,
     `<h1 style="margin:0 0 16px;font-size:22px">${isolateHtml(content.heading, locale)}</h1>`,

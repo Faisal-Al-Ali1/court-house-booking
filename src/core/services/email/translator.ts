@@ -13,5 +13,8 @@ export function translatorFor(locale: Locale): Translate {
   return createTranslator({
     locale,
     messages: MESSAGES[locale],
+    onError: (error) => {
+      console.error("email translation problem", { name: error.name, code: error.code });
+    },
   }) as unknown as Translate;
 }
