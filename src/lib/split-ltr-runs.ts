@@ -1,7 +1,7 @@
 export type LtrSplitRun = { text: string; isLtr: boolean };
 
 const LTR_RUN =
-  /‎?[A-Za-z0-9+@](?:[A-Za-z0-9 .,:/\-+&@'’%_]*[A-Za-z0-9%+])?/g;
+  /‎?[\p{Script=Latin}0-9+@](?:[\p{Script=Latin}0-9 .,:/\-–—+&@'’%_]*[\p{Script=Latin}0-9%+])?/gu;
 
 export function splitLtrRuns(text: string): readonly LtrSplitRun[] {
   const runs: LtrSplitRun[] = [];

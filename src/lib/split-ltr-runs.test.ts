@@ -38,3 +38,23 @@ test("isolates an alphanumeric code without swallowing the Arabic comma", () => 
   const runs = splitLtrRuns("شارع الملكة رانيا 1145-A، عمّان");
   assert.equal(runs.find((r) => r.isLtr)?.text, "1145-A");
 });
+
+test("keeps an accented Latin name inside Arabic as one run", () => {
+  const runs = splitLtrRuns("محمد José Müller");
+  assert.equal(runs.filter((r) => r.isLtr).length, 1);
+  assert.equal(runs.find((r) => r.isLtr)?.text, "José Müller");
+});
+
+test("keeps an en-dash time range as one run", () => {
+  const runs = splitLtrRuns("2:00 – 4:00 PM");
+  assert.deepEqual(runs, [{ text: "2:00 – 4:00 PM", isLtr: true }]);
+});
+
+test("returns no runs for the empty string", () => {
+  assert.deepEqual(splitLtrRuns(""), []);
+});
+
+test("keeps an email inside Arabic as one run", () => {
+  const runs = splitLtrRuns("البريد user@example.com");
+  assert.equal(runs.find((r) => r.isLtr)?.text, "user@example.com");
+});
