@@ -107,3 +107,13 @@ Traps, all of which have cost time:
 ## Shutdown obligation
 
 This portal collects applicants' names, emails and phone numbers for one four-day event and **must not outlive its purpose**. After the event: export the CSV from the interviewer page, and take a database export from Atlas; hand **both** to Court House+ (the data goes to the client, not to us); then, on a date agreed **in writing before launch** (recorded in `docs/deploy-checklist.md`), **delete the Atlas cluster and the Vercel project**, revoke the Resend key, and discard the secrets. The interviewer session runs for twelve hours from sign-in independent of the event date, precisely so the export still works after the event. Deleting the data is the obligation; the only copies that remain are the two the client holds.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
