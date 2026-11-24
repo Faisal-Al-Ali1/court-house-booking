@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { isValidSlotId } from "@/lib/slots";
-import { normaliseDigits } from "@/lib/normalise-digits";
+import { isValidSlotId } from "../../../lib/slots.ts";
+import { normaliseDigits } from "../../../lib/normalise-digits.ts";
 
 export const bookingSchema = z.object({
   name: z
