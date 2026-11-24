@@ -12,12 +12,11 @@ import {
   claimOutcomeToState,
   failureCodeToState,
 } from "@/lib/booking-outcome";
-import { BOOKED_COOKIE } from "@/lib/booked-cookie";
+import { BOOKED_COOKIE, bookedCookieExpiry } from "@/lib/booked-cookie";
 import { bookingSchema } from "../schemas/booking-schema";
 import { parseFormErrors } from "../utils/parse-form-errors";
 import type { BookingActionState } from "../types/booking-action-state";
 
-const BOOKED_COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 14;
 const FALLBACK_MESSAGE = "Something went wrong. Please try again.";
 
 function readField(formData: FormData, field: string): string {
@@ -41,10 +40,37 @@ async function failureState(locale: string): Promise<BookingActionState> {
   }
 }
 
+async function rememberBooking(email: string): Promise<void> {
+  try {
+    const jar = await cookies();
+    jar.set(BOOKED_COOKIE, email, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      expires: bookedCookieExpiry(),
+    });
+  } catch (error) {
+    console.error("booked cookie not written", {
+      name: error instanceof Error ? error.name : typeof error,
+    });
+  }
+}
+
+type Attempt = { state: BookingActionState; email?: string };
+
 export async function createBooking(
   _prevState: BookingActionState,
   formData: FormData,
 ): Promise<BookingActionState> {
+  const attempt = await attemptBooking(formData);
+  if (attempt.state.status === "success" && attempt.email) {
+    await rememberBooking(attempt.email);
+  }
+  return attempt.state;
+}
+
+async function attemptBooking(formData: FormData): Promise<Attempt> {
   const locale = readLocale(formData);
 
   try {
@@ -60,10 +86,12 @@ export async function createBooking(
 
     if (!parsed.success) {
       return {
-        status: "invalid",
-        errors: parseFormErrors(parsed.error, (key) =>
-          t.has(key) ? t(key) : t(FALLBACK_ERROR_KEY),
-        ),
+        state: {
+          status: "invalid",
+          errors: parseFormErrors(parsed.error, (key) =>
+            t.has(key) ? t(key) : t(FALLBACK_ERROR_KEY),
+          ),
+        },
       };
     }
 
@@ -81,25 +109,17 @@ export async function createBooking(
     if (isFailure(result)) {
       const code = errorCodeOf(result.failure);
       console.error("createBooking repository failure", { code });
-      return failureCodeToState(code, (key) => t(key));
+      return { state: failureCodeToState(code, (key) => t(key)) };
     }
 
-    const outcome = claimOutcomeToState(result.data, slotId, (key) => t(key));
-    if (outcome.status === "success") {
-      const jar = await cookies();
-      jar.set(BOOKED_COOKIE, slotId, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: BOOKED_COOKIE_MAX_AGE_SECONDS,
-      });
-    }
-    return outcome;
+    return {
+      state: claimOutcomeToState(result.data, slotId, (key) => t(key)),
+      email,
+    };
   } catch (error) {
     console.error("createBooking threw", {
       name: error instanceof Error ? error.name : typeof error,
     });
-    return failureState(locale);
+    return { state: await failureState(locale) };
   }
 }

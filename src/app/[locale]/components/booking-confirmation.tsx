@@ -11,7 +11,7 @@ export function BookingConfirmation({ slot, locale }: BookingConfirmationProps) 
       aria-live="polite"
       className="rounded-lg border border-rule bg-ground-raised p-6"
     >
-      <h2 className="text-xl font-bold">{t("confirmed.title")}</h2>
+      <h1 className="text-2xl font-bold">{t("confirmed.title")}</h1>
       <p className="mt-3 font-semibold">
         <RichText>{t("eventDate")}</RichText>
       </p>

@@ -205,7 +205,7 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
           role="alert"
           className="mt-6 rounded-md border border-accent bg-ground-raised p-4 font-semibold text-accent outline-none"
         >
-          {message}
+          <RichText>{message}</RichText>
         </p>
       ) : null}
 

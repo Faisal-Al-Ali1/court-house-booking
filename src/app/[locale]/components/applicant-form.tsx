@@ -41,7 +41,7 @@ export function ApplicantForm({
         />
         {errors.name ? (
           <p id={`${ids.name}-error`} className={ERROR_CLASS}>
-            {errors.name}
+            <RichText>{errors.name}</RichText>
           </p>
         ) : null}
       </div>
@@ -65,7 +65,7 @@ export function ApplicantForm({
         />
         {errors.email ? (
           <p id={`${ids.email}-error`} className={ERROR_CLASS}>
-            {errors.email}
+            <RichText>{errors.email}</RichText>
           </p>
         ) : null}
       </div>
@@ -89,7 +89,7 @@ export function ApplicantForm({
         />
         {errors.phone ? (
           <p id={`${ids.phone}-error`} className={ERROR_CLASS}>
-            {errors.phone}
+            <RichText>{errors.phone}</RichText>
           </p>
         ) : null}
       </div>
@@ -113,7 +113,7 @@ export function ApplicantForm({
         </div>
         {errors.consent ? (
           <p id={`${ids.consent}-error`} className={ERROR_CLASS}>
-            {errors.consent}
+            <RichText>{errors.consent}</RichText>
           </p>
         ) : null}
       </div>

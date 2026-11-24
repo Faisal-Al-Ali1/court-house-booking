@@ -11,9 +11,9 @@ export function FullyBooked() {
       aria-labelledby={headingId}
       className="rounded-lg border border-rule bg-ground-raised p-6"
     >
-      <h2 id={headingId} className="text-xl font-bold">
+      <h1 id={headingId} className="text-2xl font-bold">
         {t("title")}
-      </h2>
+      </h1>
       <p className="mt-3 text-ink-muted">
         <RichText>{t("body")}</RichText>
       </p>
