@@ -235,8 +235,10 @@ test("applicant text is escaped in HTML", async () => {
     booking({ name: '<img src=x onerror="alert(1)">' }),
   );
   const [message] = sent;
-  assert.ok(!message.html.includes("<img"));
   assert.ok(message.html.includes("&lt;img"));
+  assert.ok(!message.html.includes(`onerror="`));
+  assert.equal(message.html.split("<img").length - 1, 1);
+  assert.match(message.html, /<img src="[^"]*\/logo-email\.png"/);
 });
 
 test("the interviewer is notified with the applicant's details and no attachment", async () => {

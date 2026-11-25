@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { routing } from "@/core/i18n/routing";
+import { Backdrop } from "@/core/new-components/common/backdrop";
 import { RichText } from "@/core/new-components/common/ltr-run";
 import { bookingsRepo } from "@/repositories/bookings";
 import { isFailure } from "@/core/types/results/results";
@@ -36,7 +37,8 @@ export default async function HomePage({
     console.error("takenSlotIds failed");
     const t = await getTranslations({ locale, namespace: "booking" });
     return (
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <main className="relative z-10 mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <Backdrop />
         <p
           role="alert"
           className="rounded-md border border-accent bg-ground-raised p-4 font-semibold text-accent"
@@ -65,6 +67,13 @@ export default async function HomePage({
   });
 
   return (
-    <PageClient locale={locale} slots={slots} confirmedSlotId={confirmedSlotId} />
+    <>
+      <Backdrop />
+      <PageClient
+        locale={locale}
+        slots={slots}
+        confirmedSlotId={confirmedSlotId}
+      />
+    </>
   );
 }

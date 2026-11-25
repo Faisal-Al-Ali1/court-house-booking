@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useTranslations } from "next-intl";
 import { getLangDir } from "rtl-detect";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Link, useRouter } from "@/core/i18n/navigation";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
@@ -179,17 +180,25 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
   }
 
   const header = (
-    <div className="flex items-center justify-between gap-4">
-      <p className="text-base font-semibold">
-        <LtrRun>{common("siteName")}</LtrRun>
-      </p>
+    <div
+      data-rise="1"
+      className="flex items-center justify-between gap-4"
+    >
+      <Image
+        src="/logo-lockup-light.webp"
+        alt={common("siteName")}
+        width={960}
+        height={260}
+        priority
+        className="h-9 w-auto sm:h-11"
+      />
       {otherLocale ? (
         <Link
           href={query ? `/?${query}` : "/"}
           locale={otherLocale}
           lang={otherLocale}
           dir={getLangDir(otherLocale)}
-          className="inline-flex min-h-12 items-center text-base font-semibold text-accent underline underline-offset-4"
+          className="inline-flex min-h-12 items-center text-base font-semibold text-field-ink underline underline-offset-4"
         >
           {common("otherLanguage")}
         </Link>
@@ -199,9 +208,9 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
 
   if (bookedSlot) {
     return (
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <main className="relative z-10 mx-auto max-w-2xl px-4 py-8 sm:px-6">
         {header}
-        <div className="mt-8">
+        <div className="mt-8" data-rise="2">
           <BookingConfirmation slot={bookedSlot} locale={locale} />
         </div>
       </main>
@@ -210,9 +219,9 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
 
   if (everyUnavailable) {
     return (
-      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <main className="relative z-10 mx-auto max-w-2xl px-4 py-8 sm:px-6">
         {header}
-        <div className="mt-8">
+        <div className="mt-8" data-rise="2">
           <FullyBooked />
         </div>
       </main>
@@ -220,11 +229,11 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+    <main className="relative z-10 mx-auto max-w-2xl px-4 py-8 sm:px-6">
       {header}
 
-      <div className="mt-8">
-        <p className="text-sm text-ink-muted">
+      <div className="mt-8" data-rise="2">
+        <p className="text-sm text-field-ink-muted">
           {t.rich("stepOf", {
             current: step === "details" ? 1 : 2,
             total: TOTAL_STEPS,
@@ -234,11 +243,11 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
         <h1
           ref={headingRef}
           tabIndex={-1}
-          className="mt-1 text-2xl font-bold outline-none"
+          className="mt-1 text-2xl font-bold text-field-ink outline-none"
         >
           {step === "details" ? t("stepDetails") : t("stepSlot")}
         </h1>
-        <p className="mt-2 text-ink-muted">
+        <p className="mt-2 text-field-ink-muted">
           <RichText>{t("intro")}</RichText>
         </p>
       </div>
@@ -248,7 +257,7 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
           ref={messageRef}
           tabIndex={-1}
           role="alert"
-          className="mt-6 rounded-md border border-accent bg-ground-raised p-4 font-semibold text-accent outline-none"
+          className="mt-6 rounded-md border border-accent bg-ground-raised p-4 font-semibold text-accent shadow-lg outline-none"
         >
           <RichText>{message}</RichText>
         </p>
@@ -258,7 +267,8 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
         action={formAction}
         onSubmit={handleSubmit}
         noValidate
-        className="mt-6 rounded-lg border border-rule bg-ground-raised p-5 sm:p-6"
+        data-rise="3"
+        className="mt-6 rounded-lg border border-rule bg-ground-raised p-5 shadow-xl sm:p-6"
       >
         <input type="hidden" name="locale" value={locale} />
         {step === "details" ? (

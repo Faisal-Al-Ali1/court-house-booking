@@ -1,5 +1,6 @@
 import type { Locale } from "../../../i18n/routing.ts";
 import { escapeHtml, isolateHtml, isolateText } from "../isolate.ts";
+import { EMAIL_LOGO_URL, SITE_NAME } from "../../../constants/site.ts";
 
 export type EmailRow = { label: string; value: string };
 export type EmailLink = { label: string; url: string };
@@ -38,12 +39,14 @@ export function renderHtml(content: EmailContent): string {
         `<p style="margin:16px 0 0"><a href="${escapeHtml(link.url)}">${isolateHtml(link.label, locale)}</a></p>`,
     )
     .join("");
+  const logo = `<p style="margin:0 0 20px;text-align:${align}"><img src="${escapeHtml(EMAIL_LOGO_URL)}" alt="${escapeHtml(SITE_NAME)}" width="200" height="54" style="border:0;max-width:200px;height:auto"></p>`;
   return [
     "<!doctype html>",
     `<html lang="${locale}" dir="${direction}">`,
     '<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>',
     `<body style="margin:0;padding:24px;font-family:${FONT_STACK};font-size:16px;line-height:1.6;color:#111;text-align:${align}">`,
     `<div dir="${direction}" style="max-width:560px;margin:0 auto;text-align:${align}">`,
+    logo,
     `<h1 style="margin:0 0 16px;font-size:22px">${isolateHtml(content.heading, locale)}</h1>`,
     paragraphs,
     table,

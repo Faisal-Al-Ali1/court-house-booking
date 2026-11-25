@@ -13,6 +13,11 @@
   --color-rule-strong: oklch(0.649 0 0);
   --color-slot-taken-surface: oklch(0.946 0 0);
   --color-slot-taken-ink: oklch(0.515 0.003 106.6);
+
+  --color-field: #7d1b24;
+  --color-field-deep: #38090f;
+  --color-field-ink: #ffffff;
+  --color-field-ink-muted: oklch(0.86 0.025 25);
 }
 
 @layer base {
@@ -69,4 +74,52 @@
 
 html[lang="ar"] *:not([dir="ltr"]):not([dir="ltr"] *) {
   letter-spacing: 0;
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.16) translate3d(-2.5%, -2%, 0);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-kenburns {
+  animation: kenburns 24s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+[data-rise] {
+  animation: rise-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-rise="2"] {
+  animation-delay: 0.12s;
+}
+
+[data-rise="3"] {
+  animation-delay: 0.24s;
+}
+
+[data-rise="4"] {
+  animation-delay: 0.36s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-rise],
+  .animate-kenburns {
+    animation: none;
+  }
 }
