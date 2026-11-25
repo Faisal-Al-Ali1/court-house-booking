@@ -9,7 +9,7 @@ import { routing } from "@/core/i18n/routing";
 import { formatSlotTime } from "@/lib/format-time";
 import { setAttendance } from "./actions/set-attendance";
 import { signOut } from "./actions/sign-out";
-import { CancelConfirm, ScheduleTable } from "./components";
+import { CancelConfirm, ScheduleTable, WalkInForm } from "./components";
 import { dialHref } from "./utils/dial-href";
 import type { Attendance } from "@/repositories/bookings";
 import type { CancelNotice } from "./types/cancel-notice";
@@ -55,6 +55,7 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
   const otherLocale = routing.locales.find((candidate) => candidate !== locale);
   const bookedCount = rows.filter((row) => row.applicant !== null).length;
   const next = rows.find((row) => row.slotId === nextSlotId);
+  const freeSlots = rows.filter((row) => row.applicant === null && !row.past);
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
@@ -171,6 +172,12 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
           <p className="mt-1 text-lg">{t("noneUpcoming")}</p>
         )}
       </section>
+
+      <WalkInForm
+        locale={locale}
+        freeSlots={freeSlots}
+        onAdded={() => router.refresh()}
+      />
 
       <div className="mt-4">
         <ScheduleTable

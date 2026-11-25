@@ -148,6 +148,19 @@
       "markArrived": "Mark {name} as arrived",
       "markNoShow": "Mark {name} as a no-show",
       "failed": "We could not save the attendance. Please try again."
+    },
+    "walkIn": {
+      "open": "Add a walk-in",
+      "title": "Add a walk-in",
+      "slot": "Time",
+      "choose": "Choose a time",
+      "consent": "I confirm the applicant has checked these details and they are correct.",
+      "submit": "Add",
+      "submitting": "Adding…",
+      "added": "The applicant was added and sent a confirmation email.",
+      "failed": "We could not add the applicant. Please try again.",
+      "none": "No times are free",
+      "close": "Close"
     }
   },
   "error": {
