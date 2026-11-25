@@ -138,7 +138,16 @@
       "notified": "Slot freed. <who>{name}</who> has been emailed.",
       "notNotified": "Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>.",
       "dismiss": "Dismiss",
-      "gone": "The booking for <who>{name}</who> was already cancelled."
+      "gone": "The booking for <who>{name}</who> was already cancelled.",
+      "short": "Cancel"
+    },
+    "signOut": "Sign out",
+    "attendance": {
+      "arrived": "Arrived",
+      "noShow": "No-show",
+      "markArrived": "Mark {name} as arrived",
+      "markNoShow": "Mark {name} as a no-show",
+      "failed": "We could not save the attendance. Please try again."
     }
   },
   "error": {

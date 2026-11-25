@@ -6,6 +6,11 @@ import { slotWindows, type SlotWindow } from "@/lib/slots";
 import { dialHref } from "../utils/dial-href";
 import type { ScheduleTableProps } from "../types/schedule-table-props";
 
+const MARK_BASE =
+  "inline-flex min-h-10 items-center rounded-md border px-3 text-sm font-semibold disabled:opacity-60";
+const MARK_OFF = "border-rule-strong bg-ground text-ink";
+const MARK_ON = "border-accent bg-accent text-accent-ink";
+
 function isFirstSlotAfterBreak(
   windows: readonly SlotWindow[],
   startMinutes: number,
@@ -30,7 +35,9 @@ export function ScheduleTable({
   rows,
   locale,
   nextSlotId,
+  pendingSlotId,
   onCancel,
+  onAttendance,
 }: ScheduleTableProps) {
   const t = useTranslations("interviewer");
   const grid = useTranslations("booking.grid");
@@ -49,6 +56,7 @@ export function ScheduleTable({
         {rows.map((row) => {
           const previous = breakBefore(windows, row.startMinutes);
           const isNext = row.slotId === nextSlotId;
+          const busy = row.slotId === pendingSlotId;
           const surface = row.applicant
             ? `border-rule bg-ground-raised ${row.past ? "text-ink-muted" : "text-ink"}`
             : "border-rule bg-slot-taken-surface text-slot-taken-ink";
@@ -79,7 +87,7 @@ export function ScheduleTable({
               <tr aria-current={isNext ? "time" : undefined}>
                 <th
                   scope="row"
-                  className={`whitespace-nowrap rounded-s-md border-y border-s px-3 py-3 text-start text-base font-semibold ${surface} ${edge}`}
+                  className={`whitespace-nowrap rounded-s-md border-y border-s px-3 py-3 align-top text-start text-base font-semibold ${surface} ${edge}`}
                 >
                   <LtrRun>
                     {formatSlotTime(
@@ -88,34 +96,80 @@ export function ScheduleTable({
                     )}
                   </LtrRun>
                 </th>
-                <td className={`w-full border-y px-3 py-3 wrap-anywhere ${surface}`}>
+                <td
+                  className={`w-full border-y px-3 py-3 align-top wrap-anywhere ${surface}`}
+                >
                   {row.applicant ? (
                     <>
                       <div className="font-semibold">
                         <bdi>{row.applicant.name}</bdi>
                       </div>
-                      <a
-                        href={dialHref(row.applicant.phone)}
-                        className="inline-flex min-h-6 items-center text-sm underline underline-offset-4"
-                      >
-                        <LtrRun>{row.applicant.phone}</LtrRun>
-                      </a>
+                      <div className="mt-1 flex flex-col gap-0.5">
+                        <a
+                          href={`mailto:${row.applicant.email}`}
+                          className="inline-flex min-h-6 items-center text-sm underline underline-offset-4"
+                        >
+                          <LtrRun>{row.applicant.email}</LtrRun>
+                        </a>
+                        <a
+                          href={dialHref(row.applicant.phone)}
+                          className="inline-flex min-h-6 items-center text-sm underline underline-offset-4"
+                        >
+                          <LtrRun>{row.applicant.phone}</LtrRun>
+                        </a>
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={busy}
+                          aria-pressed={row.attendance === "arrived"}
+                          aria-label={t("attendance.markArrived", {
+                            name: row.applicant.name,
+                          })}
+                          onClick={() =>
+                            onAttendance(
+                              row,
+                              row.attendance === "arrived" ? null : "arrived",
+                            )
+                          }
+                          className={`${MARK_BASE} ${row.attendance === "arrived" ? MARK_ON : MARK_OFF}`}
+                        >
+                          {t("attendance.arrived")}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busy}
+                          aria-pressed={row.attendance === "no-show"}
+                          aria-label={t("attendance.markNoShow", {
+                            name: row.applicant.name,
+                          })}
+                          onClick={() =>
+                            onAttendance(
+                              row,
+                              row.attendance === "no-show" ? null : "no-show",
+                            )
+                          }
+                          className={`${MARK_BASE} ${row.attendance === "no-show" ? MARK_ON : MARK_OFF}`}
+                        >
+                          {t("attendance.noShow")}
+                        </button>
+                      </div>
                     </>
                   ) : (
                     <span className="text-sm">{t("openSlot")}</span>
                   )}
                 </td>
                 <td
-                  className={`rounded-e-md border-y border-e px-2 py-1 text-end ${surface}`}
+                  className={`rounded-e-md border-y border-e px-2 py-3 align-top text-end ${surface}`}
                 >
                   {row.applicant ? (
                     <button
                       type="button"
                       onClick={() => onCancel(row)}
                       aria-label={t("cancel.label", { name: row.applicant.name })}
-                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-md border border-rule-strong bg-ground text-xl font-semibold text-accent"
+                      className="inline-flex min-h-10 items-center rounded-md border border-rule-strong bg-ground px-3 text-sm font-semibold text-accent"
                     >
-                      <span aria-hidden="true">⨯</span>
+                      {t("cancel.short")}
                     </button>
                   ) : null}
                 </td>

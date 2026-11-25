@@ -62,7 +62,10 @@ export default async function InterviewerPage({
       slotId: slot.id,
       startMinutes: slot.startMinutes,
       past: endsAt <= nowMs,
-      applicant: booking ? { name: booking.name, phone: booking.phone } : null,
+      attendance: booking?.attendance ?? null,
+      applicant: booking
+        ? { name: booking.name, email: booking.email, phone: booking.phone }
+        : null,
     };
   });
   const nextSlotId =

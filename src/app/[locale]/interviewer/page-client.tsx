@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { getLangDir } from "rtl-detect";
 import { Link, useRouter } from "@/core/i18n/navigation";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
 import { routing } from "@/core/i18n/routing";
 import { formatSlotTime } from "@/lib/format-time";
+import { setAttendance } from "./actions/set-attendance";
+import { signOut } from "./actions/sign-out";
 import { CancelConfirm, ScheduleTable } from "./components";
 import { dialHref } from "./utils/dial-href";
+import type { Attendance } from "@/repositories/bookings";
 import type { CancelNotice } from "./types/cancel-notice";
 import type { PageClientProps } from "./types/page-client-props";
 import type { ScheduleRow } from "./types/schedule-row";
@@ -27,11 +30,27 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
   const router = useRouter();
   const [target, setTarget] = useState<ScheduleRow | null>(null);
   const [notice, setNotice] = useState<CancelNotice | null>(null);
+  const [pendingSlotId, setPendingSlotId] = useState<string | null>(null);
+  const [problem, setProblem] = useState<string | null>(null);
+  const [, startAttendance] = useTransition();
 
   useEffect(() => {
     const timer = setInterval(() => router.refresh(), REFRESH_INTERVAL_MS);
     return () => clearInterval(timer);
   }, [router]);
+
+  function handleAttendance(row: ScheduleRow, next: Attendance | null) {
+    setProblem(null);
+    setPendingSlotId(row.slotId);
+    startAttendance(async () => {
+      const result = await setAttendance(row.slotId, next);
+      setPendingSlotId(null);
+      if (result.status === "failed") {
+        setProblem(t("attendance.failed"));
+      }
+      router.refresh();
+    });
+  }
 
   const otherLocale = routing.locales.find((candidate) => candidate !== locale);
   const bookedCount = rows.filter((row) => row.applicant !== null).length;
@@ -41,17 +60,27 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
     <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">{t("title")}</h1>
-        {otherLocale ? (
-          <Link
-            href="/interviewer"
-            locale={otherLocale}
-            lang={otherLocale}
-            dir={getLangDir(otherLocale)}
-            className="inline-flex min-h-12 items-center text-base font-semibold text-accent underline underline-offset-4"
-          >
-            {common("otherLanguage")}
-          </Link>
-        ) : null}
+        <div className="flex items-center gap-3">
+          {otherLocale ? (
+            <Link
+              href="/interviewer"
+              locale={otherLocale}
+              lang={otherLocale}
+              dir={getLangDir(otherLocale)}
+              className="inline-flex min-h-12 items-center text-base font-semibold text-accent underline underline-offset-4"
+            >
+              {common("otherLanguage")}
+            </Link>
+          ) : null}
+          <form action={signOut.bind(null, locale)}>
+            <button
+              type="submit"
+              className="inline-flex min-h-12 items-center rounded-md border border-rule-strong bg-ground px-4 text-base font-semibold text-ink"
+            >
+              {t("signOut")}
+            </button>
+          </form>
+        </div>
       </div>
       <p className="mt-1 text-ink-muted">
         <RichText>{booking("eventDate")}</RichText>
@@ -100,6 +129,15 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
         </div>
       ) : null}
 
+      {problem ? (
+        <p
+          role="alert"
+          className="mt-4 rounded-md border border-accent bg-ground-raised p-4 font-semibold text-accent"
+        >
+          {problem}
+        </p>
+      ) : null}
+
       <section
         aria-labelledby="next-up"
         className="mt-4 rounded-lg border border-rule-strong bg-ground-raised p-4"
@@ -139,7 +177,9 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
           rows={rows}
           locale={locale}
           nextSlotId={nextSlotId}
+          pendingSlotId={pendingSlotId}
           onCancel={setTarget}
+          onAttendance={handleAttendance}
         />
       </div>
 
