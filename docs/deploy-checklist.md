@@ -100,6 +100,16 @@ to the custom domain redirects to `vercel.com/login?next=…` — a full login p
 Signing in as any other identity ends at a protection page rather than at the site, which looks identical to not
 being signed in at all.
 
+**On a phone, go in through the dashboard, not the address bar.** On 25 November 2026 signing in at `vercel.com`
+on a phone and then opening `booking.interviewslot.xyz` directly still ended at the protection page. Opening the
+project in the Vercel dashboard and tapping **Visit** on the deployment loaded the site first time. Same account,
+same phone, same browser — only the route in differed. Give the dashboard route to anyone who has to check the
+portal while protection is on.
+
+**Shareable Links are the thing to use for anyone outside the account, and they are broken.** Until Vercel's
+dialog works, there is no way to show the portal to Court House+ without either adding them to the Vercel team or
+taking protection off for a window. Plan for that before the copy review, not during it.
+
 **Why it matters more than placeholder Arabic looking untidy:** a reachable portal writes to the production database
 with working credentials. A stranger can consume one of only thirty real slots, and submit a name, email address and
 phone number under a data-protection notice that is still the text `TODO: paste the data-protection notice here`.
