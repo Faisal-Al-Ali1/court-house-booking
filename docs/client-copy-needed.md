@@ -4,7 +4,7 @@
 
 ## What still needs a human
 
-1. **The Arabic is a developer translation, not client copy.** All 97 strings were translated by the developer on 25 November 2026. No native speaker has read them, and they are what 30 applicants will see. **Someone at Court House+ who reads Arabic should read the booking page and both emails before the link goes out.** This is the largest unreviewed surface in the portal.
+1. **The Arabic is a developer translation, not client copy.** All 100 placeholder strings were replaced by the developer on 25 November 2026: the 97 in the tables below, plus `venue.name`, `venue.address` and `booking.fields.privacyNotice`, which have sections of their own above. No native speaker has read them, and they are what 30 applicants will see. **Someone at Court House+ who reads Arabic should read the booking page and both emails before the link goes out.** This is the largest unreviewed surface in the portal.
 2. **The data-protection notice was replaced rather than written.** See the section below: the sentence now shown to applicants is a promise Court House+ has to honour.
 3. **The deletion date** for applicants' details is still unagreed, so the notice deliberately promises none. See the shutdown step in `docs/deploy-checklist.md`.
 4. **Questions 1, 2 and 6 below are still open.**

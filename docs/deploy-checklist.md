@@ -232,7 +232,9 @@ Use an actual phone (iOS and Android if you can), on mobile data, in **Arabic an
 
 Two checks were done statically when the translation landed, and neither replaces the browser audits:
 
-- `messages/ar.json` now holds nine strings containing `Court House+` and one containing `CSV`, so the unisolated-run walk finally has something to find. Every render site for those strings was checked by hand: all were already inside `RichText` except the CSV button on the interviewer page, which was wrapped at the same time.
+- Fourteen Arabic keys now carry a literal Latin run, leaving aside placeholders and tags: twelve contain `Court House+`, one contains `English`, one contains `CSV`. So the unisolated-run walk finally has something to find. Every render site was checked by hand. Six are `email.*` keys, which `isolateHtml` and `isolateText` already cover; `confirmation.eventSummary` reaches only the calendar file and `common.siteDescription` only a meta tag, neither of which can isolate anything; the rest were already inside `RichText` or `LtrRun`. Two were not:
+  - the CSV button on the interviewer page, wrapped at the same time as this change;
+  - `common.otherLanguage`, which renders bare at `page-client.tsx:157` and `interviewer/page-client.tsx:52`. This one predates the translation and is harmless, because "English" is a standalone Latin word with no neutral character beside it to flip, but **the audit will flag it, so expect it rather than chase it.**
 - The trailing `+` in `Court House+` is the one character that would flip to the wrong side of the brand name in right-to-left text. `splitLtrRuns` ends a run on `[\p{Script=Latin}0-9%+]`, so the `+` is carried inside the isolated run rather than left outside it. This is why the brand survives inside Arabic prose without a tag.
 
 - [x] `npm run launch-check` is green and `npm test` is green.
