@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { getLangDir } from "rtl-detect";
 import { Link, useRouter } from "@/core/i18n/navigation";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
+import { StatCard } from "@/core/new-components/common/stat-card";
 import { routing } from "@/core/i18n/routing";
 import { formatSlotTime } from "@/lib/format-time";
 import { setAttendance } from "./actions/set-attendance";
@@ -56,11 +58,23 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
   const bookedCount = rows.filter((row) => row.applicant !== null).length;
   const next = rows.find((row) => row.slotId === nextSlotId);
   const freeSlots = rows.filter((row) => row.applicant === null && !row.past);
+  const arrivedCount = rows.filter((row) => row.attendance === "arrived").length;
+  const noShowCount = rows.filter((row) => row.attendance === "no-show").length;
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">{t("title")}</h1>
+      <div data-rise="1" className="flex items-center justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-3">
+          <Image
+            src="/logo-lockup.webp"
+            alt=""
+            width={960}
+            height={260}
+            priority
+            className="hidden h-8 w-auto sm:block"
+          />
+          <h1 className="truncate text-2xl font-bold">{t("title")}</h1>
+        </div>
         <div className="flex items-center gap-3">
           {otherLocale ? (
             <Link
@@ -87,14 +101,26 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
         <RichText>{booking("eventDate")}</RichText>
       </p>
 
-      <div className="mt-4 flex items-center justify-between gap-4">
-        <p className="text-lg font-semibold">
-          {t.rich("booked", {
-            booked: bookedCount,
-            total: rows.length,
-            n: (chunks) => <LtrRun>{chunks}</LtrRun>,
-          })}
-        </p>
+      <p className="sr-only">
+        {t.rich("booked", {
+          booked: bookedCount,
+          total: rows.length,
+          n: (chunks) => <LtrRun>{chunks}</LtrRun>,
+        })}
+      </p>
+
+      <div data-rise="2" className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatCard label={t("stats.booked")} value={bookedCount} tone="accent" />
+        <StatCard label={t("stats.free")} value={freeSlots.length} tone="ink" />
+        <StatCard
+          label={t("stats.arrived")}
+          value={arrivedCount}
+          tone="accent"
+        />
+        <StatCard label={t("stats.noShow")} value={noShowCount} tone="muted" />
+      </div>
+
+      <div className="mt-4 flex justify-end">
         <a
           href={`/${locale}/interviewer/api/export`}
           className="inline-flex min-h-12 items-center rounded-md border border-rule-strong bg-ground px-4 text-base font-semibold text-ink"
@@ -141,7 +167,8 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
 
       <section
         aria-labelledby="next-up"
-        className="mt-4 rounded-lg border border-rule-strong bg-ground-raised p-4"
+        data-rise="3"
+        className="mt-4 rounded-xl border border-rule-strong bg-ground-raised p-4 shadow-sm"
       >
         <h2 id="next-up" className="text-sm font-semibold text-ink-muted">
           {t("nextUp")}

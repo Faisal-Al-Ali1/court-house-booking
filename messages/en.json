@@ -161,6 +161,12 @@
       "failed": "We could not add the applicant. Please try again.",
       "none": "No times are free",
       "close": "Close"
+    },
+    "stats": {
+      "booked": "Booked",
+      "free": "Free",
+      "arrived": "Arrived",
+      "noShow": "No-shows"
     }
   },
   "error": {

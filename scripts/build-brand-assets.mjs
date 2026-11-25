@@ -23,6 +23,11 @@ await emit(
 );
 
 await emit(
+  "logo-lockup.webp",
+  sharp(BRAND + "lockup.webp").trim().resize({ width: 960 }).webp({ quality: 92 }),
+);
+
+await emit(
   "logo-email.png",
   sharp(BRAND + "lockup.webp").trim().resize({ width: 400 }).png({ compressionLevel: 9 }),
 );
