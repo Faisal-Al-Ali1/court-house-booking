@@ -192,6 +192,25 @@ Use an actual phone (iOS and Android if you can), on mobile data, in **Arabic an
 - [ ] **Re-run all three audits unconditionally once the real Arabic has landed.** `scripts/check-ltr-runs.js`, `scripts/audit-contrast.js` and `scripts/check-overflow.js` are snippets to evaluate in the browser console of each page (foreground the tab and wait for the page to finish loading first), at 360, 768 and 1440 in both locales. This is the first moment the unisolated-run walk means anything: it has only ever run against placeholders and Arabic filler, which contain no Latin. Real translation introduces exactly the thing it looks for: "Court House+", "CSV" or a number left bare in plain message text. A hit is a string whose render site does not isolate its Latin, so the fix is in the code: wrap that site in `<RichText>`, or add the tag to **both** `ar.json` and `en.json` yourself. Do not ask the translator to add a tag — `launch-check` rejects an Arabic string whose tags differ from the English.
 - [ ] **Look at the Arabic emails by hand.** The audits only walk `html[lang="ar"] main`, so the Arabic HTML emails (confirmation, cancellation, and the interviewer notification if `INTERVIEWER_LOCALE=ar`) are outside every automated check. Open each in a real mail client and check times, the phone number and the brand sit correctly in the right-to-left text.
 
+## 7a. No sending domain exists yet (as of 25 November 2026)
+
+Resend will deliver only to its own test addresses and the account holder's address until a domain is verified, so
+**without one, no applicant receives a confirmation and the interviewer receives no notification.** The portal itself
+still works: booking succeeds, the confirmation screen shows the time, date and venue, and the calendar file still
+downloads, because every send is best-effort by design.
+
+**The domain does not have to be the client's.** `email.footer` was written for exactly this case: "It was sent on
+behalf of Court House+ from a different address, and replying to it reaches the Court House+ team." A domain the
+developer owns is enough, and avoids asking a client with no IT background for DNS access two days out.
+
+One registration covers both open problems: `send.<domain>` for Resend, and `booking.<domain>` pointed at Vercel,
+which also sidesteps the fixed-line ISP that resets `*.vercel.app` (see 2.2a). Register it the same day; nameserver
+propagation for a fresh domain is usually minutes but can run to hours.
+
+**Fallback if no domain is verified by Thursday evening:** launch without applicant email and tell the client plainly
+that applicants will see their slot on screen and in the calendar file but will receive nothing by email, and that
+there is no self-service lookup if they lose it. That is a decision for Court House+, not a silent degradation.
+
 ## 8. Thursday 26 November
 
 - [ ] Venue address, the other client-supplied strings and the Reply-To address are in (all due today; Friday is the weekend).
