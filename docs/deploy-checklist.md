@@ -71,6 +71,18 @@ phone on mobile data. A claim in an API response is not a test. Check from a dev
 and note that a fixed line which resets `*.vercel.app` (see below) cannot perform this test at all — a connection
 reset looks exactly like a site that is not there.
 
+**Root cause, found on 25 November 2026 while deploying for real.** Vercel Authentication has two scopes and the
+project was on the wrong one. `Standard Protection` reads, in Vercel's own words, *"Protect all except production
+Custom Domains for your project"* — so `booking.interviewslot.xyz` was excluded by design while the API went on
+answering `"deploymentProtection": ["vercel_authentication"]`. The claim was true and the host was public at the
+same time. The setting is now **All Deployments** ("Protect all domains"), which Hobby does offer. Verified by an
+anonymous request rather than by a field: every path on the custom domain answers `302` to `vercel.com/sso-api`
+with the body `Protected by Vercel Authentication`. A custom domain is not a `*.vercel.app` host, so the ISP reset
+described below does not interfere and this test can be run from the developer's own line.
+
+To read a protected deployment as an authenticated client, use `vercel curl <url>`. It prints a warning that it
+bypasses protection, so it can never answer the public-access question — run plain `curl` for that.
+
 **Why it matters more than placeholder Arabic looking untidy:** a reachable portal writes to the production database
 with working credentials. A stranger can consume one of only thirty real slots, and submit a name, email address and
 phone number under a data-protection notice that is still the text `TODO: paste the data-protection notice here`.
@@ -117,6 +129,16 @@ The original reason is gone: the Arabic landed on 25 November 2026, so the inter
    `preferredRegion` is a preference, not a guarantee, so **confirm Settings -> Functions -> Region reads
    Frankfurt in the dashboard**; an M0 cluster's region cannot be changed after creation, so a later move means
    another new cluster.
+
+   **`preferredRegion` was being overridden, found on 25 November 2026.** On Hobby a project has exactly one
+   function region (`Settings -> Functions`: *"You are limited to 1 region on your current Hobby plan"*), and that
+   single project setting beats all four route segments. The first production deployment answered
+   `X-Vercel-Id: bom1::iad1::…` — edge in Mumbai, function in **Washington**, database in Frankfurt, which is worse
+   than either region on its own. Fixed by committing `vercel.json` with `{"regions": ["fra1"]}`, which pins it in
+   the repository instead of in a dashboard nobody re-reads; the next deployment answered `bom1::fra1::…`.
+   **`X-Vercel-Id` is how this gets checked:** its second segment is the function region. The dashboard selector is
+   also awkward — it refuses a second region with "Regions for Hobby projects are limited to 1" rather than
+   swapping, so the old region has to be unchecked first.
 4. **Run the index script against Atlas**, once per database (production and Preview). On Windows PowerShell the
    inline `VAR=value command` form does not exist, so put both values in the git-ignored `.env.local` and let Node
    read them — the password then stays out of the command line and the shell history:
