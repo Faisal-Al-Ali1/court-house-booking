@@ -55,6 +55,32 @@ Without it:
 
 Set a long random value before the link is shared, and test sign-in on the deployed instance. Changing it later signs the interviewer out and invalidates every confirmation cookie.
 
+### 2.2a Do not let the portal be publicly reachable before the copy lands
+
+Two things were learned the hard way on 25 November 2026, when a deployment meant as a preview went live publicly for
+about twenty minutes.
+
+**`vercel deploy` puts a project's FIRST deployment into production, whatever you intended.** Vercel says so in its own
+output, after the fact: "This is the project's first deployment, so it was assigned to production. Future deployments
+will be preview deployments unless you use `--prod`." Pass an explicit target on every deploy and never rely on the
+default.
+
+**Verify protection from a network that has no Vercel session, before trusting it.** The deploy response reported
+`"deploymentProtection": ["vercel_authentication"]`, and the booking page was nevertheless served to an anonymous
+phone on mobile data. A claim in an API response is not a test. Check from a device that is not signed in to Vercel,
+and note that a fixed line which resets `*.vercel.app` (see below) cannot perform this test at all — a connection
+reset looks exactly like a site that is not there.
+
+**Why it matters more than placeholder Arabic looking untidy:** a reachable portal writes to the production database
+with working credentials. A stranger can consume one of only thirty real slots, and submit a name, email address and
+phone number under a data-protection notice that is still the text `TODO: paste the data-protection notice here`.
+Nothing was booked in this instance; both databases were confirmed empty afterwards.
+
+**`*.vercel.app` is reset by at least one Jordanian fixed-line ISP** — the developer's own. DNS resolves, `vercel.com`
+answers 200, and the handshake to the project's `vercel.app` host is reset; the same URL loads over mobile data. Any
+applicant on that ISP would get a dead link rather than an error page. A subdomain of a domain you control, pointed at
+Vercel, removes the problem, because the filter never sees `vercel.app` in the handshake.
+
 ### 2.3 `MAIL_REPLY_TO`
 
 Due from the client by **Thursday 26 November**.
