@@ -121,7 +121,12 @@ Until the real Arabic copy replaces the placeholders, the interviewer's own noti
 
 1. **Verify the sending domain in Resend** (add the DNS records Resend gives you and wait for it to show Verified). Until it is verified **every send fails and the only trace is a log line**. That is tolerated by design, so a mail outage can never block a booking, but it is invisible in practice: a launch without a verified domain looks perfect and sends nothing.
 2. Make sure `MAIL_FROM` is an address on that verified domain.
-3. **Check the Resend account's rate limit** for your plan. Sends from the portal are sequential, so a normal day is nowhere near it, but if Court House+ announces the link by broadcast and many applicants book in the same minute, the burst of confirmation plus notification emails could exceed it, and anything over the limit is dropped with only a log line.
+3. **The free plan's cap is 100 emails per day** (checked on resend.com/pricing, 25 November 2026; Pro and above
+   have no daily limit). This event needs roughly 30 confirmations, 30 interviewer notifications and up to 30
+   cancellations, plus two per rehearsal booking. Bookings spread over several days, so the cap binds only if the
+   rehearsal and a burst of real bookings land on the same day. **Going over does not raise an error anyone will
+   see:** the send fails, the booking still succeeds, and the only trace is a log line. Count your test sends on
+   launch day, or rehearse the day before. **Check the Resend account's rate limit** for your plan. Sends from the portal are sequential, so a normal day is nowhere near it, but if Court House+ announces the link by broadcast and many applicants book in the same minute, the burst of confirmation plus notification emails could exceed it, and anything over the limit is dropped with only a log line.
 4. Watch the Vercel function logs for `email not sent`. Logs carry error codes only, never an address.
 
 ## 5. Re-run on the real cluster what only ran in memory
