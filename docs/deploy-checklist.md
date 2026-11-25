@@ -83,7 +83,24 @@ Vercel, removes the problem, because the filter never sees `vercel.app` in the h
 
 ### 2.3 `MAIL_REPLY_TO`
 
-Due from the client by **Thursday 26 November**.
+**Set to `courthousepluss@gmail.com` on 25 November 2026 — as the developer's assumption, not the client's
+instruction.** Court House+ supplied that address as the interviewer's; nobody has confirmed it is where applicants'
+replies should land. It matters because `email.footer` promises applicants that "replying to it reaches the Court
+House+ team", and because `readMailConfig()` throws without it, which stops **every** email, not just replies.
+Confirm with the client and change the one line if it differs.
+
+`INTERVIEWER_EMAIL` is the same address, so the interviewer's notifications and the applicants' replies land in one
+inbox. Fine for thirty applicants; worth the client knowing.
+
+### 2.5 The portal's public URL
+
+**`https://booking.interviewslot.xyz`**, a CNAME to `35bfa3c3f3a92e3e.vercel-dns-017.com` (a project-specific target,
+not the generic `cname.vercel-dns.com`; read the real value from the project's Domains page rather than assuming).
+Vercel reports it `configured-correctly`.
+
+`NEXT_PUBLIC_SITE_URL` is already set to that URL in both scopes, **before** the first build, so the build-time trap
+in section 2 never fires and no rebuild is needed. Using this domain rather than `court-house-booking.vercel.app`
+also sidesteps the fixed-line ISP that resets `*.vercel.app` (section 2.2a).
 
 ### 2.4 Set `INTERVIEWER_LOCALE=en` until the Arabic copy lands
 
