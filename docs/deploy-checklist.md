@@ -128,6 +128,23 @@ Until the real Arabic copy replaces the placeholders, the interviewer's own noti
    see:** the send fails, the booking still succeeds, and the only trace is a log line. Count your test sends on
    launch day, or rehearse the day before. **Check the Resend account's rate limit** for your plan. Sends from the portal are sequential, so a normal day is nowhere near it, but if Court House+ announces the link by broadcast and many applicants book in the same minute, the burst of confirmation plus notification emails could exceed it, and anything over the limit is dropped with only a log line.
 4. Watch the Vercel function logs for `email not sent`. Logs carry error codes only, never an address.
+5. **The send path was proven against the real Resend API on 25 November 2026**, before any domain existed, by
+   sending from `onboarding@resend.dev` to the `delivered@resend.dev` test recipient through the project's own
+   `sendBookingConfirmation` and `sendInterviewerNotification`. All three reached `last_event: delivered`, the From
+   header rendered as `"Court House+" <...>`, the Arabic message carried a `dir="rtl"` wrapper with 15 `dir="ltr"`
+   spans, and no bare Latin or digits survived outside a span. The account's monthly counter moved by exactly three,
+   which is the independent proof the sends happened.
+
+   **Two things that test could not prove.** The isolation ran against English `TODO-AR:` placeholders, so every
+   string was one long Latin run — real Arabic produces mixed runs, and that is still unproven (the same caveat as
+   the LTR audits in `CLAUDE.md`). And Resend's email record reports no attachment fields, so the `.ics` attachment
+   cannot be confirmed from the API; that needs a real mailbox during the rehearsal.
+6. **A deliberate deviation from Resend's own agent playbook** (`resend.com/setup.md`): it instructs the agent to
+   rebuild each email as a Resend template and keep the HTML in Resend rather than in code. Declined. The templates
+   here run every string through `isolateHtml` for bidi, read their copy from `messages/ar.json` and `messages/en.json`
+   under the tag-parity launch gate, and generate a per-booking `.ics`. Moving them would fork the copy from the
+   client's translation and discard reviewed work, to gain copy edits without a deploy that a one-day event does not
+   need.
 
 ## 5. Re-run on the real cluster what only ran in memory
 
