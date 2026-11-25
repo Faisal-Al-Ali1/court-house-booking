@@ -68,7 +68,15 @@ Until the real Arabic copy replaces the placeholders, the interviewer's own noti
 1. Create the cluster and a database user with read/write on `MONGODB_DB` only.
 2. Network access: Vercel functions have no fixed IP, so Atlas needs `0.0.0.0/0` in the access list. Tell the client; the control is then the database password.
 3. Choose the Atlas region close to the Vercel function region.
-4. **Run the index script against Atlas:**
+4. **Run the index script against Atlas**, once per database (production and Preview). On Windows PowerShell the
+   inline `VAR=value command` form does not exist, so put both values in the git-ignored `.env.local` and let Node
+   read them — the password then stays out of the command line and the shell history:
+
+   ```
+   node --env-file=.env.local scripts/ensure-indexes.mjs
+   ```
+
+   On a POSIX shell, either that or:
 
    ```
    MONGODB_URI="<atlas uri>" MONGODB_DB="<db>" node scripts/ensure-indexes.mjs
