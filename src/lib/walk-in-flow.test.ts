@@ -56,10 +56,15 @@ test("a signed-out interviewer cannot add anyone", async () => {
   assert.equal(d.stored.length, 0);
 });
 
-test("an unknown slot is refused before anything is written", async () => {
+test("an unchosen or unknown slot is a field error, not a generic failure", async () => {
   const d = deps();
   assert.deepEqual(await runWalkIn({ ...input, slotId: "nope" }, d), {
-    status: "failed",
+    status: "invalid",
+    errors: { slotId: "slotInvalid" },
+  });
+  assert.deepEqual(await runWalkIn({ ...input, slotId: "" }, d), {
+    status: "invalid",
+    errors: { slotId: "slotInvalid" },
   });
   assert.equal(d.stored.length, 0);
 });

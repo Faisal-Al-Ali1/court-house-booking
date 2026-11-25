@@ -38,7 +38,7 @@ export async function runWalkIn(
     return { status: "signed-out" };
   }
   if (typeof input.slotId !== "string" || !deps.isValidSlotId(input.slotId)) {
-    return { status: "failed" };
+    return { status: "invalid", errors: { slotId: "slotInvalid" } };
   }
 
   const errors = collectDetailsErrors({

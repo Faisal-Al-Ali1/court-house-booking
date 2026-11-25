@@ -3,6 +3,7 @@ import { hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { Backdrop } from "@/core/new-components/common/backdrop";
 import { routing } from "@/core/i18n/routing";
 import { SignInForm } from "./components";
 import { isSignedIn } from "./utils/is-signed-in";
@@ -25,7 +26,12 @@ export default async function InterviewerLayout({
   setRequestLocale(locale);
 
   if (!(await isSignedIn())) {
-    return <SignInForm locale={locale} />;
+    return (
+      <>
+        <Backdrop />
+        <SignInForm locale={locale} />
+      </>
+    );
   }
 
   return children;

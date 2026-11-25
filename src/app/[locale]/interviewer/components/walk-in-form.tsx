@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import { getLangDir } from "rtl-detect";
+import { Dropdown } from "@/core/new-components/common/dropdown";
 import { RichText } from "@/core/new-components/common/ltr-run";
 import { formatSlotTime } from "@/lib/format-time";
 import { addWalkIn } from "../actions/add-walk-in";
@@ -20,6 +21,7 @@ export function WalkInForm({ locale, freeSlots, onAdded }: WalkInFormProps) {
   const errors = useTranslations("booking.errors");
   const [open, setOpen] = useState(false);
   const [state, formAction, pending] = useActionState(addWalkIn, IDLE_STATE);
+  const [slotId, setSlotId] = useState("");
   const base = useId();
 
   const invalid = state.status === "invalid" ? state.errors : {};
@@ -82,25 +84,29 @@ export function WalkInForm({ locale, freeSlots, onAdded }: WalkInFormProps) {
         <label htmlFor={`${base}-slot`} className="block font-semibold">
           {t("slot")}
         </label>
-        <select
-          id={`${base}-slot`}
-          name="slotId"
-          required
-          defaultValue=""
-          className={FIELD}
-        >
-          <option value="" disabled>
-            {t("choose")}
-          </option>
-          {freeSlots.map((row) => (
-            <option key={row.slotId} value={row.slotId}>
-              {formatSlotTime(
+        <div className="mt-2">
+          <Dropdown
+            id={`${base}-slot`}
+            name="slotId"
+            value={slotId}
+            onChange={setSlotId}
+            placeholder={t("choose")}
+            invalid={Boolean(invalid.slotId)}
+            describedBy={invalid.slotId ? `${base}-slot-error` : undefined}
+            options={freeSlots.map((row) => ({
+              value: row.slotId,
+              label: formatSlotTime(
                 { id: row.slotId, startMinutes: row.startMinutes },
                 locale,
-              )}
-            </option>
-          ))}
-        </select>
+              ),
+            }))}
+          />
+        </div>
+        {invalid.slotId ? (
+          <p id={`${base}-slot-error`} className={ERROR}>
+            {invalid.slotId}
+          </p>
+        ) : null}
 
         <div className="mt-4">
           <label htmlFor={`${base}-name`} className="block font-semibold">

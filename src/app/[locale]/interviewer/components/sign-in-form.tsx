@@ -2,7 +2,10 @@
 
 import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { getLangDir } from "rtl-detect";
+import { Link } from "@/core/i18n/navigation";
+import { routing } from "@/core/i18n/routing";
 import { signIn } from "../actions/sign-in";
 import type { SignInFormProps } from "../types/sign-in-form-props";
 import type { SignInState } from "../types/sign-in-state";
@@ -11,6 +14,8 @@ const IDLE_STATE: SignInState = { status: "idle" };
 
 export function SignInForm({ locale }: SignInFormProps) {
   const t = useTranslations("interviewer.signIn");
+  const common = useTranslations("common");
+  const otherLocale = routing.locales.find((candidate) => candidate !== locale);
   const [state, formAction, pending] = useActionState(signIn, IDLE_STATE);
   const [visible, setVisible] = useState(false);
   const rtl = getLangDir(locale) === "rtl";
@@ -25,12 +30,37 @@ export function SignInForm({ locale }: SignInFormProps) {
         : null;
 
   return (
-    <main className="mx-auto max-w-md px-4 py-12 sm:px-6">
-      <h1 className="text-2xl font-bold">{t("title")}</h1>
-      <p className="mt-2 text-ink-muted">{t("intro")}</p>
+    <main className="relative z-10 mx-auto max-w-md px-4 py-8 sm:px-6">
+      <div data-rise="1" className="flex items-center justify-between gap-4">
+        <Image
+          src="/logo-lockup-light.webp"
+          alt={common("siteName")}
+          width={960}
+          height={260}
+          priority
+          className="h-9 w-auto sm:h-11"
+        />
+        {otherLocale ? (
+          <Link
+            href="/interviewer"
+            locale={otherLocale}
+            lang={otherLocale}
+            dir={getLangDir(otherLocale)}
+            className="inline-flex min-h-12 items-center text-base font-semibold text-field-ink underline underline-offset-4"
+          >
+            {common("otherLanguage")}
+          </Link>
+        ) : null}
+      </div>
+
+      <h1 data-rise="2" className="mt-8 text-2xl font-bold text-field-ink">
+        {t("title")}
+      </h1>
+      <p className="mt-2 text-field-ink-muted">{t("intro")}</p>
       <form
         action={formAction}
-        className="mt-6 rounded-lg border border-rule bg-ground-raised p-5"
+        data-rise="3"
+        className="mt-6 rounded-lg border border-rule bg-ground-raised p-5 shadow-xl"
       >
         <input type="hidden" name="locale" value={locale} />
         <label htmlFor="interviewer-password" className="block font-semibold">
