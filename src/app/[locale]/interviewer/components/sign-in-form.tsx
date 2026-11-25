@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
+import { getLangDir } from "rtl-detect";
 import { signIn } from "../actions/sign-in";
 import type { SignInFormProps } from "../types/sign-in-form-props";
 import type { SignInState } from "../types/sign-in-state";
@@ -11,6 +12,11 @@ const IDLE_STATE: SignInState = { status: "idle" };
 export function SignInForm({ locale }: SignInFormProps) {
   const t = useTranslations("interviewer.signIn");
   const [state, formAction, pending] = useActionState(signIn, IDLE_STATE);
+  const [visible, setVisible] = useState(false);
+  const rtl = getLangDir(locale) === "rtl";
+  const alignToPage = rtl
+    ? "text-right ps-14 pe-3"
+    : "text-left pe-14 ps-3";
   const message =
     state.status === "wrong"
       ? t("wrong")
@@ -30,17 +36,41 @@ export function SignInForm({ locale }: SignInFormProps) {
         <label htmlFor="interviewer-password" className="block font-semibold">
           {t("passwordLabel")}
         </label>
-        <input
-          id="interviewer-password"
-          name="password"
-          type="password"
-          required
-          autoComplete="current-password"
-          dir="ltr"
-          aria-invalid={message ? true : undefined}
-          aria-describedby={message ? "interviewer-password-error" : undefined}
-          className="mt-2 block min-h-12 w-full rounded-md border border-rule-strong bg-ground px-3 text-base"
-        />
+        <div className="relative mt-2">
+          <input
+            id="interviewer-password"
+            name="password"
+            type={visible ? "text" : "password"}
+            required
+            autoComplete="current-password"
+            dir="ltr"
+            aria-invalid={message ? true : undefined}
+            aria-describedby={message ? "interviewer-password-error" : undefined}
+            className={`block min-h-12 w-full rounded-md border border-rule-strong bg-ground text-base ${alignToPage}`}
+          />
+          <button
+            type="button"
+            onClick={() => setVisible((shown) => !shown)}
+            aria-label={visible ? t("hidePassword") : t("showPassword")}
+            aria-pressed={visible}
+            className="absolute inset-y-0 end-0 inline-flex w-12 items-center justify-center text-ink-muted hover:text-ink"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              className="size-5"
+            >
+              <path d="M2.5 12S6.5 5.5 12 5.5 21.5 12 21.5 12 17.5 18.5 12 18.5 2.5 12 2.5 12Z" />
+              <circle cx="12" cy="12" r="3.2" />
+              {visible ? <path d="M4 20 20 4" /> : null}
+            </svg>
+          </button>
+        </div>
         {message ? (
           <p
             id="interviewer-password-error"

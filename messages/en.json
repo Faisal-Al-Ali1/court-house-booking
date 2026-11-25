@@ -111,7 +111,9 @@
       "submit": "Sign in",
       "submitting": "Signing in…",
       "wrong": "That password is not right. Please try again.",
-      "unavailable": "Sign-in is not available right now. Please tell the site administrator."
+      "unavailable": "Sign-in is not available right now. Please tell the site administrator.",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
     },
     "title": "Interview schedule",
     "booked": "<n>{booked}</n> of <n>{total}</n> booked",

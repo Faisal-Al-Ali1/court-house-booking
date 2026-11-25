@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 
 const COMPONENT_FILE = /\.tsx$/;
+const PAGE_ALIGNED = "alignToPage";
 
 function componentFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -16,18 +17,21 @@ function componentFiles(directory: string): string[] {
   });
 }
 
-function misalignedInputs(source: string): number {
+function forcedLtrInputs(source: string): string[] {
   return source
     .split("<input")
     .slice(1)
     .map((chunk) => chunk.slice(0, chunk.indexOf("/>")))
-    .filter(
-      (element) =>
-        element.includes('dir="ltr"') && element.includes("text-start"),
-    ).length;
+    .filter((element) => element.includes('dir="ltr"'));
 }
 
-test("no forced-ltr input aligns text to its own start edge", () => {
+function misalignedInputs(source: string): number {
+  return forcedLtrInputs(source).filter(
+    (element) => !element.includes(PAGE_ALIGNED),
+  ).length;
+}
+
+test("every forced-ltr input aligns with the page, not with its own direction", () => {
   const root = fileURLToPath(new URL("../app", import.meta.url));
   const files = componentFiles(root);
   assert.ok(files.length > 5);
@@ -39,14 +43,21 @@ test("no forced-ltr input aligns text to its own start edge", () => {
   assert.deepEqual(offenders, []);
 });
 
-test("the guard itself detects a misaligned input", () => {
+test("the guard accepts an input that follows the page", () => {
+  const sample = '<input dir="ltr" className={`${INPUT} ${alignToPage}`} />';
+  assert.equal(forcedLtrInputs(sample).length, 1);
+  assert.equal(misalignedInputs(sample), 0);
+});
+
+test("the guard rejects both ways of getting it wrong", () => {
   assert.equal(
     misalignedInputs('<input dir="ltr" className="foo text-start" />'),
     1,
   );
-  assert.equal(
-    misalignedInputs('<input dir="ltr" className="foo text-right" />'),
-    0,
-  );
+  assert.equal(misalignedInputs('<input dir="ltr" className="foo" />'), 1);
+});
+
+test("inputs that inherit the page direction are not policed", () => {
   assert.equal(misalignedInputs('<input className="text-start" />'), 0);
+  assert.equal(forcedLtrInputs('<input type="text" />').length, 0);
 });
