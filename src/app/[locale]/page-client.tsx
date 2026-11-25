@@ -14,6 +14,7 @@ import { useSearchParams } from "next/navigation";
 import { Link, useRouter } from "@/core/i18n/navigation";
 import { LtrRun, RichText } from "@/core/new-components/common/ltr-run";
 import { routing } from "@/core/i18n/routing";
+import { collectDetailsErrors } from "@/lib/details-errors";
 import { createBooking } from "./actions/create-booking";
 import {
   ApplicantForm,
@@ -23,6 +24,7 @@ import {
 } from "./components";
 import { clearDraft, useApplicantDraft } from "./hooks/use-applicant-draft";
 import type { BookingActionState } from "./types/booking-action-state";
+import type { ApplicantDraft } from "./types/applicant-draft";
 import type { PageClientProps } from "./types/page-client-props";
 
 const IDLE_STATE: BookingActionState = { status: "idle" };
@@ -32,6 +34,7 @@ const TOTAL_STEPS = 2;
 export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) {
   const t = useTranslations("booking");
   const common = useTranslations("common");
+  const errorText = useTranslations("booking.errors");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { draft, hydrated, update } = useApplicantDraft();
@@ -39,13 +42,18 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
   const [acknowledged, setAcknowledged] = useState<BookingActionState | null>(
     null,
   );
+  const [detailErrors, setDetailErrors] = useState<Record<string, string>>(
+    {},
+  );
   const handledRef = useRef<BookingActionState | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const previousStepRef = useRef<string | null>(null);
   const messageRef = useRef<HTMLParagraphElement>(null);
 
   const active = state === acknowledged ? IDLE_STATE : state;
-  const errors = active.status === "invalid" ? (active.errors ?? {}) : {};
+  const serverErrors =
+    active.status === "invalid" ? (active.errors ?? {}) : {};
+  const errors = { ...serverErrors, ...detailErrors };
   const hasDetailErrors = DETAIL_FIELDS.some((field) => errors[field]);
   const draftIsBlank =
     draft.name === "" && draft.email === "" && draft.phone === "";
@@ -69,9 +77,11 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
   const otherLocale = routing.locales.find((candidate) => candidate !== locale);
   const query = searchParams.toString();
   const message =
-    active.status === "error" || active.status === "invalid"
-      ? (active.message ?? (step === "slot" ? errors.slotId : undefined))
-      : undefined;
+    Object.keys(detailErrors).length > 0
+      ? errorText("detailsIncomplete")
+      : active.status === "error" || active.status === "invalid"
+        ? (active.message ?? (step === "slot" ? errors.slotId : undefined))
+        : undefined;
 
   useEffect(() => {
     if (handledRef.current === state) {
@@ -121,18 +131,45 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
     }
     formData.set("slotId", selected?.id ?? "");
     if (step === "details") {
-      if (draftIsBlank) {
-        startTransition(() => {
-          formAction(formData);
-        });
+      const found = collectDetailsErrors({
+        name: draft.name,
+        email: draft.email,
+        phone: draft.phone,
+        consent: draft.consent,
+      });
+      setAcknowledged(state);
+      if (Object.keys(found).length > 0) {
+        setDetailErrors(
+          Object.fromEntries(
+            Object.entries(found).map(([field, key]) => [
+              field,
+              errorText(key),
+            ]),
+          ),
+        );
         return;
       }
-      setAcknowledged(state);
+      setDetailErrors({});
       router.push("/?step=slot");
       return;
     }
     startTransition(() => {
       formAction(formData);
+    });
+  }
+
+  function handleChange(patch: Partial<ApplicantDraft>) {
+    update(patch);
+    setDetailErrors((current) => {
+      const cleared = Object.keys(patch).filter((field) => field in current);
+      if (cleared.length === 0) {
+        return current;
+      }
+      const next = { ...current };
+      for (const field of cleared) {
+        delete next[field];
+      }
+      return next;
     });
   }
 
@@ -230,7 +267,7 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
               values={draft}
               errors={errors}
               canContinue={hydrated}
-              onChange={update}
+              onChange={handleChange}
             />
             <noscript>
               <div className="mt-8">

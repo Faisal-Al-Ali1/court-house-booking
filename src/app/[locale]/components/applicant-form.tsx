@@ -1,5 +1,6 @@
 import { useId } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { getLangDir } from "rtl-detect";
 import { RichText } from "@/core/new-components/common/ltr-run";
 import type { ApplicantFormProps } from "../types/applicant-form-props";
 
@@ -14,6 +15,9 @@ export function ApplicantForm({
   onChange,
 }: ApplicantFormProps) {
   const t = useTranslations("booking");
+  const locale = useLocale();
+  const alignToPage =
+    getLangDir(locale) === "rtl" ? "text-right" : "text-left";
   const baseId = useId();
   const ids = {
     name: `${baseId}-name`,
@@ -62,7 +66,7 @@ export function ApplicantForm({
           onChange={(event) => onChange({ email: event.target.value })}
           aria-invalid={errors.email ? true : undefined}
           aria-describedby={errors.email ? `${ids.email}-error` : undefined}
-          className={`${INPUT_CLASS} text-start`}
+          className={`${INPUT_CLASS} ${alignToPage}`}
         />
         {errors.email ? (
           <p id={`${ids.email}-error`} className={ERROR_CLASS}>
@@ -86,7 +90,7 @@ export function ApplicantForm({
           onChange={(event) => onChange({ phone: event.target.value })}
           aria-invalid={errors.phone ? true : undefined}
           aria-describedby={errors.phone ? `${ids.phone}-error` : undefined}
-          className={`${INPUT_CLASS} text-start`}
+          className={`${INPUT_CLASS} ${alignToPage}`}
         />
         {errors.phone ? (
           <p id={`${ids.phone}-error`} className={ERROR_CLASS}>

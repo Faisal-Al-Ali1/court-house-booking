@@ -53,6 +53,7 @@
       "slotInvalid": "Please choose a valid interview slot.",
       "slotPast": "That slot is no longer available. Please choose another.",
       "consentRequired": "Please confirm that your details are correct to continue.",
+      "detailsIncomplete": "Please correct the highlighted details before choosing a time.",
       "slotTaken": "Sorry, that slot has just been taken. Please choose another.",
       "alreadyBooked": "This email address already has a booking.",
       "unexpected": "Something went wrong. Please try again."
@@ -137,5 +138,10 @@
       "dismiss": "Dismiss",
       "gone": "The booking for <who>{name}</who> was already cancelled."
     }
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "We could not show this page. Nothing you entered has been lost, and you can try again.",
+    "retry": "Try again"
   }
 }
