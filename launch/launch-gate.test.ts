@@ -83,13 +83,13 @@ test("LAUNCH GATE: ar.json and en.json define exactly the same keys", () => {
   );
 });
 
-const TAG = /<\/?(?:n|who|call)>/g;
+const TAG = /<\/?(?:n|who|call|mail)>/g;
 
 function tagsOf(value: string): string {
   return (value.match(TAG) ?? []).sort().join(" ");
 }
 
-test("LAUNCH GATE: ar.json and en.json carry the same <n>, <who> and <call> tags in every string", () => {
+test("LAUNCH GATE: ar.json and en.json carry the same <n>, <who>, <call> and <mail> tags in every string", () => {
   const ar = entries("ar");
   const mismatched: string[] = [];
   for (const [key, english] of entries("en")) {
@@ -109,6 +109,39 @@ test("LAUNCH GATE: ar.json and en.json carry the same <n>, <who> and <call> tags
     report(
       "an Arabic string adds, drops or changes a tag. Keep exactly the tags the English has.",
       mismatched,
+    ),
+  );
+});
+
+test("LAUNCH GATE: the fully-booked screen tells an applicant how to make contact", () => {
+  const missing = ["ar", "en"].filter(
+    (locale) =>
+      !(entries(locale).get("booking.fullyBooked.body") ?? "").includes(
+        "{email}",
+      ),
+  );
+  assert.deepEqual(
+    missing,
+    [],
+    report(
+      "the fully-booked screen is the only thing a 31st applicant sees, so it must carry {email}.",
+      missing,
+    ),
+  );
+});
+
+test("LAUNCH GATE: the privacy notice names the date the details are deleted", () => {
+  const DATED = /\d{1,2}[^0-9]{1,24}20\d{2}/;
+  const missing = ["ar", "en"].filter(
+    (locale) =>
+      !DATED.test(entries(locale).get("booking.fields.privacyNotice") ?? ""),
+  );
+  assert.deepEqual(
+    missing,
+    [],
+    report(
+      "the privacy notice promises deletion, so it must state the date.",
+      missing,
     ),
   );
 });

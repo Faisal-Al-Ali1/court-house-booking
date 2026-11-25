@@ -58,6 +58,8 @@ export default async function HomePage({
     past: isSlotPast(slot, now),
   }));
 
+  const contactEmail = (process.env.MAIL_REPLY_TO ?? "").trim();
+
   const jar = await cookies();
   const confirmedSlotId = await confirmFromRequest({
     booked,
@@ -73,6 +75,7 @@ export default async function HomePage({
         locale={locale}
         slots={slots}
         confirmedSlotId={confirmedSlotId}
+        contactEmail={contactEmail}
       />
     </>
   );

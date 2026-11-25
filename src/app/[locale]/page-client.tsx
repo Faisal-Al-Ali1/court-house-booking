@@ -32,7 +32,12 @@ const IDLE_STATE: BookingActionState = { status: "idle" };
 const DETAIL_FIELDS = ["name", "email", "phone", "consent"] as const;
 const TOTAL_STEPS = 2;
 
-export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) {
+export function PageClient({
+  locale,
+  slots,
+  confirmedSlotId,
+  contactEmail,
+}: PageClientProps) {
   const t = useTranslations("booking");
   const common = useTranslations("common");
   const errorText = useTranslations("booking.errors");
@@ -222,7 +227,7 @@ export function PageClient({ locale, slots, confirmedSlotId }: PageClientProps) 
       <main className="relative z-10 mx-auto max-w-2xl px-4 py-8 sm:px-6">
         {header}
         <div className="mt-8" data-rise="2">
-          <FullyBooked />
+          <FullyBooked contactEmail={contactEmail} />
         </div>
       </main>
     );

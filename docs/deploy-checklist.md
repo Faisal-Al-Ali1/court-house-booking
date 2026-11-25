@@ -321,6 +321,6 @@ there is no self-service lookup if they lose it. That is a decision for Court Ho
 The portal holds applicants' names, emails and phone numbers for a four-day event and must not outlive it.
 
 - [ ] After Saturday, **export the data twice**: the CSV from the portal and a database export from Atlas. Hand both to Court House+ and confirm they can open them.
-- [ ] **Agree a deletion date in writing with Court House+ before launch** and write it here: **deletion date: ____________** (a suggestion: two weeks after the event, Saturday 12 December 2026, once both exports are confirmed received).
+- [x] ~~Agree a deletion date in writing with Court House+ before launch.~~ **Agreed 26 November 2026. Deletion date: Saturday 5 December 2026**, one week after the interviews. This is shorter than the fortnight originally suggested, so **confirm both exports have been received before that date rather than after it.** The date is printed to every applicant in `booking.fields.privacyNotice` in both languages, which makes it a promise rather than a plan.
 - [ ] On that date, **delete the Atlas cluster** and **delete the Vercel project**, so no copy of the data remains in either service. Revoke the Resend API key, and remove the sending domain if it was created only for this.
 - [ ] Discard `INTERVIEWER_PASSWORD` and `SESSION_SECRET`.

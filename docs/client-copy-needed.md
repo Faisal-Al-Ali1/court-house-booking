@@ -4,19 +4,29 @@
 
 ## What still needs a human
 
-1. **The Arabic is a developer translation, not client copy.** All 100 placeholder strings were replaced by the developer on 25 November 2026: the 97 in the tables below, plus `venue.name`, `venue.address` and `booking.fields.privacyNotice`, which have sections of their own above. No native speaker has read them, and they are what 30 applicants will see. **Someone at Court House+ who reads Arabic should read the booking page and both emails before the link goes out.** This is the largest unreviewed surface in the portal.
-2. **The data-protection notice was replaced rather than written.** See the section below: the sentence now shown to applicants is a promise Court House+ has to honour.
-3. **The deletion date** for applicants' details is still unagreed, so the notice deliberately promises none. See the shutdown step in `docs/deploy-checklist.md`.
-4. **Questions 1, 2 and 6 below are still open.**
+**Updated 26 November 2026. The Arabic has been reviewed and the outstanding answers are in.**
+
+1. ~~**The Arabic is a developer translation.**~~ **Reviewed and approved on 26 November 2026.** The strings were
+   read and accepted. Note what that review did and did not cover: it was a reading of the copy, not of a
+   rendered email, so the confirmation and cancellation messages should still be looked at once as they arrive
+   in a real inbox, with the logo, the right-to-left layout and the calendar attachment in place.
+2. **The data-protection notice is a promise Court House+ has to honour.** It now reads that the details are
+   used only for the interview, seen only by the interview team, and **deleted on 5 December 2026**.
+3. ~~**The deletion date is unagreed.**~~ **Agreed 26 November 2026: 5 December 2026**, one week after the
+   interviews, chosen to leave room to chase anything missing. It is written into the privacy notice in both
+   languages and into the shutdown step of `docs/deploy-checklist.md`. **Someone has to actually do it on the
+   day** — the sentence shown to applicants is now a commitment, not an intention.
+4. **Question 1 below is still open** and costs nothing to leave: the brand stays in Latin letters in both
+   languages until Court House+ say otherwise.
 
 ## Questions to settle first
 
 1. **Does Court House+ have an Arabic organisation name?** Or does the brand stay in Latin letters, "Court House+", in both languages? Today it is Latin in both.
-2. **Which language should the interviewer's notification emails use?** The email that tells the interviewer about each new booking currently defaults to Arabic. Changing it is one environment variable (`INTERVIEWER_LOCALE=en`), so either answer is cheap.
+2. ~~**Which language should the interviewer's notification emails use?**~~ **Answered 26 November 2026: it does not matter, the interviewers read both.** Left at `INTERVIEWER_LOCALE=en`, which is also what the deploy checklist records.
 3. ~~**The venue map link.**~~ **Received 25 November 2026:** `https://maps.app.goo.gl/PNArbbvxCSwE6quZ7`, which resolves to `Vbc | KHBP | Bldg0` at 31.9721859, 35.8354429 in Amman. It is live in both message files. Court House+ described this as the initial address, so **confirm it has not moved before the link is sent to applicants.**
 4. ~~**The venue name and address.**~~ **Received 25 November 2026:** given as "King Hussein Business Park Building 0", or `Vbc | KHBP | Bldg0`, with the same to be used in Arabic. Live now as `King Hussein Business Park, Building 0, Amman` and `مجمع الملك حسين للأعمال، مبنى 0، عمّان`. **"Amman" is the developer's addition**, taken from the map link's own coordinates (31.9721859, 35.8354429), so that the calendar file and both emails carry a city. The pin name `Vbc | KHBP | Bldg0` was deliberately left out of the printed address: the map link beside it already carries that name, and it is not a thing to show an applicant. `venue.name` stays the brand in both languages, so the confirmation screen reads "Court House+" on the line above the address.
-5. **The Reply-To address** that applicants' replies to the confirmation email should reach.
-6. **Where should a 31st applicant be pointed?** When every time is booked, the "All interview slots are taken" screen is the only thing that applicant sees, and there is no self-service lookup. It currently says "please contact Court House+" without saying how. Is the Reply-To address (question 5) the right place to send them, or is there a phone number or other address? Whatever you choose will be added to that screen.
+5. ~~**The Reply-To address.**~~ **Confirmed correct on 26 November 2026.** `MAIL_REPLY_TO` as already configured is the right address, so the developer's assumption stands.
+6. ~~**Where should a 31st applicant be pointed?**~~ **Answered 26 November 2026: to the Reply-To address.** The fully-booked screen now prints that address as a `mailto:` link, fed from `MAIL_REPLY_TO` so it can never drift from the address applicants reply to. A launch-gate test fails if that screen ever loses its `{email}` placeholder, because it is the only thing a 31st applicant sees.
 
 ## ~~Required:~~ Resolved differently: the data-protection notice
 

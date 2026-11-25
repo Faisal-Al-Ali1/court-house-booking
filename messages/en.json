@@ -17,7 +17,7 @@
       "email": "Email address",
       "phone": "Phone number",
       "consent": "I confirm that all the details I have entered are correct.",
-      "privacyNotice": "Your name, email address and phone number are used only to arrange and run your interview, and are seen only by the Court House+ interview team.",
+      "privacyNotice": "Your name, email address and phone number are used only to arrange and run your interview, and are seen only by the Court House+ interview team. They are deleted on 5 December 2026.",
       "continue": "Choose a time"
     },
     "grid": {
@@ -42,7 +42,7 @@
     },
     "fullyBooked": {
       "title": "All interview slots are taken",
-      "body": "Every time on Saturday 28 November 2026 has been booked or has passed. If you still need an interview, please contact Court House+."
+      "body": "Every time on Saturday <n>28</n> November <n>2026</n> has been booked or has passed. If you still need an interview, please email <mail>{email}</mail>."
     },
     "errors": {
       "nameRequired": "Please enter your full name.",

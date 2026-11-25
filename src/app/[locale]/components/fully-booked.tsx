@@ -1,8 +1,9 @@
 import { useId } from "react";
 import { useTranslations } from "next-intl";
-import { RichText } from "@/core/new-components/common/ltr-run";
+import { LtrRun } from "@/core/new-components/common/ltr-run";
+import type { FullyBookedProps } from "../types/fully-booked-props";
 
-export function FullyBooked() {
+export function FullyBooked({ contactEmail }: FullyBookedProps) {
   const t = useTranslations("booking.fullyBooked");
   const headingId = useId();
 
@@ -15,7 +16,18 @@ export function FullyBooked() {
         {t("title")}
       </h1>
       <p className="mt-3 text-ink-muted">
-        <RichText>{t("body")}</RichText>
+        {t.rich("body", {
+          email: contactEmail,
+          n: (chunks) => <LtrRun>{chunks}</LtrRun>,
+          mail: (chunks) => (
+            <a
+              href={`mailto:${contactEmail}`}
+              className="font-semibold text-accent underline underline-offset-4"
+            >
+              <LtrRun>{chunks}</LtrRun>
+            </a>
+          ),
+        })}
       </p>
     </section>
   );
