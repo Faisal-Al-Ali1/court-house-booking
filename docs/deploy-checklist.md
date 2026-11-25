@@ -119,6 +119,31 @@ Until the real Arabic copy replaces the placeholders, the interviewer's own noti
 
 ## 4. Email (Resend)
 
+**Settled on 25 November 2026.** The sending domain is **`interviewslot.xyz`**, registered at Porkbun purely for this
+and future client sending; it is not the client's domain, which `email.footer` already accounts for. The Resend domain
+is `056c0064-500d-4880-a3cd-d913080f8a76`, region **`eu-west-1`** — region and return path cannot be changed after
+creation. `MAIL_FROM` is **`interviews@interviewslot.xyz`**, a bare address: `formatFrom()` wraps `"Court House+"`
+around it.
+
+The root was registered with Resend rather than a `send.` subdomain. Resend puts the MX and SPF on `send.` by itself,
+so the From address stays short and the root's MX is still free for mailboxes later.
+
+Four records were added in Porkbun's DNS panel:
+
+| Type | Host | Value |
+| --- | --- | --- |
+| TXT | `resend._domainkey` | the DKIM public key, `p=MIGfMA0GCSqGSIb3...` |
+| MX | `send` | `feedback-smtp.eu-west-1.amazonses.com`, priority 10 |
+| TXT | `send` | `v=spf1 include:amazonses.com ~all` |
+| CNAME | `rsend` | `send.forge.rmta.net` |
+
+Porkbun's two parking records (`ALIAS` on the root and a wildcard `CNAME`, both to `pixie.porkbun.com`) were left in
+place; explicit records win over a wildcard. Remove them if the root is ever used for anything real.
+
+Re-read the authoritative values any time with `resend domains get 056c0064-500d-4880-a3cd-d913080f8a76` rather than
+copying them from a document.
+
+
 1. **Verify the sending domain in Resend** (add the DNS records Resend gives you and wait for it to show Verified). Until it is verified **every send fails and the only trace is a log line**. That is tolerated by design, so a mail outage can never block a booking, but it is invisible in practice: a launch without a verified domain looks perfect and sends nothing.
 2. Make sure `MAIL_FROM` is an address on that verified domain.
 3. **The free plan's cap is 100 emails per day** (checked on resend.com/pricing, 25 November 2026; Pro and above
