@@ -21,6 +21,7 @@ export async function generateMetadata({
     metadataBase: new URL(SITE_URL),
     title: t("siteName"),
     description: t("siteDescription"),
+    robots: { index: false, follow: false },
   };
 }
 
