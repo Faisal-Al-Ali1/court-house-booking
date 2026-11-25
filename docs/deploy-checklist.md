@@ -83,6 +83,23 @@ described below does not interfere and this test can be run from the developer's
 To read a protected deployment as an authenticated client, use `vercel curl <url>`. It prints a warning that it
 bypasses protection, so it can never answer the public-access question — run plain `curl` for that.
 
+**Shareable Links cannot be created from this dashboard, found on 25 November 2026.** The Share button on a
+deployment does offer *"Anyone with the link"*, but choosing it never fires the creation request: the scope menu
+and Copy Link both go disabled, and `Settings -> Deployment Protection` goes on reading **"No active shareable
+links"**. It is not a plan limit. The dialog's own permission call,
+`GET /api/v3/aliases/<alias>/protection-bypass/permissions`, answers HTTP 200 with
+`{"canCreateShareableLink":true,"canUpdateProtectionBypass":true,...}`, and no POST follows it. The only other
+anomaly in the same capture is a browser content blocker killing `vercel.com/api/stream/internal` with
+`net::ERR_BLOCKED_BY_CLIENT` on a reconnect loop, so **retry the dialog in a browser with no extensions before
+concluding anything about the account or the plan.** The settings page has no create button of its own: the Share
+button on a deployment is the only path to a shareable link.
+
+**To look at a protected deployment by hand, sign in to Vercel in that same browser first.** An anonymous request
+to the custom domain redirects to `vercel.com/login?next=…` — a full login page, not an interstitial with a
+"continue" button — so the visitor has to complete a Vercel login **as the identity that owns the project**.
+Signing in as any other identity ends at a protection page rather than at the site, which looks identical to not
+being signed in at all.
+
 **Why it matters more than placeholder Arabic looking untidy:** a reachable portal writes to the production database
 with working credentials. A stranger can consume one of only thirty real slots, and submit a name, email address and
 phone number under a data-protection notice that is still the text `TODO: paste the data-protection notice here`.
