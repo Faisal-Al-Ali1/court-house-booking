@@ -33,6 +33,7 @@ function booking(slotIndex: number, email: string): Booking {
     locale: "en",
     createdAt: BEFORE_EVENT,
     cancelledAt: null,
+  attendance: null,
   };
 }
 
@@ -305,4 +306,56 @@ test("a conflict that keeps vanishing fails with the retry code and never report
   const result = await racing.create(booking(0, "a@example.com"));
   assert.equal(codeOf(result), BOOKING_ERROR_CODES.retry);
   assert.equal(scripted.inserts(), 2);
+});
+
+test("a new booking starts with no attendance recorded", async () => {
+  dataOf(await repo.create(booking(0, "attend-a@example.com")));
+  const rows = dataOf(await repo.listActive());
+  assert.equal(rows[0].attendance, null);
+});
+
+test("an applicant can be marked arrived, then corrected to a no-show", async () => {
+  dataOf(await repo.create(booking(0, "attend-b@example.com")));
+
+  assert.ok(isSuccess(await repo.setAttendance(SLOTS[0].id, "arrived")));
+  assert.equal(dataOf(await repo.listActive())[0].attendance, "arrived");
+
+  assert.ok(isSuccess(await repo.setAttendance(SLOTS[0].id, "no-show")));
+  assert.equal(dataOf(await repo.listActive())[0].attendance, "no-show");
+});
+
+test("attendance can be cleared back to nothing", async () => {
+  dataOf(await repo.create(booking(0, "attend-c@example.com")));
+  await repo.setAttendance(SLOTS[0].id, "arrived");
+
+  assert.ok(isSuccess(await repo.setAttendance(SLOTS[0].id, null)));
+  assert.equal(dataOf(await repo.listActive())[0].attendance, null);
+});
+
+test("marking attendance on a slot nobody holds is a failure", async () => {
+  const result = await repo.setAttendance(SLOTS[3].id, "arrived");
+  assert.ok(isFailure(result));
+});
+
+test("marking attendance on an unknown slot is a failure", async () => {
+  assert.ok(isFailure(await repo.setAttendance("not-a-slot", "arrived")));
+});
+
+test("cancelling a booking keeps the attendance already recorded", async () => {
+  dataOf(await repo.create(booking(0, "attend-d@example.com")));
+  await repo.setAttendance(SLOTS[0].id, "arrived");
+  await repo.cancel(SLOTS[0].id);
+
+  const all = dataOf(await repo.listAll());
+  assert.equal(all.length, 1);
+  assert.equal(all[0].attendance, "arrived");
+  assert.notEqual(all[0].cancelledAt, null);
+});
+
+test("attendance set on a cancelled slot does not resurrect it", async () => {
+  dataOf(await repo.create(booking(0, "attend-e@example.com")));
+  await repo.cancel(SLOTS[0].id);
+
+  assert.ok(isFailure(await repo.setAttendance(SLOTS[0].id, "arrived")));
+  assert.equal(dataOf(await repo.listAll())[0].attendance, null);
 });

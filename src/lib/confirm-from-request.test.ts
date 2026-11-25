@@ -15,6 +15,7 @@ const booking: Booking = {
   locale: "en",
   createdAt: new Date(),
   cancelledAt: null,
+  attendance: null,
 };
 
 function loader(result: Result<Booking[]>) {

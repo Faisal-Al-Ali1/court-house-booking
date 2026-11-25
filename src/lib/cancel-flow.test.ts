@@ -14,6 +14,7 @@ const BOOKING: Booking = {
   locale: "ar",
   createdAt: new Date("2026-11-25T08:30:00Z"),
   cancelledAt: null,
+  attendance: null,
 };
 
 function harness(overrides: Partial<CancelDeps> = {}) {

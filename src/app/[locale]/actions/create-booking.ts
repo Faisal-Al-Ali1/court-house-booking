@@ -129,6 +129,7 @@ async function attemptBooking(formData: FormData): Promise<Attempt> {
       locale,
       createdAt: new Date(),
       cancelledAt: null,
+      attendance: null,
     };
     const result = await bookingsRepo.create(booking);
 

@@ -10,6 +10,7 @@ const HEADER = [
   "locale",
   "booked at",
   "status",
+  "attendance",
 ];
 const FORMULA_START = /^[=+\-@\t\r]/;
 const PHONE_SHAPE = /^\+?[\d\s()-]+$/;
@@ -36,6 +37,7 @@ function row(booking: Booking): string {
     field(booking.locale),
     field(booking.createdAt.toISOString()),
     field(booking.cancelledAt ? "cancelled" : "booked"),
+    field(booking.attendance ?? ""),
   ].join(",");
 }
 

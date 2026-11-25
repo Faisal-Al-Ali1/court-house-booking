@@ -11,6 +11,7 @@ const base: Booking = {
   locale: "en",
   createdAt: new Date("2026-11-25T08:30:00Z"),
   cancelledAt: null,
+  attendance: null,
 };
 
 test("prefixes a UTF-8 BOM so Excel reads Arabic", () => {
@@ -30,12 +31,15 @@ test("marks cancelled bookings rather than omitting them", () => {
   assert.equal(csv.trim().split("\n").length, 2);
 });
 
-test("writes the seven columns in order", () => {
+test("writes the eight columns in order", () => {
   const [header, row] = toCsv([base]).replace("\uFEFF", "").trim().split("\r\n");
-  assert.equal(header, "slot time,name,email,phone,locale,booked at,status");
+  assert.equal(
+    header,
+    "slot time,name,email,phone,locale,booked at,status,attendance",
+  );
   assert.equal(
     row,
-    "2026-11-28 10:00,Layla Haddad,layla@example.com,\"=\"\"+962791234567\"\"\",en,2026-11-25T08:30:00.000Z,booked",
+    "2026-11-28 10:00,Layla Haddad,layla@example.com,\"=\"\"+962791234567\"\"\",en,2026-11-25T08:30:00.000Z,booked,",
   );
 });
 
@@ -65,4 +69,20 @@ test("keeps a phone number as text so Excel does not turn it into a number", () 
 test("defuses a phone field that is not shaped like a phone number", () => {
   const csv = toCsv([{ ...base, phone: "=1+1" }]);
   assert.ok(csv.includes(",'=1+1,"));
+});
+
+test("records who arrived and who did not", () => {
+  const csv = toCsv([
+    { ...base, attendance: "arrived" },
+    { ...base, slotId: "2026-11-28T10:20", attendance: "no-show" },
+  ]);
+  const [, first, second] = csv.replace("\uFEFF", "").trim().split("\r\n");
+  assert.ok(first.endsWith(",booked,arrived"), first);
+  assert.ok(second.endsWith(",booked,no-show"), second);
+});
+
+test("an unrecorded attendance leaves the cell empty, not the word null", () => {
+  const csv = toCsv([base]);
+  assert.ok(csv.trim().endsWith(",booked,"));
+  assert.equal(csv.includes("null"), false);
 });

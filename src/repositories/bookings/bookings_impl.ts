@@ -5,6 +5,7 @@ import type { Result } from "../../core/types/results/results.ts";
 import type { BookingsRepo } from "./bookings_repo.ts";
 import {
   BOOKING_ERROR_CODES,
+  type Attendance,
   type Booking,
   type BookingErrorCode,
   type SlotClaim,
@@ -73,6 +74,7 @@ export class BookingsImpl implements BookingsRepo {
       locale: booking.locale,
       createdAt: now,
       cancelledAt: null,
+      attendance: null,
     };
 
     try {
@@ -127,7 +129,7 @@ export class BookingsImpl implements BookingsRepo {
     try {
       const bookings = await this.collection();
       const rows = await bookings.find(filter, PRIMARY_READ_WITHOUT_ID).sort({ slotId: 1 }).toArray();
-      return ok(rows);
+      return ok(rows.map((row) => ({ ...row, attendance: row.attendance ?? null })));
     } catch (error) {
       return databaseFailure(error);
     }
@@ -139,6 +141,28 @@ export class BookingsImpl implements BookingsRepo {
       const outcome = await bookings.updateOne(
         { slotId, cancelledAt: null },
         { $set: { cancelledAt: this.now() } },
+      );
+      if (outcome.matchedCount === 0) {
+        return fail(BOOKING_ERROR_CODES.notFound, "No active booking for this slot");
+      }
+      return ok(null);
+    } catch (error) {
+      return databaseFailure(error);
+    }
+  }
+
+  async setAttendance(
+    slotId: string,
+    attendance: Attendance | null,
+  ): Promise<Result<null>> {
+    if (!isValidSlotId(slotId)) {
+      return fail(BOOKING_ERROR_CODES.unknownSlot, "Unknown slot");
+    }
+    try {
+      const bookings = await this.collection();
+      const outcome = await bookings.updateOne(
+        { slotId, cancelledAt: null },
+        { $set: { attendance } },
       );
       if (outcome.matchedCount === 0) {
         return fail(BOOKING_ERROR_CODES.notFound, "No active booking for this slot");

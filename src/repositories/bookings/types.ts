@@ -1,5 +1,7 @@
 import type { Locale } from "../../core/i18n/routing.ts";
 
+export type Attendance = "arrived" | "no-show";
+
 export type Booking = {
   slotId: string;
   name: string;
@@ -8,6 +10,7 @@ export type Booking = {
   locale: Locale;
   createdAt: Date;
   cancelledAt: Date | null;
+  attendance: Attendance | null;
 };
 
 export type SlotClaim = "created" | "slot-taken" | "already-booked" | "idempotent";
