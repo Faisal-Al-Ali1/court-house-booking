@@ -1,17 +1,34 @@
 # Copy needed from Court House+
 
-Everything below blocks launch. The portal is Arabic-first, and nearly every Arabic string is still an English placeholder that renders on screen prefixed with `TODO-AR:`. `npm run launch-check` fails on purpose until none remain.
+**Status, 25 November 2026: the copy has landed and `npm run launch-check` is green, 7 of 7.** Court House+ supplied the venue address, declined to write a data-protection notice, and asked the developer to translate the Arabic rather than supply it. The rest of this document is kept as the record of what was asked for and what each string is for, which is what a reviewer needs.
+
+## What still needs a human
+
+1. **The Arabic is a developer translation, not client copy.** All 97 strings were translated by the developer on 25 November 2026. No native speaker has read them, and they are what 30 applicants will see. **Someone at Court House+ who reads Arabic should read the booking page and both emails before the link goes out.** This is the largest unreviewed surface in the portal.
+2. **The data-protection notice was replaced rather than written.** See the section below: the sentence now shown to applicants is a promise Court House+ has to honour.
+3. **The deletion date** for applicants' details is still unagreed, so the notice deliberately promises none. See the shutdown step in `docs/deploy-checklist.md`.
+4. **Questions 1, 2 and 6 below are still open.**
 
 ## Questions to settle first
 
 1. **Does Court House+ have an Arabic organisation name?** Or does the brand stay in Latin letters, "Court House+", in both languages? Today it is Latin in both.
 2. **Which language should the interviewer's notification emails use?** The email that tells the interviewer about each new booking currently defaults to Arabic. Changing it is one environment variable (`INTERVIEWER_LOCALE=en`), so either answer is cheap.
 3. ~~**The venue map link.**~~ **Received 25 November 2026:** `https://maps.app.goo.gl/PNArbbvxCSwE6quZ7`, which resolves to `Vbc | KHBP | Bldg0` at 31.9721859, 35.8354429 in Amman. It is live in both message files. Court House+ described this as the initial address, so **confirm it has not moved before the link is sent to applicants.**
-4. **The venue name and address, in both Arabic and English.** Still outstanding, and the map link does not substitute for it: the confirmation screen, both emails and the calendar file all print the address as text. The place name behind the map link reads `Vbc | KHBP | Bldg0`, which is not something to show an applicant. The English address in the portal today is a marked placeholder and must not reach applicants.
+4. ~~**The venue name and address.**~~ **Received 25 November 2026:** given as "King Hussein Business Park Building 0", or `Vbc | KHBP | Bldg0`, with the same to be used in Arabic. Live now as `King Hussein Business Park, Building 0, Amman` and `مجمع الملك حسين للأعمال، مبنى 0، عمّان`. **"Amman" is the developer's addition**, taken from the map link's own coordinates (31.9721859, 35.8354429), so that the calendar file and both emails carry a city. The pin name `Vbc | KHBP | Bldg0` was deliberately left out of the printed address: the map link beside it already carries that name, and it is not a thing to show an applicant. `venue.name` stays the brand in both languages, so the confirmation screen reads "Court House+" on the line above the address.
 5. **The Reply-To address** that applicants' replies to the confirmation email should reach.
 6. **Where should a 31st applicant be pointed?** When every time is booked, the "All interview slots are taken" screen is the only thing that applicant sees, and there is no self-service lookup. It currently says "please contact Court House+" without saying how. Is the Reply-To address (question 5) the right place to send them, or is there a phone number or other address? Whatever you choose will be added to that screen.
 
-## Required: the data-protection notice
+## ~~Required:~~ Resolved differently: the data-protection notice
+
+**25 November 2026. Court House+ said they have no terms and conditions, and asked instead for the checkbox to confirm that the applicant's own details are correct.** That is done, and it changes what the checkbox means:
+
+- `booking.fields.consent` now reads "I confirm that all the details I have entered are correct." It no longer records any agreement about data protection.
+- `booking.fields.privacyNotice`, the line under the checkbox, now states plainly what happens to the data: "Your name, email address and phone number are used only to arrange and run your interview, and are seen only by the Court House+ interview team."
+- `booking.errors.consentRequired` was reworded to match.
+
+**Two things follow, and both belong to Court House+.** That sentence is a promise made to every applicant: the details are used only for the interview, and nobody outside the interview team sees them. If they will in fact go further than that, the sentence is wrong and has to change before launch. And it promises no deletion date on purpose, because none has been agreed; once one is, it belongs in that sentence.
+
+The fuller notice below is what the design called for and was not adopted. It is kept because the substance is still accurate and still worth sending if a proper notice is wanted later.
 
 The consent checkbox (`booking.fields.consent`) says applicants agree to the use of their details "as set out in the data-protection notice". That notice does not exist yet and must be written and approved, in Arabic and English. The substance is already decided; the client only needs to approve the wording. It must say:
 
@@ -28,17 +45,19 @@ English sketch for approval:
 
 The notice is shown directly under the consent checkbox from the message key `booking.fields.privacyNotice`, which holds a placeholder today. When the approved wording arrives it is a message-file edit in `ar.json` and `en.json` and nothing more. (The checkbox sentence, `booking.fields.consent`, can stay as it is.)
 
-## Venue (needs the client's real values)
+## Venue (received 25 November 2026)
 
 | Key | English now | Where it appears |
 |---|---|---|
 | `venue.name` | Court House+ | Confirmation screen, both emails to the applicant, and the calendar file |
-| `venue.address` | TODO: paste the venue address here | Confirmation screen, both emails to the applicant, and the calendar file |
+| `venue.address` | King Hussein Business Park, Building 0, Amman (received) | Confirmation screen, both emails to the applicant, and the calendar file |
 | `venue.mapUrl` | `https://maps.app.goo.gl/PNArbbvxCSwE6quZ7` (received) | Confirmation screen, both emails to the applicant, and the calendar file |
 
 Each of these is needed in Arabic (`messages/ar.json`) and in English (`messages/en.json`).
 
-## Arabic strings to translate or approve (97)
+## Arabic strings, translated by the developer 25 November 2026 (97)
+
+**All 97 are live in `messages/ar.json` and were written by the developer, not by Court House+.** What follows was the request; it is kept because it still says what each string is for and where it is seen, which is exactly what a reviewer needs. Read the Arabic against the English and correct whatever reads wrongly.
 
 Translate the English text. Strings are grouped by where the applicant or interviewer sees them. Where a string contains `{name}`, `{time}`, `{count}` and similar in curly braces, keep them exactly as written and place them where the Arabic grammar wants them; the portal fills them in.
 
@@ -227,4 +246,4 @@ The 404 page (`src/app/not-found.tsx`) has no translation provider, so its Arabi
 - الصفحة المطلوبة غير موجودة أو تم نقلها.
 - العودة إلى الصفحة الرئيسية
 
-The few Arabic strings already in the messages file (`common.skipToContent`, the separator in `venue.fullLocation`) were also drafted by the developer and are worth a glance.
+Every Arabic string in the messages file is now in this same position: drafted by the developer, read by nobody else. The whole file deserves a careful read rather than a glance.

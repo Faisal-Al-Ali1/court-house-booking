@@ -1,141 +1,141 @@
 {
   "common": {
     "siteName": "Court House+",
-    "siteDescription": "TODO-AR: Book your interview slot with Court House+.",
+    "siteDescription": "احجز موعد مقابلتك مع Court House+.",
     "skipToContent": "انتقل إلى المحتوى",
     "otherLanguage": "English"
   },
   "booking": {
-    "intro": "TODO-AR: Choose a 15-minute interview slot on Saturday 28 November 2026.",
-    "eventDate": "TODO-AR: Saturday 28 November 2026",
-    "stepOf": "TODO-AR: Step <n>{current}</n> of <n>{total}</n>",
-    "stepDetails": "TODO-AR: Your details",
-    "stepSlot": "TODO-AR: Choose a time",
-    "loadFailed": "TODO-AR: We could not load the available times. Please refresh the page.",
+    "intro": "اختر موعدًا لمقابلة مدتها 15 دقيقة يوم السبت 28 تشرين الثاني 2026.",
+    "eventDate": "السبت 28 تشرين الثاني 2026",
+    "stepOf": "الخطوة <n>{current}</n> من <n>{total}</n>",
+    "stepDetails": "بياناتك",
+    "stepSlot": "اختر الموعد",
+    "loadFailed": "لم نتمكن من تحميل المواعيد المتاحة. يُرجى تحديث الصفحة.",
     "fields": {
-      "name": "TODO-AR: Full name",
-      "email": "TODO-AR: Email address",
-      "phone": "TODO-AR: Phone number",
-      "consent": "TODO-AR: I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice.",
-      "privacyNotice": "TODO-AR: paste the data-protection notice here",
-      "continue": "TODO-AR: Choose a time"
+      "name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "phone": "رقم الهاتف",
+      "consent": "أُقِرّ بأن جميع البيانات التي أدخلتها صحيحة.",
+      "privacyNotice": "يُستخدم اسمك وبريدك الإلكتروني ورقم هاتفك لتنظيم مقابلتك وإجرائها فقط، ولا يراها غير فريق المقابلات في Court House+.",
+      "continue": "اختر الموعد"
     },
     "grid": {
-      "legend": "TODO-AR: Interview times",
-      "morning": "TODO-AR: Morning",
-      "evening": "TODO-AR: Evening",
-      "break": "TODO-AR: Break",
-      "available": "TODO-AR: <n>{count}</n> of <n>{total}</n> times available",
-      "taken": "TODO-AR: Taken",
-      "past": "TODO-AR: Passed",
-      "selected": "TODO-AR: Selected",
-      "summary": "TODO-AR: Your slot: <n>{time}</n>",
-      "noneSelected": "TODO-AR: Select a time to continue.",
-      "back": "TODO-AR: Edit my details",
-      "confirm": "TODO-AR: Confirm booking",
-      "confirming": "TODO-AR: Confirming…"
+      "legend": "مواعيد المقابلات",
+      "morning": "الفترة الصباحية",
+      "evening": "الفترة المسائية",
+      "break": "استراحة",
+      "available": "<n>{count}</n> من <n>{total}</n> مواعيد متاحة",
+      "taken": "محجوز",
+      "past": "انتهى",
+      "selected": "مُحدَّد",
+      "summary": "موعدك: <n>{time}</n>",
+      "noneSelected": "اختر موعدًا للمتابعة.",
+      "back": "تعديل بياناتي",
+      "confirm": "تأكيد الحجز",
+      "confirming": "جارٍ التأكيد…"
     },
     "confirmed": {
-      "title": "TODO-AR: You are booked",
-      "body": "TODO-AR: Your interview starts at <n>{time}</n>.",
-      "note": "TODO-AR: Please arrive a few minutes early."
+      "title": "تم تأكيد حجزك",
+      "body": "تبدأ مقابلتك الساعة <n>{time}</n>.",
+      "note": "يُرجى الحضور قبل الموعد بدقائق قليلة."
     },
     "fullyBooked": {
-      "title": "TODO-AR: All interview slots are taken",
-      "body": "TODO-AR: Every time on Saturday 28 November 2026 has been booked or has passed. If you still need an interview, please contact Court House+."
+      "title": "جميع مواعيد المقابلات محجوزة",
+      "body": "جميع المواعيد يوم السبت 28 تشرين الثاني 2026 محجوزة أو انتهت. إذا كنت لا تزال بحاجة إلى مقابلة، يُرجى التواصل مع Court House+."
     },
     "errors": {
-      "nameRequired": "TODO-AR: Please enter your full name.",
-      "nameTooLong": "TODO-AR: Name is too long (120 characters maximum).",
-      "emailInvalid": "TODO-AR: Please enter a valid email address.",
-      "phoneRequired": "TODO-AR: Please enter a valid phone number.",
-      "phoneTooLong": "TODO-AR: Phone number is too long (24 characters maximum).",
-      "slotInvalid": "TODO-AR: Please choose a valid interview slot.",
-      "slotPast": "TODO-AR: That slot is no longer available. Please choose another.",
-      "consentRequired": "TODO-AR: Please agree to the use of your details to continue.",
-      "slotTaken": "TODO-AR: Sorry, that slot has just been taken. Please choose another.",
-      "alreadyBooked": "TODO-AR: This email address already has a booking.",
-      "unexpected": "TODO-AR: Something went wrong. Please try again."
+      "nameRequired": "يُرجى إدخال اسمك الكامل.",
+      "nameTooLong": "الاسم طويل جدًا (120 حرفًا كحد أقصى).",
+      "emailInvalid": "يُرجى إدخال بريد إلكتروني صحيح.",
+      "phoneRequired": "يُرجى إدخال رقم هاتف صحيح.",
+      "phoneTooLong": "رقم الهاتف طويل جدًا (24 حرفًا كحد أقصى).",
+      "slotInvalid": "يُرجى اختيار موعد صحيح للمقابلة.",
+      "slotPast": "هذا الموعد لم يعد متاحًا. يُرجى اختيار موعد آخر.",
+      "consentRequired": "يُرجى الإقرار بصحة بياناتك للمتابعة.",
+      "slotTaken": "نعتذر، فقد حُجز هذا الموعد للتو. يُرجى اختيار موعد آخر.",
+      "alreadyBooked": "هذا البريد الإلكتروني لديه حجز بالفعل.",
+      "unexpected": "حدث خطأ ما. يُرجى المحاولة مرة أخرى."
     }
   },
   "venue": {
-    "name": "TODO-AR: Court House+",
-    "address": "TODO-AR: paste the venue address here",
+    "name": "Court House+",
+    "address": "مجمع الملك حسين للأعمال، مبنى 0، عمّان",
     "mapUrl": "https://maps.app.goo.gl/PNArbbvxCSwE6quZ7",
     "fullLocation": "{name}، {address}"
   },
   "confirmation": {
-    "eventSummary": "TODO-AR: Court House+ interview",
-    "dateLabel": "TODO-AR: Date",
-    "durationLabel": "TODO-AR: Duration",
-    "duration": "TODO-AR: <n>{minutes}</n> minutes",
-    "venueLabel": "TODO-AR: Venue",
-    "openMap": "TODO-AR: Open in maps",
-    "addToCalendar": "TODO-AR: Add to calendar",
-    "calendarHint": "TODO-AR: Downloads a calendar file you can open on your phone or computer.",
-    "timeLabel": "TODO-AR: Time"
+    "eventSummary": "مقابلة Court House+",
+    "dateLabel": "التاريخ",
+    "durationLabel": "المدة",
+    "duration": "<n>{minutes}</n> دقيقة",
+    "venueLabel": "المكان",
+    "openMap": "افتح في الخرائط",
+    "addToCalendar": "أضف إلى التقويم",
+    "calendarHint": "يُنزِّل ملف تقويم يمكنك فتحه على هاتفك أو حاسوبك.",
+    "timeLabel": "الوقت"
   },
   "email": {
-    "durationValue": "TODO-AR: {minutes} minutes",
-    "footer": "TODO-AR: You received this message because you applied to Court House+. It was sent on behalf of Court House+ from a different address, and replying to it reaches the Court House+ team.",
+    "durationValue": "{minutes} دقيقة",
+    "footer": "وصلتك هذه الرسالة لأنك تقدمت إلى Court House+. وقد أُرسلت بالنيابة عن Court House+ من عنوان مختلف، والرد عليها يصل إلى فريق Court House+.",
     "confirmation": {
-      "subject": "TODO-AR: Your Court House+ interview is booked",
-      "heading": "TODO-AR: You are booked",
-      "greeting": "TODO-AR: Hello {name},",
-      "intro": "TODO-AR: Your interview with Court House+ is confirmed. These are the details.",
-      "calendar": "TODO-AR: A calendar file is attached so you can add the interview to your calendar."
+      "subject": "تم تأكيد موعد مقابلتك مع Court House+",
+      "heading": "تم تأكيد حجزك",
+      "greeting": "مرحبًا {name}،",
+      "intro": "تم تأكيد مقابلتك مع Court House+. وهذه تفاصيلها.",
+      "calendar": "أرفقنا ملف تقويم لتتمكن من إضافة المقابلة إلى تقويمك."
     },
     "notification": {
-      "subject": "TODO-AR: New interview booking at {time}",
-      "heading": "TODO-AR: New interview booking",
-      "intro": "TODO-AR: An applicant has booked an interview slot.",
-      "nameLabel": "TODO-AR: Name",
-      "emailLabel": "TODO-AR: Email address",
-      "phoneLabel": "TODO-AR: Phone number",
-      "footer": "TODO-AR: Sent automatically by the Court House+ booking portal."
+      "subject": "حجز مقابلة جديد الساعة {time}",
+      "heading": "حجز مقابلة جديد",
+      "intro": "حجز أحد المتقدمين موعدًا لمقابلة.",
+      "nameLabel": "الاسم",
+      "emailLabel": "البريد الإلكتروني",
+      "phoneLabel": "رقم الهاتف",
+      "footer": "أُرسلت تلقائيًا من بوابة حجز المقابلات في Court House+."
     },
     "cancellation": {
-      "subject": "TODO-AR: Your Court House+ interview has been cancelled",
-      "heading": "TODO-AR: Your interview is cancelled",
-      "greeting": "TODO-AR: Hello {name},",
-      "intro": "TODO-AR: Your interview slot has been released and is no longer booked. The time below is no longer valid.",
-      "rebook": "TODO-AR: If you would like another time, please contact Court House+ or book again if times are still available."
+      "subject": "تم إلغاء موعد مقابلتك مع Court House+",
+      "heading": "تم إلغاء مقابلتك",
+      "greeting": "مرحبًا {name}،",
+      "intro": "تم إلغاء موعد مقابلتك ولم يبقَ محجوزًا. والموعد المذكور أدناه لم يعد صحيحًا.",
+      "rebook": "إذا رغبت في موعد آخر، يُرجى التواصل مع Court House+ أو الحجز مرة أخرى إن كانت هناك مواعيد متاحة."
     }
   },
   "interviewer": {
     "signIn": {
-      "title": "TODO-AR: Interviewer sign-in",
-      "intro": "TODO-AR: Enter the interviewer password to see the schedule.",
-      "passwordLabel": "TODO-AR: Password",
-      "submit": "TODO-AR: Sign in",
-      "submitting": "TODO-AR: Signing in…",
-      "wrong": "TODO-AR: That password is not right. Please try again.",
-      "unavailable": "TODO-AR: Sign-in is not available right now. Please tell the site administrator."
+      "title": "تسجيل دخول القائم بالمقابلة",
+      "intro": "أدخل كلمة مرور القائم بالمقابلة لعرض الجدول.",
+      "passwordLabel": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "submitting": "جارٍ تسجيل الدخول…",
+      "wrong": "كلمة المرور غير صحيحة. يُرجى المحاولة مرة أخرى.",
+      "unavailable": "تسجيل الدخول غير متاح حاليًا. يُرجى إبلاغ مسؤول الموقع."
     },
-    "title": "TODO-AR: Interview schedule",
-    "booked": "TODO-AR: <n>{booked}</n> of <n>{total}</n> booked",
-    "nextUp": "TODO-AR: Up next",
-    "noneUpcoming": "TODO-AR: No more interviews booked today.",
-    "openSlot": "TODO-AR: Open",
-    "export": "TODO-AR: Download CSV",
-    "loadFailed": "TODO-AR: We could not load the schedule. Please refresh the page.",
+    "title": "جدول المقابلات",
+    "booked": "<n>{booked}</n> من <n>{total}</n> محجوزة",
+    "nextUp": "التالي",
+    "noneUpcoming": "لا مقابلات أخرى محجوزة اليوم.",
+    "openSlot": "متاح",
+    "export": "تنزيل ملف CSV",
+    "loadFailed": "لم نتمكن من تحميل الجدول. يُرجى تحديث الصفحة.",
     "columns": {
-      "time": "TODO-AR: Time",
-      "applicant": "TODO-AR: Applicant",
-      "action": "TODO-AR: Action"
+      "time": "الوقت",
+      "applicant": "المتقدم",
+      "action": "الإجراء"
     },
     "cancel": {
-      "label": "TODO-AR: Cancel the booking for {name}",
-      "title": "TODO-AR: Cancel this booking?",
-      "body": "TODO-AR: <who>{name}</who> at <n>{time}</n> will be cancelled and emailed. This cannot be undone.",
-      "keep": "TODO-AR: Keep booking",
-      "confirm": "TODO-AR: Cancel booking",
-      "confirming": "TODO-AR: Cancelling…",
-      "failed": "TODO-AR: The booking could not be cancelled. Please try again.",
-      "notified": "TODO-AR: Slot freed. <who>{name}</who> has been emailed.",
-      "notNotified": "TODO-AR: Slot freed, but we could not email <who>{name}</who>. Please contact them on <call>{phone}</call>.",
-      "dismiss": "TODO-AR: Dismiss",
-      "gone": "TODO-AR: The booking for <who>{name}</who> was already cancelled."
+      "label": "إلغاء حجز {name}",
+      "title": "إلغاء هذا الحجز؟",
+      "body": "سيُلغى حجز <who>{name}</who> الساعة <n>{time}</n> وسيُرسل إليه بريد إلكتروني. ولا يمكن التراجع عن هذا الإجراء.",
+      "keep": "الإبقاء على الحجز",
+      "confirm": "إلغاء الحجز",
+      "confirming": "جارٍ الإلغاء…",
+      "failed": "لم نتمكن من إلغاء الحجز. يُرجى المحاولة مرة أخرى.",
+      "notified": "تم تفريغ الموعد. وأُرسل بريد إلكتروني إلى <who>{name}</who>.",
+      "notNotified": "تم تفريغ الموعد، لكننا لم نتمكن من إرسال بريد إلكتروني إلى <who>{name}</who>. يُرجى التواصل معه على <call>{phone}</call>.",
+      "dismiss": "إغلاق",
+      "gone": "حجز <who>{name}</who> كان مُلغى بالفعل."
     }
   }
 }

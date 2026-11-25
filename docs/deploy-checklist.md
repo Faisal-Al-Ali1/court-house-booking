@@ -102,9 +102,9 @@ Vercel reports it `configured-correctly`.
 in section 2 never fires and no rebuild is needed. Using this domain rather than `court-house-booking.vercel.app`
 also sidesteps the fixed-line ISP that resets `*.vercel.app` (section 2.2a).
 
-### 2.4 Set `INTERVIEWER_LOCALE=en` until the Arabic copy lands
+### 2.4 `INTERVIEWER_LOCALE` stays `en`, now as a choice rather than a workaround
 
-Until the real Arabic copy replaces the placeholders, the interviewer's own notification email in Arabic has the subject "TODO-AR: New interview booking" and a body of English placeholder text. Set `INTERVIEWER_LOCALE=en` for now. Once the Arabic copy is in, ask the client which language the interviewer wants (it is one of the questions in `client-copy-needed.md`) and set the variable accordingly.
+The original reason is gone: the Arabic landed on 25 November 2026, so the interviewer's Arabic notification no longer carries placeholder text. `INTERVIEWER_LOCALE=en` is left in place anyway, as the developer's choice, because the Arabic is an unreviewed developer translation and this is the one email whose reader is known and internal. Ask Court House+ which language the interviewer wants (question 2 in `client-copy-needed.md`) and flip the single variable if they say Arabic.
 
 ## 3. Database (MongoDB Atlas)
 
@@ -228,7 +228,14 @@ Use an actual phone (iOS and Android if you can), on mobile data, in **Arabic an
 
 ## 7. Once the client's copy is in
 
-- [ ] `npm run launch-check` is green and `npm test` is green.
+**The copy landed on 25 November 2026. `npm run launch-check` is green at 7 of 7 and `npm test` at 182 of 182.** Everything below is now live rather than hypothetical, and the Arabic reading steps are the most important items in this document rather than the most skippable, because the Arabic is a developer translation no native speaker has read.
+
+Two checks were done statically when the translation landed, and neither replaces the browser audits:
+
+- `messages/ar.json` now holds nine strings containing `Court House+` and one containing `CSV`, so the unisolated-run walk finally has something to find. Every render site for those strings was checked by hand: all were already inside `RichText` except the CSV button on the interviewer page, which was wrapped at the same time.
+- The trailing `+` in `Court House+` is the one character that would flip to the wrong side of the brand name in right-to-left text. `splitLtrRuns` ends a run on `[\p{Script=Latin}0-9%+]`, so the `+` is carried inside the isolated run rather than left outside it. This is why the brand survives inside Arabic prose without a tag.
+
+- [x] `npm run launch-check` is green and `npm test` is green.
 - [ ] **Confirm the map link actually renders and points at the right place.** It is deliberately hidden while `venue.mapUrl` is a placeholder, so before the real value arrives its absence is expected and silent. After it lands, open the confirmation screen and the confirmation email and tap the link. It must open the right building. A `maps.app.goo.gl` short link is the safest form.
 - [ ] Read the Arabic pages once on a phone for sentences that read wrongly around numbers and times. Every Latin or numeric run is isolated automatically in the emails and in some of the on-screen strings, but not in all of them, and only a human can tell whether the sentence reads right either way.
 - [ ] **Re-run all three audits unconditionally once the real Arabic has landed.** `scripts/check-ltr-runs.js`, `scripts/audit-contrast.js` and `scripts/check-overflow.js` are snippets to evaluate in the browser console of each page (foreground the tab and wait for the page to finish loading first), at 360, 768 and 1440 in both locales. This is the first moment the unisolated-run walk means anything: it has only ever run against placeholders and Arabic filler, which contain no Latin. Real translation introduces exactly the thing it looks for: "Court House+", "CSV" or a number left bare in plain message text. A hit is a string whose render site does not isolate its Latin, so the fix is in the code: wrap that site in `<RichText>`, or add the tag to **both** `ar.json` and `en.json` yourself. Do not ask the translator to add a tag — `launch-check` rejects an Arabic string whose tags differ from the English.

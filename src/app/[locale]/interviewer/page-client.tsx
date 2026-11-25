@@ -69,7 +69,7 @@ export function PageClient({ locale, rows, nextSlotId }: PageClientProps) {
           href={`/${locale}/interviewer/api/export`}
           className="inline-flex min-h-12 items-center rounded-md border border-rule-strong bg-ground px-4 text-base font-semibold text-ink"
         >
-          {t("export")}
+          <RichText>{t("export")}</RichText>
         </a>
       </div>
 

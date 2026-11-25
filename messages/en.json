@@ -16,8 +16,8 @@
       "name": "Full name",
       "email": "Email address",
       "phone": "Phone number",
-      "consent": "I agree that Court House+ may use these details to arrange and run my interview, as set out in the data-protection notice.",
-      "privacyNotice": "TODO: paste the data-protection notice here",
+      "consent": "I confirm that all the details I have entered are correct.",
+      "privacyNotice": "Your name, email address and phone number are used only to arrange and run your interview, and are seen only by the Court House+ interview team.",
       "continue": "Choose a time"
     },
     "grid": {
@@ -52,7 +52,7 @@
       "phoneTooLong": "Phone number is too long (24 characters maximum).",
       "slotInvalid": "Please choose a valid interview slot.",
       "slotPast": "That slot is no longer available. Please choose another.",
-      "consentRequired": "Please agree to the use of your details to continue.",
+      "consentRequired": "Please confirm that your details are correct to continue.",
       "slotTaken": "Sorry, that slot has just been taken. Please choose another.",
       "alreadyBooked": "This email address already has a booking.",
       "unexpected": "Something went wrong. Please try again."
@@ -60,7 +60,7 @@
   },
   "venue": {
     "name": "Court House+",
-    "address": "TODO: paste the venue address here",
+    "address": "King Hussein Business Park, Building 0, Amman",
     "mapUrl": "https://maps.app.goo.gl/PNArbbvxCSwE6quZ7",
     "fullLocation": "{name}, {address}"
   },
