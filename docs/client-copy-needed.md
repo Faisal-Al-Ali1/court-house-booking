@@ -6,8 +6,8 @@ Everything below blocks launch. The portal is Arabic-first, and nearly every Ara
 
 1. **Does Court House+ have an Arabic organisation name?** Or does the brand stay in Latin letters, "Court House+", in both languages? Today it is Latin in both.
 2. **Which language should the interviewer's notification emails use?** The email that tells the interviewer about each new booking currently defaults to Arabic. Changing it is one environment variable (`INTERVIEWER_LOCALE=en`), so either answer is cheap.
-3. **The venue map link.** Please send a `maps.app.goo.gl` short link (Google Maps, Share, Copy link). A short link avoids any trouble with long addresses that contain braces or apostrophes. Until it arrives the map link is hidden, deliberately.
-4. **The venue name and address, in both Arabic and English.** The English address in the portal today is a marked placeholder and must not reach applicants.
+3. ~~**The venue map link.**~~ **Received 25 November 2026:** `https://maps.app.goo.gl/PNArbbvxCSwE6quZ7`, which resolves to `Vbc | KHBP | Bldg0` at 31.9721859, 35.8354429 in Amman. It is live in both message files. Court House+ described this as the initial address, so **confirm it has not moved before the link is sent to applicants.**
+4. **The venue name and address, in both Arabic and English.** Still outstanding, and the map link does not substitute for it: the confirmation screen, both emails and the calendar file all print the address as text. The place name behind the map link reads `Vbc | KHBP | Bldg0`, which is not something to show an applicant. The English address in the portal today is a marked placeholder and must not reach applicants.
 5. **The Reply-To address** that applicants' replies to the confirmation email should reach.
 6. **Where should a 31st applicant be pointed?** When every time is booked, the "All interview slots are taken" screen is the only thing that applicant sees, and there is no self-service lookup. It currently says "please contact Court House+" without saying how. Is the Reply-To address (question 5) the right place to send them, or is there a phone number or other address? Whatever you choose will be added to that screen.
 
@@ -34,7 +34,7 @@ The notice is shown directly under the consent checkbox from the message key `bo
 |---|---|---|
 | `venue.name` | Court House+ | Confirmation screen, both emails to the applicant, and the calendar file |
 | `venue.address` | TODO: paste the venue address here | Confirmation screen, both emails to the applicant, and the calendar file |
-| `venue.mapUrl` | TODO: paste the venue map URL here | Confirmation screen, both emails to the applicant, and the calendar file |
+| `venue.mapUrl` | `https://maps.app.goo.gl/PNArbbvxCSwE6quZ7` (received) | Confirmation screen, both emails to the applicant, and the calendar file |
 
 Each of these is needed in Arabic (`messages/ar.json`) and in English (`messages/en.json`).
 

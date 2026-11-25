@@ -61,7 +61,7 @@
   "venue": {
     "name": "TODO-AR: Court House+",
     "address": "TODO-AR: paste the venue address here",
-    "mapUrl": "TODO-AR: paste the venue map URL here",
+    "mapUrl": "https://maps.app.goo.gl/PNArbbvxCSwE6quZ7",
     "fullLocation": "{name}، {address}"
   },
   "confirmation": {
