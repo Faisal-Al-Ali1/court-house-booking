@@ -94,6 +94,14 @@ Until the real Arabic copy replaces the placeholders, the interviewer's own noti
 
 ## 5. Re-run on the real cluster what only ran in memory
 
+**Done at the repository layer on 25 November 2026**, against the real Atlas cluster (MongoDB 8.0.39) using the
+`court_house_preview` database: the six-step claim sequence, and a 30-way concurrent burst across three slots
+that produced exactly one winner per slot and twenty-seven `slot-taken`. Both databases' indexes were read back
+and confirmed `unique` with the partial filter `{ cancelledAt: null }`, with no conflicting plain unique index.
+Both databases were left empty. **What that did not cover is everything the deployment adds**: cold-start
+latency, Vercel's function concurrency and connection reuse, and the pool errors that only appear in the
+function logs. Re-run both from the deployed instance.
+
 The claim logic ran only against an in-memory MongoDB (`mongodb-memory-server`). Run these against the real Atlas cluster on the deployed instance, then delete the test bookings and confirm the schedule shows 0 of 30:
 
 1. **The six-step claim sequence**: insert; the same slot by another applicant; the same email on another slot; the same email on the same slot (idempotent, not an error); cancel; re-insert. Each step must give the right outcome and leave exactly one active booking per slot and per email. The in-memory version is the test of that name in `src/repositories/bookings/bookings_impl.test.ts`.
