@@ -93,7 +93,13 @@ Until the real Arabic copy replaces the placeholders, the interviewer's own noti
 
 1. Create the cluster and a database user with read/write on `MONGODB_DB` only.
 2. Network access: Vercel functions have no fixed IP, so Atlas needs `0.0.0.0/0` in the access list. Tell the client; the control is then the database password.
-3. Choose the Atlas region close to the Vercel function region.
+3. Choose the Atlas region close to the Vercel function region. **Settled on 25 November 2026:** the cluster is
+   AWS Frankfurt (`eu-central-1`) and the four database-touching route segments carry
+   `export const preferredRegion = "fra1"`. Measured from Amman, Frankfurt answers a round trip in **65 ms**
+   against **234 ms** for the AWS Hong Kong cluster it replaced, with the cold connect down from 2.8 s to 1.1 s.
+   `preferredRegion` is a preference, not a guarantee, so **confirm Settings -> Functions -> Region reads
+   Frankfurt in the dashboard**; an M0 cluster's region cannot be changed after creation, so a later move means
+   another new cluster.
 4. **Run the index script against Atlas**, once per database (production and Preview). On Windows PowerShell the
    inline `VAR=value command` form does not exist, so put both values in the git-ignored `.env.local` and let Node
    read them — the password then stays out of the command line and the shell history:

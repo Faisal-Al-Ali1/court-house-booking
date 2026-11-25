@@ -7,6 +7,8 @@ import { isFailure } from "@/core/types/results/results";
 import { toCsv } from "@/lib/csv";
 import { isSignedIn } from "../../utils/is-signed-in";
 
+export const preferredRegion = "fra1";
+
 const NO_STORE = { "Cache-Control": "no-store" };
 
 function plain(status: number, body: string): Response {

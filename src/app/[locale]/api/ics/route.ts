@@ -9,6 +9,8 @@ import { buildIcs } from "@/lib/ics";
 import { ICS_SLOT_PARAM } from "@/lib/ics-href";
 import { requireSessionSecret } from "@/lib/signed-ref";
 
+export const preferredRegion = "fra1";
+
 function notFound(): Response {
   return new Response("Not found", {
     status: 404,

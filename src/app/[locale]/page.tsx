@@ -13,6 +13,8 @@ import { requireSessionSecret } from "@/lib/signed-ref";
 import { generateSlots, isSlotPast } from "@/lib/slots";
 import { PageClient } from "./page-client";
 
+export const preferredRegion = "fra1";
+
 export default async function HomePage({
   params,
   searchParams,

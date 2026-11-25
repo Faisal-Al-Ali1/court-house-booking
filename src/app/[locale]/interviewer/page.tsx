@@ -13,6 +13,8 @@ import { PageClient } from "./page-client";
 import { isSignedIn } from "./utils/is-signed-in";
 import type { ScheduleRow } from "./types/schedule-row";
 
+export const preferredRegion = "fra1";
+
 const MS_PER_MINUTE = 60_000;
 
 export default async function InterviewerPage({
